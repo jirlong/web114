@@ -1,0 +1,186 @@
+<!-- REVISED PROMPT
+用 jQuery 和 Bootstrap 建立一個 Keyframe 動畫測試網頁。網頁包含一個 bg-primary 的 banner 與一個 bg-dark 的 footer，中間有三個 100vh 的區塊，每個展示不同動畫效果。
+第一個區塊是 Flipping Card：當捲動到該卡片時，jQuery 偵測位置並加上 .is-flipped 觸發 @keyframes flipY 翻轉動畫，離開視窗時可移除。
+第二個區塊是 Section Fade In/Out：當 <div> 進入視窗中間 80% 區域（上下各留 10% 緩衝）時，jQuery 加上 .in-view 淡入，離開則淡出。
+第三個區塊是 關鍵句 Highlight：一段文字中用 <span class="key-sentence"> 包住重點句，當捲動到該範圍時啟動滑動高亮的 @keyframes highlightSlide 動畫。
+請提供一份可直接執行的 HTML（含內嵌 CSS 與 JS），使用 jQuery 偵測元素位置，並加入必要註解說明判斷邏輯與動畫觸發條件。
+-->
+
+<!--ORIGINAL PROMPT
+用jquery和bootstrap建立keyframe的測試網頁，有bg-primary的banner和bg-dark的footer
+
+keyframe的測試網頁，每個頁面都是100vh，我要三種keyframe的簡單效果，
+1. 第一個是flippingcard，如果捲動到該flipping card他會apply flipping keyframe。用jquery來detect position
+2. 第二個是，section fad-in/out也就是如果一個<div>在window buttom and top 10%的地方，會刷淡，也是用jquery來detect position
+3. 第三個是key sentence的highlighting，當捲動到<span>的地方時，會滑動highlight
+-->
+
+
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Keyframe 測試 - flipping, fade, highlight</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    /* Basic layout */
+    :root { --vh: 100vh; }
+    html, body { height: 100%; }
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    .fullpage { height: 100vh; display: flex; align-items: center; justify-content: center; }
+
+    /* Banner and footer */
+    .banner { height: 64px; }
+    .footer { height: 64px; }
+
+    /* 1) Flipping card */
+    .flip-card-wrapper { perspective: 1000px; }
+    .flip-card { width: 300px; height: 200px; transform-style: preserve-3d; transition: transform 0.8s; }
+    .flip-card .face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: .5rem; display:flex; align-items:center; justify-content:center; font-weight:700; }
+    .flip-card .front { background: linear-gradient(135deg,#4f46e5,#06b6d4); color: white; }
+    .flip-card .back { background: linear-gradient(135deg,#ef4444,#f97316); color: white; transform: rotateY(180deg); }
+
+    @keyframes flipping {
+      from { transform: rotateY(0deg); }
+      to   { transform: rotateY(180deg); }
+    }
+    .flip-card.flip { animation: flipping 0.8s forwards ease-in-out; }
+
+    /* 2) Fade in/out sections */
+    .fade-box { width: 70%; height: 60%; border-radius: .5rem; display:flex; align-items:center; justify-content:center; font-size:1.25rem; color:#111; }
+    .fade-box.bg-light { background: rgba(255,255,255,0.85); }
+    .fade-box.dim { opacity: 0.3; filter: blur(1px); transition: opacity 400ms ease, filter 400ms ease; }
+    .fade-box.bright { opacity: 1; filter: blur(0); transition: opacity 400ms ease, filter 400ms ease; }
+
+    /* 3) Key sentence highlighting */
+    .text-block { width: 60%; line-height:1.8; font-size:1.125rem; }
+    .key-sentence { position: relative; display: inline-block; padding: 0 .2rem; }
+    .key-sentence::before {
+      content: ""; position: absolute; left:0; right:100%; top:50%; transform:translateY(-50%); height:0.95em; background: linear-gradient(90deg,#ffecb3,#ffd54f); z-index:-1; transition: right 500ms ease; border-radius: .2rem; }
+    .key-sentence.highlight::before { right:0; }
+
+    /* small niceties */
+    .section-label { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.5); color: #fff; padding: .25rem .5rem; border-radius: .25rem; font-size:.9rem; }
+
+  </style>
+</head>
+<body>
+
+  <!-- Banner -->
+  <header class="banner bg-primary text-white d-flex align-items-center px-4 vh-100">
+    <h4 class="mb-0">Keyframe 測試 - flipping / fade / highlight</h4>
+  </header>
+
+  <!-- Section 1: Flipping card -->
+  <main>
+    <section id="section-flip" class="fullpage position-relative bg-light">
+      <div class="section-label">Flipping card</div>
+      <div class="flip-card-wrapper">
+        <div class="flip-card" id="flipCard">
+          <div class="face front">Front</div>
+          <div class="face back">Back</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: Fade boxes -->
+    <section id="section-fade" class="fullpage position-relative" style="background:linear-gradient(180deg,#f8fafc,#e6eef8);">
+      <div class="section-label">Fade in / out</div>
+      <div class="d-flex flex-column align-items-center w-100">
+        <div class="fade-box bg-light dim my-3" data-fade>第一個淡入區塊</div>
+        <div class="fade-box bg-light dim my-3" data-fade>第二個淡入區塊</div>
+        <div class="fade-box bg-light dim my-3" data-fade>第三個淡入區塊</div>
+      </div>
+    </section>
+
+    <!-- Section 3: Key sentence highlight -->
+    <section id="section-highlight" class="fullpage position-relative bg-white">
+      <div class="section-label">Key sentence highlight</div>
+      <div class="text-block">
+        <p>這是一段示例文字，當你往下捲動時，會觀察到特定關鍵句<span class="key-sentence" data-key>滑動高亮</span>的效果。繼續往下還會看到更多文字用於測試滾動觸發。</p>
+        <p>更多的文字，保持一些長度讓捲動更明顯。在這裡插入另一個關鍵句：<span class="key-sentence" data-key>另一個重點句</span>，它也會被觸發。</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer bg-dark text-white d-flex align-items-center justify-content-center vh-100">
+    <small class="mb-0">Footer - bg-dark</small>
+  </footer>
+
+  <script>
+    // Helper: check if element is in viewport with margins
+    function isInViewportWithMargin($el, topMarginRatio = 0.1, bottomMarginRatio = 0.1) {
+      const rect = $el[0].getBoundingClientRect();
+      const vh = window.innerHeight || document.documentElement.clientHeight;
+      const topLimit = vh * topMarginRatio;
+      const bottomLimit = vh * (1 - bottomMarginRatio);
+      // return true when element's top is between topLimit and bottomLimit
+      return (rect.top >= topLimit && rect.top <= bottomLimit) || (rect.bottom >= topLimit && rect.bottom <= bottomLimit) || (rect.top < topLimit && rect.bottom > bottomLimit);
+    }
+
+    $(function(){
+      // Throttle scroll handling
+      let ticking = false;
+      function onScroll() {
+        if (!ticking) {
+          window.requestAnimationFrame(function() {
+            handleFlip();
+            handleFade();
+            handleHighlight();
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }
+
+      $(window).on('scroll resize load', onScroll);
+
+      // 1) Flipping card: apply 'flip' when center of card enters viewport
+      const $flip = $('#flipCard');
+      function handleFlip(){
+        if (!$flip.length) return;
+        const rect = $flip[0].getBoundingClientRect();
+        const vh = window.innerHeight;
+        const centerY = rect.top + rect.height/2;
+        if (centerY >= vh*0.2 && centerY <= vh*0.8) {
+          if (!$flip.hasClass('flip')) $flip.addClass('flip');
+        } else {
+          if ($flip.hasClass('flip')) $flip.removeClass('flip');
+        }
+      }
+
+      // 2) Fade boxes: brighten when within middle 80% (top/bottom 10%)
+      const $fadeBoxes = $('[data-fade]');
+      function handleFade(){
+        $fadeBoxes.each(function(){
+          const $el = $(this);
+          if (isInViewportWithMargin($el, 0.1, 0.1)) {
+            $el.removeClass('dim').addClass('bright');
+          } else {
+            $el.removeClass('bright').addClass('dim');
+          }
+        });
+      }
+
+      // 3) Key sentence highlighting: slide highlight when span is visible
+      const $keys = $('[data-key]');
+      function handleHighlight(){
+        $keys.each(function(){
+          const $el = $(this);
+          if (isInViewportWithMargin($el, 0.0, 0.0)) {
+            $el.addClass('highlight');
+          } else {
+            $el.removeClass('highlight');
+          }
+        });
+      }
+
+      // initial run
+      onScroll();
+    });
+  </script>
+</body>
+</html>

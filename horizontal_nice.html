@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Horizontal Scroll</title>
+	
+	<!-- Bootstrap 5 CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+	
+	<style>
+		#horizontal {
+			position: absolute;
+			left: 0;
+			height: 100vh;
+			width: 1350vh;
+			background-image: url("https://static01.nyt.com/newsgraphics/2016/07/14/france-attack-scroller/9ec6dcec7e22fffa81a21fb790ba566f2c6aee83/base-big.jpg");
+			background-size: cover;
+			background-position: left center;
+			background-repeat: no-repeat;
+            
+		}
+	</style>
+</head>
+<body>
+
+	<div style="height:50vh;background-color:royalblue"></div>
+
+	<div style="min-height:1000vh">
+		<div class="sticky-top">
+			<div id="horizontal"></div>
+		</div>
+	</div>
+
+	<div style="height:300vh;background-color:gray"></div>
+
+	<!-- jQuery -->
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+	<!-- Bootstrap 5 JS Bundle -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+	
+	<script>
+		$(document).ready(function () {
+			$(window).scroll(function () {
+				var $horizontalSection = $(".sticky-top").parent(); // 取得包含 sticky-top 的父元素
+				var sectionTop = $horizontalSection.offset().top;
+				var sectionHeight = $horizontalSection.height();
+				var windowHeight = $(window).height();
+				var current_pos = $(window).scrollTop();
+				
+				// 計算橫向捲動區域的開始和結束位置
+				var scrollStart = sectionTop;
+				var scrollEnd = sectionTop + sectionHeight - windowHeight;
+				
+				// 只有在橫向捲動區域內才進行計算
+				if (current_pos >= scrollStart && current_pos <= scrollEnd) {
+					// 計算在橫向捲動區域內的相對位置 (0 到 1)
+					var scrollProgress = (current_pos - scrollStart) / (scrollEnd - scrollStart);
+					
+					var max_w = $("#horizontal").width() - $(window).width();
+					var new_left = -1 * max_w * scrollProgress;
+					
+					$("#horizontal").css({
+						left: new_left
+					});
+					
+					console.log('Scroll progress:', scrollProgress.toFixed(3), 
+					           '| Left:', new_left.toFixed(0), 
+					           '| Max move:', max_w.toFixed(0),
+					           '| Horizontal width:', $("#horizontal").width().toFixed(0),
+					           '| Window width:', $(window).width());
+				} else if (current_pos < scrollStart) {
+					// 在橫向捲動區域之前，保持在最左側
+					$("#horizontal").css({
+						left: 0
+					});
+				} else {
+					// 在橫向捲動區域之後，保持在最右側
+					var max_w = $("#horizontal").width() - $(window).width();
+					$("#horizontal").css({
+						left: -max_w
+					});
+				}
+			});
+		});
+	</script>
+
+</body>
+</html>

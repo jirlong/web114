@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式視頻滾動體驗</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* 滾動容器 */
+        .scroll-container {
+            position: relative;
+        }
+
+        /* 每個視頻的外層容器 - 控制sticky時間 */
+        .video-outer-container {
+            position: relative;
+        }
+
+        /* 第一個視頻容器 - 300vh高度 */
+        .video-outer-container:nth-child(1) {
+            height: 300vh;
+        }
+
+        /* 第二個視頻容器 - 400vh高度 */
+        .video-outer-container:nth-child(2) {
+            height: 400vh;
+        }
+
+        /* 第三個視頻容器 - 350vh高度 */
+        .video-outer-container:nth-child(3) {
+            height: 350vh;
+        }
+
+        /* 第四個視頻容器 - 450vh高度 */
+        .video-outer-container:nth-child(4) {
+            height: 450vh;
+        }
+
+        /* 每個視頻section - 100vh高度，sticky定位 */
+        .video-section {
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* 視頻元素 */
+        .video-section video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 視頻內容覆蓋層 */
+        .video-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 2rem;
+            border-radius: 10px;
+        }
+
+        .video-content h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .video-content p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+        }
+
+        /* 滾動進度指示器 */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: 1000;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* 視頻控制按鈕 */
+        .video-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .video-content h2 {
+                font-size: 2rem;
+            }
+            
+            .video-content p {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 滾動進度指示器 -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 視頻控制按鈕 -->
+    <div class="video-controls">
+        <button class="control-btn" id="playAllBtn">播放全部</button>
+        <button class="control-btn" id="pauseAllBtn">暫停全部</button>
+        <button class="control-btn" id="muteAllBtn">靜音</button>
+    </div>
+
+    <!-- 滾動容器 -->
+    <div class="scroll-container">
+        <!-- 第一個視頻外層容器 - 300vh -->
+        <div class="video-outer-container" data-container="1">
+            <div class="video-section" data-video="1">
+                <video muted preload="metadata" loop>
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4" type="video/mp4">
+                    您的瀏覽器不支持視頻播放。
+                </video>
+                <div class="video-content">
+                    <h2>邊境故事</h2>
+                    <p>探索美墨邊境的複雜現實，了解那些跨越邊境的人們的故事。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第二個視頻外層容器 - 400vh -->
+        <div class="video-outer-container" data-container="2">
+            <div class="video-section" data-video="2">
+                <video muted preload="metadata" loop>
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57effca6e4b0bc3a464cdea0/57fb0043e4b037a240c7b2ad_1439399835595-cf9g26_t_1476067421749_1280_720_2000.mp4" type="video/mp4">
+                    您的瀏覽器不支持視頻播放。
+                </video>
+                <div class="video-content">
+                    <h2>移民之路</h2>
+                    <p>跟隨移民者的腳步，體驗他們艱辛的旅程和對未來的希望。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第三個視頻外層容器 - 350vh -->
+        <div class="video-outer-container" data-container="3">
+            <div class="video-section" data-video="3">
+                <video muted preload="metadata" loop>
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efff8ce4b0bc3a464ce0e7/57fb009de4b037a240c7b2c9_1439399835595-cf9g26_t_1476067527078_1280_720_2000.mp4" type="video/mp4">
+                    您的瀏覽器不支持視頻播放。
+                </video>
+                <div class="video-content">
+                    <h2>邊境牆</h2>
+                    <p>見證邊境牆的建設過程，思考這道牆對兩國關係的影響。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 第四個視頻外層容器 - 450vh -->
+        <div class="video-outer-container" data-container="4">
+            <div class="video-section" data-video="4">
+                <video muted preload="metadata" loop>
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57f0003fe4b0bc3a464ce193/57fb0113e4b037a240c7b2e9_1439399835595-cf9g26_t_1476067636559_1280_720_2000.mp4" type="video/mp4">
+                    您的瀏覽器不支持視頻播放。
+                </video>
+                <div class="video-content">
+                    <h2>新開始</h2>
+                    <p>在邊境的另一邊，人們開始新的生活，尋找屬於自己的機會。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 獲取所有視頻元素和外層容器
+        const videos = document.querySelectorAll('.video-section video');
+        const videoSections = document.querySelectorAll('.video-section');
+        const outerContainers = document.querySelectorAll('.video-outer-container');
+        const progressBar = document.getElementById('progressBar');
+        const playAllBtn = document.getElementById('playAllBtn');
+        const pauseAllBtn = document.getElementById('pauseAllBtn');
+        const muteAllBtn = document.getElementById('muteAllBtn');
+
+        let isMuted = true;
+        let currentVideoIndex = 0;
+
+        // 計算每個容器的累積高度
+        function getContainerHeights() {
+            const heights = [];
+            let cumulativeHeight = 0;
+            
+            outerContainers.forEach((container, index) => {
+                const height = container.offsetHeight;
+                heights.push({
+                    start: cumulativeHeight,
+                    end: cumulativeHeight + height,
+                    index: index
+                });
+                cumulativeHeight += height;
+            });
+            
+            return heights;
+        }
+
+        // 滾動事件處理
+        function handleScroll() {
+            const scrollTop = window.pageYOffset;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            
+            // 更新滾動進度條
+            const scrollProgress = (scrollTop / documentHeight) * 100;
+            progressBar.style.width = scrollProgress + '%';
+
+            // 獲取容器高度信息
+            const containerHeights = getContainerHeights();
+            
+            // 找到當前滾動位置對應的視頻
+            let activeVideoIndex = -1;
+            containerHeights.forEach(container => {
+                if (scrollTop >= container.start && scrollTop < container.end) {
+                    activeVideoIndex = container.index;
+                }
+            });
+            
+            // 控制視頻播放
+            videos.forEach((video, index) => {
+                if (index === activeVideoIndex) {
+                    if (video.paused) {
+                        video.play().catch(e => console.log('視頻播放失敗:', e));
+                    }
+                } else {
+                    if (!video.paused) {
+                        video.pause();
+                    }
+                }
+            });
+
+            currentVideoIndex = activeVideoIndex;
+        }
+
+        // 控制按鈕事件
+        playAllBtn.addEventListener('click', () => {
+            videos.forEach(video => {
+                video.play().catch(e => console.log('視頻播放失敗:', e));
+            });
+        });
+
+        pauseAllBtn.addEventListener('click', () => {
+            videos.forEach(video => {
+                video.pause();
+            });
+        });
+
+        muteAllBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            videos.forEach(video => {
+                video.muted = isMuted;
+            });
+            muteAllBtn.textContent = isMuted ? '取消靜音' : '靜音';
+        });
+
+
+        // 視頻載入完成後自動播放第一個
+        videos[0].addEventListener('loadeddata', () => {
+            videos[0].play().catch(e => console.log('自動播放被阻止:', e));
+        });
+
+        // 監聽滾動事件
+        window.addEventListener('scroll', handleScroll);
+
+        // 監聽窗口大小變化
+        window.addEventListener('resize', handleScroll);
+
+        // 初始化
+        handleScroll();
+
+    </script>
+</body>
+</html>
+

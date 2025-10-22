@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>jQuery 偵測 Nav 到頂並 sticky 範例</title>
+    <!-- Bootstrap 5 CSS (via CDN for simplicity) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      /* 四個區塊樣式 */
+      .section-full {
+        width: 100%;
+        height: 100vh; /* 佔滿整個視窗高度 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+      }
+
+      #banner { background: linear-gradient(135deg,#4e54c8,#8f94fb); }
+      /* nav 固定高度 50px */
+      #site-nav {
+        background: #222;
+        height: 50px;
+        color: #fff;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding: 0 1rem;
+        box-sizing: border-box;
+      }
+
+      #content { background: #20c997; color: #082; }
+      #footer { background: #343a40; }
+
+      /* 當 nav 變為 fixed 時的樣式 */
+      .fixed-top-clone {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1030; /* 與 bootstrap .fixed-top 近似 */
+      }
+
+      /* 當 nav fixed 會造成 layout 跳動，我們用 .nav-placeholder 保持原高度 */
+      .nav-placeholder { height: 0; }
+    </style>
+  </head>
+  <body>
+
+    <section id="banner" class="section-full">
+      <div>Banner</div>
+    </section>
+
+    <!-- 我們在 nav 前放一個 placeholder，用來在 nav fixed 時保留空間 -->
+    <div id="nav-wrapper">
+      <nav id="site-nav">
+        <div class="container-fluid d-flex align-items-center">
+          <div class="me-auto">Logo</div>
+          <div>Menu</div>
+        </div>
+      </nav>
+      <div id="nav-placeholder" class="nav-placeholder"></div>
+    </div>
+
+    <section id="content" class="section-full">
+      <div class="container w-100">
+        <div class="w-75 mx-auto bg-white text-dark p-3 rounded shadow-sm" style="max-width:900px;">
+          <pre style="white-space: pre-wrap; margin:0; font-family: inherit; font-size:1rem;">
+我要寫一個簡單的jquery範例，使用最簡單的jquery程式碼，並用bootstrap來styling
+
+1. 四個div, banner, nav, content, footer, 除了nav 50px height外，都是100vh and full width
+
+2. Prompting要打在content div中
+
+3. 當捲動到nar接觸到視窗頂部時，postion改為fixed並黏著在視窗頂端。當回捲時，又可以順著視窗捲動。
+          </pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="footer" class="section-full">
+      <div>Footer</div>
+    </section>
+
+    <!-- jQuery + Bootstrap JS (via CDN) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      $(function(){
+        var $nav = $('#site-nav');
+        var $placeholder = $('#nav-placeholder');
+        // initial offset from top of document
+        var navTop = $nav.offset().top;
+
+        function onScroll(){
+          var scrollTop = $(window).scrollTop();
+          if (scrollTop >= navTop) {
+            if (!$nav.hasClass('fixed-top-clone')) {
+              // set placeholder height to prevent layout jump
+              $placeholder.height($nav.outerHeight());
+              $nav.addClass('fixed-top-clone');
+            }
+          } else {
+            if ($nav.hasClass('fixed-top-clone')) {
+              $nav.removeClass('fixed-top-clone');
+              $placeholder.height(0);
+            }
+          }
+        }
+
+        // run on scroll and on resize (recompute navTop)
+        $(window).on('scroll', onScroll);
+        $(window).on('resize', function(){
+          // remove fixed if present to compute natural offset
+          if ($nav.hasClass('fixed-top-clone')) {
+            $nav.removeClass('fixed-top-clone');
+            $placeholder.height(0);
+          }
+          navTop = $nav.offset().top;
+          // run one check after resize
+          onScroll();
+        });
+
+        // initial check in case the page starts scrolled
+        onScroll();
+      });
+    </script>
+
+  </body>
+</html>
