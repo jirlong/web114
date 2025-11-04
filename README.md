@@ -44,6 +44,7 @@
 - [video-scrolled02.html](./video-scrolled02.html) - Scrolled video v2
 - [video-scrolled03.html](./video-scrolled03.html) - Scrolled video v3
 - [video-scrolled04.html](./video-scrolled04.html) - Scrolled video v4 (Flying Cards)
+- [video-scrolled05.html](./video-scrolled05.html) - Scrolled video v5 (Enhanced Performance)
 
 #### Triggered Video Series
 - [video_triggered-wp1-text-with-video.html](./video_triggered-wp1-text-with-video.html) - Triggered video with text
