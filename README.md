@@ -47,8 +47,10 @@
 - [video-scrolled05.html](./video-scrolled05.html) - Scrolled video v5: Enhanced Performance
 
 #### Triggered Video Series
-- [video_triggered-wp1-text-with-video.html](./video_triggered-wp1-text-with-video.html) - Triggered video with text
-- [video_triggered-wp2-text-over-video.html](./video_triggered-wp2-text-over-video.html) - Triggered video with text overlay
+- [video-triggered-cw01-bt.html](./video-triggered-cw01-bt.html) - Bootstrap template baseline for triggered video demos (Renamed: 2025-11-05)
+- [video-triggered-cw02-better-video-control.html](./video-triggered-cw02-better-video-control.html) - Smoother JS-only play/pause via IntersectionObserver + rAF fallback (Renamed: 2025-11-05)
+- [video-triggered-wp1-text-with-video.html](./video-triggered-wp1-text-with-video.html) - Triggered video with text (Renamed: 2025-11-05)
+- [video-triggered-wp2-text-over-video.html](./video-triggered-wp2-text-over-video.html) - Triggered video with text overlay (Renamed: 2025-11-05)
 
 
 ---
@@ -74,4 +76,4 @@
 
 ---
 
-*Last updated: 2025-11-04*
+*Last updated: 2025-11-05*
