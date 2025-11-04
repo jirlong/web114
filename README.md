@@ -4,12 +4,14 @@
 
 ### Root Directory
 
-- [index.html](./index.html) - Main index page
 - [bootstrap_template.html](./bootstrap_template.html) - Bootstrap template
-- [test.html](./test.html) - Test page
-- [test1022.html](./test1022.html) - Test page (Oct 22)
 - [horizontal_nice.html](./horizontal_nice.html) - Horizontal nice layout
 - [horizontal_section.html](./horizontal_section.html) - Horizontal section layout
+
+### Basic HTML (basic_html/)
+
+- [basic_html/index.html](./basic_html/index.html) - Basic HTML structure demo
+- [basic_html/style.css](./basic_html/style.css) - Styles for basic HTML demo
 
 ### Video Projects
 
