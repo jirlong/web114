@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Bootstrap template with jQuery">
+    <meta name="author" content="">
+    <title>Bootstrap Template</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <style>
+        #video {
+            position: fixed;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            top: -20vh;
+        }
+
+        h1 {
+            text-align: center;
+            color:white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Container -->
+    <div class="container-fluid">
+        <!-- <video id="video" src="assets/obama2.mp4"></video> -->
+        <video id="video" src="https://web.cw.com.tw/climate-2020/landing/cover-mobile.mp4"></video>
+        
+        <div style="position: relative; z-index: 20; width: 100%;">
+            <!-- Leading Section 前導區 -->
+            <div id="leading-section" class="bg-dark" style="width:100%; height:100vh; display: flex; align-items: center; justify-content: center;">
+                <div class="container">
+                    <h1>Scrolled-Video with Leading and Ending Sections</h1>
+                    <p style="color: white; text-align: center;">此專題展示如何透過滾動來控制影片播放進度</p>
+                    <p style="color: white; text-align: center; font-size: 0.9em; margin-top: 20px;">滾動探索內容 ↓</p>
+                </div>
+            </div>
+            
+            <div style="width:100%; height:100vh; background-color: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center;">
+                <div class="container">
+                    <h1>Core Design - 核心設計</h1>
+                    <p style="color: white; text-align: center;">
+                        <strong>1. Fixed Video Background：</strong>影片使用 <code>position: fixed</code> 和 <code>z-index: -1</code>，固定在背景層<br><br>
+                        <strong>2. Relative Content Flow：</strong>內容區使用 <code>position: relative</code>，按照正常文檔流排列<br><br>
+                        <strong>3. Semi-transparent Overlays：</strong>每個 section 使用 <code>rgba(0, 0, 0, 0.x)</code> 創造半透明遮罩層次<br><br>
+                        <strong>4. Flexbox Centering：</strong>使用 <code>display: flex</code>、<code>align-items: center</code>、<code>justify-content: center</code> 實現完美置中
+                    </p>
+                </div>
+            </div>
+            <div style="width:100%; height:100vh; background:rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;">
+                <div class="container">
+                    <h1>JavaScript - 影片滾動控制</h1>
+                    <p style="color: white; text-align: center;">
+                        <strong>1. 計算播放區間：</strong><br>
+                        <code>videoStartPosition = leadingSection 底部位置</code><br>
+                        <code>videoEndPosition = endingSection 頂部位置</code><br><br>
+                        <strong>2. 監聽滾動事件：</strong><br>
+                        使用 jQuery 的 <code>$(window).scroll()</code> 監聽頁面滾動<br><br>
+                        <strong>3. 條件判斷：</strong><br>
+                        • 在 leading section：影片停在起始 (currentTime = 0)<br>
+                        • 在中間區域：根據滾動比例播放<br>
+                        • 在 ending section：影片停在結尾 (currentTime = duration)<br><br>
+                        <strong>4. 計算播放進度：</strong><br>
+                        <code>scrollProgress = (當前位置 - 起始位置) / 播放區間長度</code><br>
+                        <code>videoElement.currentTime = duration × scrollProgress</code>
+                    </p>
+                </div>
+            </div>
+            <div style="width:100%; height:100vh; background:rgba(0, 0, 0, 0.3); display: flex; align-items: center; justify-content: center;">
+                <div class="container">
+                    <h1>Flexbox Centering - 置中技術</h1>
+                    <p style="color: white; text-align: center;">
+                        <strong>父容器設定：</strong><br>
+                        <code>display: flex</code> - 啟用 Flexbox 佈局模式<br>
+                        <code>align-items: center</code> - 垂直方向置中對齊<br>
+                        <code>justify-content: center</code> - 水平方向置中對齊<br><br>
+                        <strong>優點：</strong><br>
+                        • 語法簡潔，不需要複雜的 transform 或 absolute positioning<br>
+                        • 自動適應內容高度，響應式友好<br>
+                        • 在任何螢幕尺寸下都能保持完美置中<br>
+                        • 相比傳統方法更易維護和理解
+                    </p>
+                </div>
+            </div>
+            <div style="width:100%; height:100vh; background:rgba(0, 0, 0, 0.1)"></div>
+            
+            <!-- Ending Section 結尾區 -->
+            <div id="ending-section" class="bg-dark" style="width:100%; height:100vh; display: flex; align-items: center; justify-content: center;">
+                <div class="container">
+                    <h1>總結</h1>
+                    <p style="color: white; text-align: center;">
+                        這個專題整合了 HTML5 Video、CSS Flexbox、jQuery 事件處理等技術<br>
+                        實現了一個沈浸式的互動敘事體驗<br><br>
+                        <strong>技術要點：</strong><br>
+                        Fixed positioning + Relative flow + Scroll event handling + Video API
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+        crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(function () {
+            const videoElement = $('#video').get(0);
+
+            if (!videoElement) {
+                console.error("Video element not found");
+                return;
+            }
+
+            // 獲取 leading 和 ending section
+            const leadingSection = $('#leading-section');
+            const endingSection = $('#ending-section');
+            
+            // 計算影片播放區間的起始和結束位置
+            const videoStartPosition = leadingSection.offset().top + leadingSection.outerHeight();
+            const videoEndPosition = endingSection.offset().top;
+            const videoScrollRange = videoEndPosition - videoStartPosition;
+
+            $(window).scroll(function () {
+                const currentScrollPosition = $(document).scrollTop();
+
+                if (videoElement.duration) {
+                    // 只在 leading 和 ending section 之間播放影片
+                    if (currentScrollPosition < videoStartPosition) {
+                        // 在 leading section，影片停在開始
+                        videoElement.currentTime = 0;
+                    } else if (currentScrollPosition >= videoEndPosition) {
+                        // 在 ending section 或之後，影片停在結束
+                        videoElement.currentTime = videoElement.duration;
+                    } else {
+                        // 在中間區域，根據滾動比例播放影片
+                        const scrollInVideoRange = currentScrollPosition - videoStartPosition;
+                        const scrollProgress = scrollInVideoRange / videoScrollRange;
+                        videoElement.currentTime = videoElement.duration * scrollProgress;
+                    }
+                } else {
+                    console.warn("Video duration is not available");
+                }
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>

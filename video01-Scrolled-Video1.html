@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Bootstrap template with jQuery">
+    <meta name="author" content="">
+    <title>Bootstrap Template</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <style>
+        #video {
+            position: fixed;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -1;
+            top: -20vh;
+        }
+
+        h1 {
+            text-align: center;
+            color:white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main Container -->
+    <div class="container-fluid">
+        <!-- <video id="video" src="assets/obama2.mp4"></video> -->
+        <video id="video" src="https://web.cw.com.tw/climate-2020/landing/cover-mobile.mp4"></video>
+        
+        <div style="position: relative; z-index: 20; width: 100%;">
+            <div style="width:100%; height:100vh; background-color: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center;">
+                <div class="container">
+                    <h1>Touching sentence 1</h1>
+                    <p style="color: white; text-align: center;">這個專題展示了如何將影片作為網頁背景，搭配半透明遮罩層與文字內容，創造出層次豐富的視覺效果。透過滾動互動，使用者可以控制影片播放進度，實現沈浸式的敘事體驗。</p>
+                </div>
+            </div>
+            <div style="width:100%; height:100vh; background:rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center;">
+                <div class="container">
+                    <h1>Touching sentence 2</h1>
+                    <p style="color: white; text-align: center;">本專題運用 jQuery 監聽滾動事件，計算當前滾動位置與總可滾動距離的比例，並將此比例對應到影片的播放時間軸。透過 <code>videoElement.currentTime</code> 屬性，實現滾動與影片進度的同步控制。</p>
+                </div>
+            </div>
+            <div style="width:100%; height:100vh; background:rgba(0, 0, 0, 0.3); display: flex; align-items: center; justify-content: center;">
+                <div class="container">
+                    <h1>Touching sentence 3</h1>
+                    <p style="color: white; text-align: center;">文字區塊使用 Flexbox 佈局來實現完美置中。在父容器設定 <code>display: flex</code>、<code>align-items: center</code>（垂直置中）和 <code>justify-content: center</code>（水平置中），讓內容在任何螢幕尺寸下都能保持在畫面正中央。</p>
+                </div>
+            </div>
+            <div style="width:100%; height:100vh; background:rgba(0, 0, 0, 0.1)"></div>
+        </div>
+
+    </div>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+        crossorigin="anonymous"></script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(function () {
+            const videoElement = $('#video').get(0);
+
+            if (!videoElement) {
+                console.error("Video element not found");
+                return;
+            }
+
+            const maxScroll = $(document).height() - $(window).height();
+
+            $(window).scroll(function () {
+                const currentScrollPosition = $(document).scrollTop();
+
+                if (videoElement.duration) {
+                    videoElement.currentTime = videoElement.duration * (currentScrollPosition / maxScroll);
+                } else {
+                    console.warn("Video duration is not available");
+                }
+            });
+        });
+
+    </script>
+
+</body>
+
+</html>
