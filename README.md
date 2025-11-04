@@ -5,25 +5,12 @@
 ### Root Directory
 
 - [bootstrap_template.html](./bootstrap_template.html) - Bootstrap template
-- [horizontal_nice.html](./horizontal_nice.html) - Horizontal nice layout
-- [horizontal_section.html](./horizontal_section.html) - Horizontal section layout
 
 ### Basic HTML (basic_html/)
 
 - [basic_html/index.html](./basic_html/index.html) - Basic HTML structure demo
 - [basic_html/style.css](./basic_html/style.css) - Styles for basic HTML demo
 
-### Video Projects
-
-#### Scrolled Video Series
-- [video-scrolled01.html](./video-scrolled01.html) - Scrolled video v1
-- [video-scrolled02.html](./video-scrolled02.html) - Scrolled video v2
-- [video-scrolled03.html](./video-scrolled03.html) - Scrolled video v3
-- [video-scrolled04.html](./video-scrolled04.html) - Scrolled video v4 (Flying Cards)
-
-#### Triggered Video Series
-- [video_triggered-wp1-text-with-video.html](./video_triggered-wp1-text-with-video.html) - Triggered video with text
-- [video_triggered-wp2-text-over-video.html](./video_triggered-wp2-text-over-video.html) - Triggered video with text overlay
 
 ### Bootstrap (bt/)
 
@@ -43,6 +30,25 @@
 - [prompting/jquery02_detect_top_smooth_transition.html](./prompting/jquery02_detect_top_smooth_transition.html) - Detect top with smooth transition
 - [prompting/jquery03_detect_top_html_first.html](./prompting/jquery03_detect_top_html_first.html) - Detect top (HTML first approach)
 - [prompting/keyframe_as.html](./prompting/keyframe_as.html) - Keyframe animation demo
+
+
+### Horizontal Scrolling (horizontal/)
+- [horizontal/horizontal_nice.html](./horizontal/horizontal_nice.html) - Horizontal nice layout
+- [horizontal/horizontal_section.html](./horizontal/horizontal_section.html) - Horizontal section layout
+
+
+### Video Projects
+
+#### Scrolled Video Series
+- [video-scrolled01.html](./video-scrolled01.html) - Scrolled video v1
+- [video-scrolled02.html](./video-scrolled02.html) - Scrolled video v2
+- [video-scrolled03.html](./video-scrolled03.html) - Scrolled video v3
+- [video-scrolled04.html](./video-scrolled04.html) - Scrolled video v4 (Flying Cards)
+
+#### Triggered Video Series
+- [video_triggered-wp1-text-with-video.html](./video_triggered-wp1-text-with-video.html) - Triggered video with text
+- [video_triggered-wp2-text-over-video.html](./video_triggered-wp2-text-over-video.html) - Triggered video with text overlay
+
 
 ---
 
