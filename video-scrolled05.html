@@ -279,8 +279,9 @@
             // 預先載入影片
             videoElement.load();
             
-            // 等待影片 metadata 載入完成
+            // 標記影片 metadata 是否已載入，避免在 metadata 尚未載入時操作影片播放進度
             let videoReady = false;
+            // 等待影片 metadata 載入完成
             videoElement.addEventListener('loadedmetadata', function() {
                 videoReady = true;
                 console.log('Video duration:', videoElement.duration);

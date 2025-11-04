@@ -40,11 +40,11 @@
 ### Video Projects
 
 #### Scrolled Video Series
-- [video-scrolled01.html](./video-scrolled01.html) - Scrolled video v1
-- [video-scrolled02.html](./video-scrolled02.html) - Scrolled video v2
-- [video-scrolled03.html](./video-scrolled03.html) - Scrolled video v3
-- [video-scrolled04.html](./video-scrolled04.html) - Scrolled video v4 (Flying Cards)
-- [video-scrolled05.html](./video-scrolled05.html) - Scrolled video v5 (Enhanced Performance)
+- [video-scrolled01.html](./video-scrolled01.html) - Scrolled video v1: A fixed video followed by several content sections
+- [video-scrolled02.html](./video-scrolled02.html) - Scrolled video v2: Adding leading and ending sections
+- [video-scrolled03.html](./video-scrolled03.html) - Scrolled video v3: Only playing video in the sections after leading section and before ending section
+- [video-scrolled04.html](./video-scrolled04.html) - Scrolled video v4: Flying cards over video
+- [video-scrolled05.html](./video-scrolled05.html) - Scrolled video v5: Enhanced Performance
 
 #### Triggered Video Series
 - [video_triggered-wp1-text-with-video.html](./video_triggered-wp1-text-with-video.html) - Triggered video with text
