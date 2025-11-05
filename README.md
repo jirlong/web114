@@ -5,6 +5,7 @@
 ### Root Directory
 
 - [bootstrap_template.html](./bootstrap_template.html) - Bootstrap template
+ - [bt_template.html](./bt_template.html) - Bootstrap + jQuery starting template (Updated: 2025-11-05)
 
 ### Basic HTML (basic_html/)
 
@@ -40,11 +41,11 @@
 ### Video Projects
 
 #### Scrolled Video Series
-- [video-scrolled01.html](./video-scrolled01.html) - Scrolled video v1: A fixed video followed by several content sections
-- [video-scrolled02.html](./video-scrolled02.html) - Scrolled video v2: Adding leading and ending sections
-- [video-scrolled03.html](./video-scrolled03.html) - Scrolled video v3: Only playing video in the sections after leading section and before ending section
-- [video-scrolled04.html](./video-scrolled04.html) - Scrolled video v4: Flying cards over video
-- [video-scrolled05.html](./video-scrolled05.html) - Scrolled video v5: Enhanced Performance
+- [video-scrolled01.html](./video-scrolled01.html) - A fixed video followed by several content sections
+- [video-scrolled02.html](./video-scrolled02.html) - Adding leading and ending sections
+- [video-scrolled03.html](./video-scrolled03.html) - Only playing video in the sections after leading section and before ending section
+- [video-scrolled04.html](./video-scrolled04.html) - Flying cards over video
+- [video-scrolled05.html](./video-scrolled05.html) - Enhanced Performance
 
 #### Triggered Video Series
 - [video-triggered-cw01-bt.html](./video-triggered-cw01-bt.html) - Bootstrap template baseline for triggered video demos (Renamed: 2025-11-05)
