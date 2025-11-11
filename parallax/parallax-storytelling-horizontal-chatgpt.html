@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>水平視差 Parallax Scrolling（SVG 示範）</title>
+  <meta name="description" content="一個簡單的水平視差滾動（parallax scrolling）示範，以純 CSS + JS 與 SVG 背景打造多層景深效果。" />
+  <style>
+    /* --- Reset & Base --- */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Heiti TC", "Microsoft JhengHei", Arial, sans-serif;
+      color: #111;
+      background: #0c1022; /* 夜空底色 */
+      overflow: hidden; /* 由主容器控制滾動條 */
+    }
+
+    /* --- 視差主容器：水平滾動 --- */
+    .hscroll {
+      position: relative;
+      height: 100vh;
+      width: 100vw;
+      overflow-x: auto;
+      overflow-y: hidden;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      white-space: nowrap; /* 讓 section 可以水平排列 */
+      perspective: 1px; /* 非必須，但與 hobolobo 類似，保留 3D 感 */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* --- 時間軸（用於設定總寬度）--- */
+    .track {
+      position: relative;
+      height: 100%;
+      display: inline-block;
+      white-space: normal; /* 內部可正常換行 */
+    }
+
+    /* --- 每個水平分鏡面板 --- */
+    section.panel {
+      position: relative;
+      display: inline-block;
+      vertical-align: top;
+      width: 100vw;
+      height: 100vh;
+      scroll-snap-align: start;
+      overflow: hidden;
+    }
+
+    /* --- 文字內容 --- */
+    .content {
+      position: relative;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+      padding: 2rem;
+      text-align: center;
+      color: #f6f7fb;
+    }
+    .content h1, .content h2, .content p {
+      margin: .5rem 0;
+      text-shadow: 0 2px 8px rgba(0,0,0,.35);
+    }
+    .content h1 { font-size: clamp(2rem, 4vw, 3.2rem); }
+    .content h2 { font-size: clamp(1.25rem, 2.2vw, 2rem); font-weight: 600; opacity: .9; }
+    .content p  { font-size: clamp(1rem, 1.4vw, 1.25rem); opacity: .85; }
+
+    /* --- 視差層（共同樣式）--- */
+    .layer {
+      position: absolute;
+      inset: 0;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    /* --- 背景星空：小點＋漸層 --- */
+    .stars {
+      z-index: 5;
+      background:
+        radial-gradient(1000px 1000px at 50% 50%, rgba(36,45,86,.35), transparent 60%) /* 中央淡光 */,
+        linear-gradient(#0c1022, #0d1330 40%, #0e1845) /* 垂直漸層 */;
+      mask-image: radial-gradient(1800px 1200px at 50% 50%, #000 60%, transparent 100%);
+    }
+
+    /* 用多個重複的微小陰影來當星星 */
+    .stars::before {
+      content: "";
+      position: absolute;
+      width: 2px; height: 2px;
+      background: transparent;
+      box-shadow:
+        10vw 10vh #fff, 30vw 20vh #dfe6ff, 55vw 15vh #cbd5ff,
+        70vw 30vh #eef, 85vw 25vh #eef, 95vw 35vh #fff,
+        15vw 60vh #eef, 40vw 70vh #fff, 62vw 58vh #dfe6ff, 78vw 65vh #cbd5ff;
+      filter: drop-shadow(0 0 2px #fff);
+    }
+
+    /* --- 遠山（SVG）--- */
+    .mountains {
+      z-index: 10;
+      display: grid;
+      place-items: end;
+      padding-bottom: 10vh;
+      opacity: .9;
+    }
+    .mountains svg {
+      width: 140vw; /* 超過視窗寬度，強化水平流動感 */
+      max-height: 60vh;
+    }
+
+    /* --- 近景丘陵（SVG）--- */
+    .hills {
+      z-index: 20;
+      display: grid;
+      place-items: end;
+      padding-bottom: 0;
+    }
+    .hills svg {
+      width: 160vw;
+      max-height: 45vh;
+    }
+
+    /* --- 前景裝飾（漂浮小物）--- */
+    .floaters {
+      z-index: 25;
+    }
+    .floater {
+      position: absolute;
+      width: clamp(60px, 8vw, 100px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9), rgba(160,190,255,.25) 60%, transparent 70%);
+      box-shadow: 0 6px 18px rgba(0,0,0,.25);
+      animation: bob 5s ease-in-out infinite;
+    }
+    .floater.f1 { top: 25%; left: 20%; }
+    .floater.f2 { top: 55%; left: 50%; animation-delay: .8s; }
+    .floater.f3 { top: 35%; left: 78%; animation-delay: 1.6s; }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0px); }
+      50%      { transform: translateY(-10px); }
+    }
+
+    /* --- 不同面板的背景色調 --- */
+    .panel.p1 { background: linear-gradient(90deg, #0c1022, #10173a); }
+    .panel.p2 { background: linear-gradient(90deg, #10173a, #122253); }
+    .panel.p3 { background: linear-gradient(90deg, #122253, #162e6e); }
+    .panel.p4 { background: linear-gradient(90deg, #162e6e, #173575); }
+
+    /* --- 可存取性：使用者偏好降低動態時，改為靜態位移 --- */
+    @media (prefers-reduced-motion: reduce) {
+      .hscroll { scroll-behavior: auto; }
+      .layer { transition: none !important; animation: none !important; }
+    }
+
+    /* --- 簡易導覽（固定在畫面上方）--- */
+    .nav {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      display: flex;
+      gap: 8px;
+    }
+    .nav a {
+      font-size: 14px;
+      text-decoration: none;
+      color: #dbe2ff;
+      background: rgba(255,255,255,.1);
+      padding: .35rem .6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.2);
+      backdrop-filter: blur(3px);
+    }
+    .nav a:hover { background: rgba(255,255,255,.18); }
+  </style>
+</head>
+<body>
+  <!-- 簡易導覽：點擊可平滑跳到對應的 panel -->
+  <nav class="nav" aria-label="水平導覽">
+    <a href="#p1">Intro</a>
+    <a href="#p2">SVG</a>
+    <a href="#p3">Layers</a>
+    <a href="#p4">End</a>
+  </nav>
+
+  <!-- 主容器（水平滾動）-->
+  <div class="hscroll" id="hscroll" aria-label="水平視差滾動範例" role="region">
+    <div class="track" style="width:400vw">
+      <!-- Panel 1 -->
+      <section class="panel p1" id="p1" aria-label="介紹">
+        <!-- 視差層：背、中、近、前 -->
+        <div class="layer stars"    data-speed="0.15"></div>
+        <div class="layer mountains" data-speed="0.30">
+          <!-- 遠山：簡單多段折線 -->
+          <svg viewBox="0 0 1200 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="mg" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#5a6bb3" stop-opacity="0.9"/>
+                <stop offset="100%" stop-color="#24305e" stop-opacity="0.95"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 320 L120 260 L240 300 L360 220 L480 280 L600 210 L720 260 L840 210 L960 260 L1080 230 L1200 280 L1200 400 L0 400 Z"
+                  fill="url(#mg)"/>
+          </svg>
+        </div>
+        <div class="layer hills" data-speed="0.55">
+          <!-- 近景丘陵：圓滑貝茲曲線 -->
+          <svg viewBox="0 0 1200 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="hg" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#8ea6ff" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#44559e" stop-opacity="0.95"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 340 C150 300, 250 380, 400 340 C550 300, 650 380, 800 330 C950 290, 1050 360, 1200 320 L1200 400 L0 400 Z"
+                  fill="url(#hg)"/>
+          </svg>
+        </div>
+        <div class="layer floaters" data-speed="0.85">
+          <div class="floater f1" aria-hidden="true"></div>
+          <div class="floater f2" aria-hidden="true"></div>
+          <div class="floater f3" aria-hidden="true"></div>
+        </div>
+
+        <div class="content">
+          <div>
+            <h1>水平視差（Parallax）滾動示範</h1>
+            <h2>純 CSS + 原生 JS；以 SVG 做多層景深</h2>
+            <p>向右滾動或使用下方導覽鍵，觀察背景、中景、前景相對速度的差異。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 2 -->
+      <section class="panel p2" id="p2" aria-label="SVG 層級示範">
+        <div class="layer stars"    data-speed="0.18"></div>
+        <div class="layer mountains" data-speed="0.35">
+          <svg viewBox="0 0 1200 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="mg2" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#5671d4" stop-opacity="0.92"/>
+                <stop offset="100%" stop-color="#273e8c" stop-opacity="0.98"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 320 L160 250 L320 310 L480 230 L640 300 L800 230 L960 280 L1120 240 L1200 300 L1200 400 L0 400 Z"
+                  fill="url(#mg2)"/>
+          </svg>
+        </div>
+        <div class="layer hills" data-speed="0.6">
+          <svg viewBox="0 0 1200 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="hg2" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#a7baff" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#5165c2" stop-opacity="0.95"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 350 C180 310, 260 390, 430 350 C600 310, 700 380, 870 330 C1040 300, 1120 360, 1200 330 L1200 400 L0 400 Z"
+                  fill="url(#hg2)"/>
+          </svg>
+        </div>
+        <div class="content">
+          <div>
+            <h1>簡單 SVG = 輕量與可控</h1>
+            <p>每一層都是可編輯的向量圖層（<strong>mountains</strong>、<strong>hills</strong>），方便透過變色或調整貝茲曲線來塑造景深。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 3 -->
+      <section class="panel p3" id="p3" aria-label="視差速度設定">
+        <div class="layer stars"    data-speed="0.12"></div>
+        <div class="layer mountains" data-speed="0.28">
+          <svg viewBox="0 0 1200 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="mg3" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#567bdc" stop-opacity="0.92"/>
+                <stop offset="100%" stop-color="#2045a6" stop-opacity="0.98"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 320 L140 240 L280 300 L420 220 L560 300 L700 220 L840 270 L980 230 L1120 280 L1200 290 L1200 400 L0 400 Z"
+                  fill="url(#mg3)"/>
+          </svg>
+        </div>
+        <div class="layer hills" data-speed="0.7">
+          <svg viewBox="0 0 1200 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="hg3" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#b7c7ff" stop-opacity="0.85"/>
+                <stop offset="100%" stop-color="#5c74d6" stop-opacity="0.95"/>
+              </linearGradient>
+            </defs>
+            <path d="M0 360 C160 320, 260 400, 420 360 C580 320, 700 390, 860 340 C1020 310, 1120 370, 1200 340 L1200 400 L0 400 Z"
+                  fill="url(#hg3)"/>
+          </svg>
+        </div>
+        <div class="content">
+          <div>
+            <h1>以 <code>data-speed</code> 設層速</h1>
+            <p>下方的原生 JS 會讀取每個 <code>.layer</code> 的 <code>data-speed</code>，根據 <code>scrollLeft</code> 動態設定 <code>transform: translateX()</code>，達成水平視差。</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Panel 4 -->
+      <section class="panel p4" id="p4" aria-label="結尾">
+        <div class="layer stars" data-speed="0.2"></div>
+        <div class="content">
+          <div>
+            <h1>結束，也是一個開始</h1>
+            <p>這個樣板設計成單一 HTML 就能開啟。可直接替換 SVG、顏色與段落，延伸成你的橫向故事頁。</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // -- 水平視差核心：以 scrollLeft 驅動各層 translateX --
+    (function () {
+      const scroller = document.getElementById('hscroll');
+      const layers = Array.from(document.querySelectorAll('.layer'));
+      let ticking = false;
+
+      function update() {
+        const x = scroller.scrollLeft || 0;
+        for (const el of layers) {
+          const speed = parseFloat(el.dataset.speed || '0');
+          // 正值代表反向位移較少（背景較慢），可視需求反向
+          el.style.transform = `translateX(${-x * speed}px)`;
+        }
+        ticking = false;
+      }
+
+      function onScroll() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      }
+
+      scroller.addEventListener('scroll', onScroll, { passive: true });
+      // 初始化一次
+      update();
+
+      // 鍵盤便捷（左右鍵）
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight') scroller.scrollBy({ left: window.innerWidth, behavior: 'smooth' });
+        if (e.key === 'ArrowLeft')  scroller.scrollBy({ left: -window.innerWidth, behavior: 'smooth' });
+      });
+    })();
+  </script>
+
+  <!-- 說明（可移除）：
+    做法概要
+    1) .hscroll 為水平滾動容器，使用 scroll-snap-type: x mandatory 提供面板鎖點。
+    2) 每個 section.panel 佔 100vw，水平串接構成長軸（track 寬度 400vw）。
+    3) .layer 元素使用 data-speed 設定相對速度；JS 以 requestAnimationFrame 讀取 scrollLeft，
+       依據 speed 套用 translateX，形成前後景相對移動差（parallax）。
+    4) 背景使用漸層與點狀陰影製造星空；中景、近景用簡單 SVG path 畫出山與丘陵。
+    5) 加入 prefers-reduced-motion 判斷，強化可存取性。
+  -->
+</body>
+</html>

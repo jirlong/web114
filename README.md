@@ -6,9 +6,6 @@
 
 - [bootstrap_template.html](./bootstrap_template.html) - Bootstrap template
 - [bt_template.html](./bt_template.html) - Bootstrap + jQuery starting template (Updated: 2025-11-05)
-- [parallax-h1-section.html](./parallax-h1-section.html) - Parallax H1 section with jQuery scroll effects
-- [parallax-h1-section-pure-css.html](./parallax-h1-section-pure-css.html) - Pure CSS parallax using perspective method (Created: 2025-11-11)
-- [parallax-pure-css.html](./parallax-pure-css.html) - Pure CSS parallax demo
 
 ### Basic HTML (basic-html/)
 
@@ -55,6 +52,12 @@
 - [video-triggered-cw02-better-video-control.html](./video-scroll/video-triggered-cw02-better-video-control.html) - Smoother JS-only play/pause via IntersectionObserver + rAF fallback (Renamed: 2025-11-05)
 - [video-triggered-wp1-text-with-video.html](./video-scroll/video-triggered-wp1-text-with-video.html) - Triggered video with text (Renamed: 2025-11-05)
 - [video-triggered-wp2-text-over-video.html](./video-scroll/video-triggered-wp2-text-over-video.html) - Triggered video with text overlay (Renamed: 2025-11-05)
+
+### Parallax Scrolling
+- [parallax-h1-section.html](./parallax/parallax-h1-section.html) - Parallax H1 section with jQuery scroll effects
+- [parallax-pure-css.html](./parallax/parallax-pure-css.html) - Pure CSS parallax demo
+- [parallax-storytelling-horizontal-chatgpt.html](./parallax/parallax-storytelling-horizontal-chatgpt.html) - Horizontal storytelling parallax (ChatGPT version) (Added: 2025-11-12)
+- [parallax-storytelling-horizontal-copilot.html](./parallax/parallax-storytelling-horizontal-copilot.html) - Horizontal storytelling parallax (Copilot refined version) (Added: 2025-11-12)
 
 
 ---
@@ -117,4 +120,4 @@
 
 ---
 
-*Last updated: 2025-11-11*
+*Last updated: 2025-11-12*

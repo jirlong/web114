@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Horizontal Parallax Scrolling Story</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background: #000000;
+        }
+
+        /* Banner 區域 */
+        #banner {
+            height: 200vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #1a1a2e 0%, #0f3460 100%);
+            position: relative;
+            z-index: 10;
+        }
+
+        #banner .banner-content {
+            text-align: center;
+            color: white;
+        }
+
+        #banner h1 {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        #banner p {
+            font-size: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+            }
+            to {
+                text-shadow: 0 0 40px rgba(0, 212, 255, 1);
+            }
+        }
+
+        /* 橫向捲軸容器 */
+        .horizontal-wrapper {
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 橫向內容容器 */
+        .horizontal-content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            will-change: transform;
+            background: linear-gradient(to bottom, #1a1a2e 0%, #0f3460 50%, #16213e 100%);
+        }
+
+        /* 視差圖層 */
+        .parallax-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            will-change: transform;
+        }
+
+        /* 背景圖層（最慢） */
+        .layer-bg {
+            z-index: 1;
+        }
+
+        /* 中景圖層 */
+        .layer-mid {
+            z-index: 2;
+        }
+
+        /* 前景圖層（最快） */
+        .layer-front {
+            z-index: 3;
+        }
+
+        /* 文字圖層（跟隨滾動） */
+        .layer-text {
+            z-index: 4;
+        }
+
+        /* SVG 元素樣式 */
+        .star {
+            fill: #ffffff;
+            opacity: 0.8;
+        }
+
+        .mountain {
+            fill: #2c3e50;
+            opacity: 0.7;
+        }
+
+        .tree {
+            fill: #27ae60;
+        }
+
+        .cloud {
+            fill: #ecf0f1;
+            opacity: 0.5;
+        }
+
+        .building {
+            fill: #34495e;
+            stroke: #2c3e50;
+            stroke-width: 2;
+        }
+
+        /* 文字內容 */
+        .text-panel {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            color: white;
+            max-width: 400px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .text-panel h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .text-panel p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        /* 滾動指示器 */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            color: white;
+            font-size: 1rem;
+            animation: bounce 2s infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            50% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        /* 進度條 */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(to right, #00d4ff, #0099ff);
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* Footer 區域 */
+        #footer {
+            height: 200vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to bottom, #0f3460 0%, #1a1a2e 100%);
+            position: relative;
+            z-index: 10;
+        }
+
+        #footer .footer-content {
+            text-align: center;
+            color: white;
+        }
+
+        #footer h2 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.8);
+        }
+
+        #footer p {
+            font-size: 1.3rem;
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 700px;
+            margin: 20px auto;
+            line-height: 1.8;
+        }
+
+        #footer .credits {
+            margin-top: 40px;
+            font-size: 1rem;
+            opacity: 0.5;
+        }
+
+        /* 響應式 */
+        @media (max-width: 768px) {
+            .text-panel {
+                max-width: 80%;
+                padding: 20px;
+            }
+
+            .text-panel h2 {
+                font-size: 1.8rem;
+            }
+
+            .text-panel p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 進度條 -->
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Banner 區域 -->
+    <section id="banner">
+        <div class="banner-content">
+            <h1>Parallax Journey</h1>
+            <p>向下滾動，進入橫向視差世界<br>體驗不同圖層以不同速度移動的奇妙效果</p>
+        </div>
+    </section>
+
+    <!-- 橫向捲軸容器 -->
+    <div class="horizontal-wrapper" id="horizontalWrapper">
+        <div class="horizontal-content" id="horizontalContent">
+
+            <!-- 背景圖層 - 星星 -->
+            <div class="parallax-layer layer-bg" data-speed="0.2">
+                <svg width="6000" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 星星 -->
+                    <circle class="star" cx="200" cy="100" r="2"/>
+                    <circle class="star" cx="400" cy="150" r="1.5"/>
+                    <circle class="star" cx="600" cy="80" r="2"/>
+                    <circle class="star" cx="900" cy="200" r="1"/>
+                    <circle class="star" cx="1200" cy="120" r="2.5"/>
+                    <circle class="star" cx="1500" cy="180" r="1.5"/>
+                    <circle class="star" cx="1800" cy="90" r="2"/>
+                    <circle class="star" cx="2100" cy="160" r="1"/>
+                    <circle class="star" cx="2400" cy="130" r="2"/>
+                    <circle class="star" cx="2700" cy="110" r="1.5"/>
+                    <circle class="star" cx="3000" cy="190" r="2"/>
+                    <circle class="star" cx="3300" cy="140" r="1"/>
+                    <circle class="star" cx="3600" cy="100" r="2.5"/>
+                    <circle class="star" cx="3900" cy="170" r="1.5"/>
+                    <circle class="star" cx="4200" cy="120" r="2"/>
+                    <circle class="star" cx="4500" cy="150" r="1"/>
+                    <circle class="star" cx="4800" cy="90" r="2"/>
+                    <circle class="star" cx="5100" cy="180" r="1.5"/>
+                    <circle class="star" cx="5400" cy="130" r="2"/>
+                    <circle class="star" cx="5700" cy="160" r="1"/>
+                </svg>
+            </div>
+
+            <!-- 背景圖層 - 遠山 -->
+            <div class="parallax-layer layer-bg" data-speed="0.3">
+                <svg width="6000" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 遠山剪影 -->
+                    <polygon class="mountain" points="0,600 300,400 600,500 900,350 1200,450 1500,400 1800,500 2100,350 2400,450 2700,400 3000,500 3300,350 3600,450 3900,400 4200,500 4500,350 4800,450 5100,400 5400,500 5700,400 6000,600 6000,800 0,800"/>
+                </svg>
+            </div>
+
+            <!-- 中景圖層 - 雲朵 -->
+            <div class="parallax-layer layer-mid" data-speed="0.5">
+                <svg width="6000" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 雲朵 -->
+                    <ellipse class="cloud" cx="300" cy="200" rx="80" ry="40"/>
+                    <ellipse class="cloud" cx="340" cy="200" rx="60" ry="35"/>
+                    <ellipse class="cloud" cx="260" cy="200" rx="60" ry="35"/>
+                    
+                    <ellipse class="cloud" cx="1200" cy="150" rx="100" ry="50"/>
+                    <ellipse class="cloud" cx="1250" cy="150" rx="70" ry="40"/>
+                    <ellipse class="cloud" cx="1150" cy="150" rx="70" ry="40"/>
+                    
+                    <ellipse class="cloud" cx="2400" cy="180" rx="90" ry="45"/>
+                    <ellipse class="cloud" cx="2450" cy="180" rx="65" ry="38"/>
+                    <ellipse class="cloud" cx="2350" cy="180" rx="65" ry="38"/>
+                    
+                    <ellipse class="cloud" cx="3600" cy="160" rx="85" ry="42"/>
+                    <ellipse class="cloud" cx="3645" cy="160" rx="60" ry="36"/>
+                    <ellipse class="cloud" cx="3555" cy="160" rx="60" ry="36"/>
+                    
+                    <ellipse class="cloud" cx="4800" cy="190" rx="95" ry="48"/>
+                    <ellipse class="cloud" cx="4850" cy="190" rx="68" ry="39"/>
+                    <ellipse class="cloud" cx="4750" cy="190" rx="68" ry="39"/>
+                </svg>
+            </div>
+
+            <!-- 中景圖層 - 建築物 -->
+            <div class="parallax-layer layer-mid" data-speed="0.7">
+                <svg width="6000" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 建築群 -->
+                    <rect class="building" x="800" y="400" width="120" height="300"/>
+                    <rect class="building" x="940" y="450" width="100" height="250"/>
+                    <rect class="building" x="1060" y="420" width="80" height="280"/>
+                    
+                    <rect class="building" x="2000" y="380" width="140" height="320"/>
+                    <rect class="building" x="2160" y="430" width="110" height="270"/>
+                    <rect class="building" x="2290" y="400" width="90" height="300"/>
+                    
+                    <rect class="building" x="3400" y="420" width="130" height="280"/>
+                    <rect class="building" x="3550" y="450" width="100" height="250"/>
+                    <rect class="building" x="3670" y="400" width="85" height="300"/>
+                    
+                    <rect class="building" x="4600" y="390" width="135" height="310"/>
+                    <rect class="building" x="4755" y="440" width="105" height="260"/>
+                    <rect class="building" x="4880" y="410" width="88" height="290"/>
+                </svg>
+            </div>
+
+            <!-- 前景圖層 - 樹木 -->
+            <div class="parallax-layer layer-front" data-speed="1.0">
+                <svg width="6000" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <!-- 樹木 -->
+                    <!-- 樹1 -->
+                    <rect class="tree" x="500" y="550" width="30" height="150" fill="#8B4513"/>
+                    <polygon class="tree" points="515,550 450,450 580,450"/>
+                    <polygon class="tree" points="515,500 465,420 565,420"/>
+                    <polygon class="tree" points="515,460 480,400 550,400"/>
+                    
+                    <!-- 樹2 -->
+                    <rect class="tree" x="1600" y="530" width="35" height="170" fill="#8B4513"/>
+                    <polygon class="tree" points="1617,530 1540,420 1694,420"/>
+                    <polygon class="tree" points="1617,480 1565,390 1669,390"/>
+                    <polygon class="tree" points="1617,440 1590,360 1644,360"/>
+                    
+                    <!-- 樹3 -->
+                    <rect class="tree" x="2900" y="540" width="32" height="160" fill="#8B4513"/>
+                    <polygon class="tree" points="2916,540 2845,430 2987,430"/>
+                    <polygon class="tree" points="2916,490 2870,400 2962,400"/>
+                    <polygon class="tree" points="2916,450 2890,370 2942,370"/>
+                    
+                    <!-- 樹4 -->
+                    <rect class="tree" x="4100" y="535" width="33" height="165" fill="#8B4513"/>
+                    <polygon class="tree" points="4116,535 4040,425 4192,425"/>
+                    <polygon class="tree" points="4116,485 4068,395 4164,395"/>
+                    <polygon class="tree" points="4116,445 4088,365 4144,365"/>
+                    
+                    <!-- 樹5 -->
+                    <rect class="tree" x="5300" y="545" width="34" height="155" fill="#8B4513"/>
+                    <polygon class="tree" points="5317,545 5245,440 5389,440"/>
+                    <polygon class="tree" points="5317,495 5270,410 5364,410"/>
+                    <polygon class="tree" points="5317,455 5290,380 5344,380"/>
+                </svg>
+            </div>
+
+            <!-- 文字圖層 -->
+            <div class="parallax-layer layer-text" data-speed="1.0">
+                <!-- 第一個文字面板 -->
+                <div class="text-panel" style="left: 100px;">
+                    <h2>Chapter 1</h2>
+                    <p>歡迎來到視差滾動的世界。在這裡，每一層都以不同的速度移動，創造出深度的錯覺。</p>
+                </div>
+
+                <!-- 第二個文字面板 -->
+                <div class="text-panel" style="left: 1400px;">
+                    <h2>Chapter 2</h2>
+                    <p>背景中的星星緩慢移動，遠山稍快，而前景的樹木則快速掠過。</p>
+                </div>
+
+                <!-- 第三個文字面板 -->
+                <div class="text-panel" style="left: 2700px;">
+                    <h2>Chapter 3</h2>
+                    <p>這種技術常用於遊戲和網頁設計，為平面的畫面增添立體感。</p>
+                </div>
+
+                <!-- 第四個文字面板 -->
+                <div class="text-panel" style="left: 4000px;">
+                    <h2>Chapter 4</h2>
+                    <p>透過純 CSS 和簡單的 JavaScript，我們可以創造令人驚艷的視覺效果。</p>
+                </div>
+
+                <!-- 第五個文字面板 -->
+                <div class="text-panel" style="left: 5300px;">
+                    <h2>The End</h2>
+                    <p>感謝您的觀賞！試著向下滾動，體驗不同圖層的移動速度差異。</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer 區域 -->
+    <section id="footer">
+        <div class="footer-content">
+            <h2>旅程結束</h2>
+            <p>您剛剛體驗了橫向視差滾動效果</p>
+            <p>這種技術結合了垂直滾動與橫向移動，<br>並透過不同圖層的速度差異創造出深度感</p>
+            <p class="credits">Created with HTML, CSS, SVG & jQuery</p>
+        </div>
+    </section>
+
+    <!-- 滾動指示器 -->
+    <div class="scroll-indicator">
+        ↓ 向下滾動體驗視差效果 ↓
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+        crossorigin="anonymous"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function () {
+            const $wrapper = $('#horizontalWrapper');
+            const $content = $('#horizontalContent');
+            const $progressBar = $('#progressBar');
+            const $banner = $('#banner');
+            const $footer = $('#footer');
+            
+            const totalWidth = 6000; // 總寬度
+            const viewportWidth = $(window).width();
+            const viewportHeight = $(window).height();
+            const maxScroll = totalWidth - viewportWidth;
+
+            // Banner 和 Footer 的高度
+            const bannerHeight = $banner.outerHeight();
+            const wrapperHeight = $wrapper.outerHeight();
+            
+            // 設置包裝器實際內容高度（用於滾動）
+            // 需要額外的高度來實現橫向滾動效果
+            const scrollDistance = totalWidth; // 橫向滾動需要的距離
+            $wrapper.css('height', scrollDistance + 'px');
+
+            // 節流函數
+            function throttle(func, limit) {
+                let inThrottle;
+                return function () {
+                    const args = arguments;
+                    const context = this;
+                    if (!inThrottle) {
+                        func.apply(context, args);
+                        inThrottle = true;
+                        setTimeout(() => (inThrottle = false), limit);
+                    }
+                };
+            }
+
+            // 處理視差滾動
+            function handleParallaxScroll() {
+                const scrolled = $(window).scrollTop();
+                const wrapperTop = $wrapper.offset().top;
+                const wrapperBottom = wrapperTop + scrollDistance;
+                
+                // 計算在橫向區域內的滾動位置
+                const relativeScroll = scrolled - wrapperTop;
+                
+                // 只在橫向區域內才應用視差效果
+                if (scrolled >= wrapperTop && scrolled <= wrapperBottom) {
+                    // 固定橫向內容在視窗中
+                    $content.css({
+                        position: 'fixed',
+                        top: '0'
+                    });
+                    
+                    // 計算滾動百分比
+                    const scrollPercent = Math.min(Math.max(relativeScroll / maxScroll, 0), 1);
+                    
+                    // 更新進度條
+                    $progressBar.css('width', (scrollPercent * 100) + '%');
+
+                    // 隱藏滾動指示器
+                    if (relativeScroll > 50) {
+                        $('.scroll-indicator').fadeOut();
+                    }
+
+                    // 對每個視差圖層應用不同的移動速度
+                    $('.parallax-layer').each(function () {
+                        const $layer = $(this);
+                        const speed = parseFloat($layer.data('speed'));
+                        const xPos = -(relativeScroll * speed);
+                        
+                        $layer.css({
+                            transform: `translateX(${xPos}px)`
+                        });
+                    });
+                } else if (scrolled < wrapperTop) {
+                    // 在 banner 區域，顯示滾動指示器
+                    $('.scroll-indicator').fadeIn();
+                    $progressBar.css('width', '0%');
+                    
+                    // 重置所有圖層位置
+                    $('.parallax-layer').css({
+                        transform: 'translateX(0)'
+                    });
+                } else if (scrolled > wrapperBottom) {
+                    // 在 footer 區域
+                    $content.css({
+                        position: 'absolute',
+                        top: 'auto',
+                        bottom: '0'
+                    });
+                    $('.scroll-indicator').fadeOut();
+                    $progressBar.css('width', '100%');
+                }
+            }
+
+            // 綁定滾動事件
+            $(window).on('scroll', throttle(handleParallaxScroll, 10));
+
+            // 初始化
+            handleParallaxScroll();
+
+            // 響應式調整
+            $(window).on('resize', function () {
+                const newViewportWidth = $(window).width();
+                handleParallaxScroll();
+            });
+        });
+    </script>
+
+</body>
+
+</html>
