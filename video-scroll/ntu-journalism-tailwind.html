@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>國立臺灣大學新聞研究所｜首頁示意</title>
+    <meta name="description" content="以 Tailwind CSS 重製臺大新聞所首頁的示意範本。">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Noto Sans TC', 'Inter', 'system-ui', 'sans-serif'],
+                        serif: ['Noto Serif TC', 'Merriweather', 'serif']
+                    },
+                    colors: {
+                        ntu: {
+                            maroon: '#7a1a14',
+                            dark: '#4c0f0a',
+                            gold: '#c59d5f'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@500;700&display=swap">
+</head>
+
+<body class="min-h-screen bg-neutral-50 font-sans text-neutral-900">
+    <!-- Top Banner -->
+    <header class="bg-ntu-maroon text-white">
+        <div class="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-6 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <p class="text-sm uppercase tracking-[0.3em] text-ntu-gold">Graduate Institute of Journalism</p>
+                <h1 class="mt-2 font-serif text-3xl font-semibold tracking-wide">國立臺灣大學新聞研究所</h1>
+                <p class="mt-1 text-sm text-white/80">Department of Journalism · National Taiwan University</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-4 text-sm">
+                <a href="#" class="rounded-full border border-white/30 px-4 py-2 transition hover:bg-white/10">EN</a>
+                <a href="#" class="rounded-full border border-white/30 px-4 py-2 transition hover:bg-white/10">招生資訊</a>
+                <a href="#" class="rounded-full border border-white/30 px-4 py-2 transition hover:bg-white/10">校友專區</a>
+                <a href="#" class="rounded-full border border-white/30 px-4 py-2 transition hover:bg-white/10">聯絡我們</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white/95 shadow-sm backdrop-blur">
+        <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-4 text-sm font-medium">
+            <button class="inline-flex items-center gap-2 rounded border border-neutral-300 px-3 py-2 text-neutral-700 transition hover:bg-neutral-100 lg:hidden">
+                <span>主選單</span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <div class="hidden w-full flex-wrap gap-6 text-neutral-700 lg:flex lg:w-auto">
+                <a href="#about" class="hover:text-ntu-maroon">關於本所</a>
+                <a href="#news" class="hover:text-ntu-maroon">最新消息</a>
+                <a href="#admission" class="hover:text-ntu-maroon">招生資訊</a>
+                <a href="#research" class="hover:text-ntu-maroon">師資與研究</a>
+                <a href="#events" class="hover:text-ntu-maroon">活動公告</a>
+                <a href="#resources" class="hover:text-ntu-maroon">資源與服務</a>
+            </div>
+            <div class="ml-auto flex items-center gap-3">
+                <input type="search" placeholder="站內搜尋"
+                    class="w-40 rounded-full border border-neutral-300 px-4 py-1 text-sm focus:border-ntu-maroon focus:outline-none" />
+                <button class="rounded-full bg-ntu-maroon px-4 py-2 text-white transition hover:bg-ntu-dark">搜尋</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden bg-neutral-900 text-white">
+        <img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=80"
+            alt="NTU Journalism" class="absolute inset-0 h-full w-full object-cover opacity-70">
+        <div class="absolute inset-0 bg-gradient-to-r from-black/70 via-black/40 to-transparent"></div>
+        <div class="relative mx-auto flex max-w-6xl flex-col gap-6 px-6 py-20 lg:flex-row lg:items-center">
+            <div class="lg:w-2/3">
+                <p class="text-sm uppercase tracking-[0.4em] text-ntu-gold">Feature</p>
+                <h2 class="mt-4 font-serif text-4xl lg:text-5xl">數位時代的新聞實踐 · 媒體創新與社會責任</h2>
+                <p class="mt-4 text-base text-white/85 lg:text-lg">臺大新聞所結合理論與實務，跨域結盟，培育具備國際觀與批判思維的新聞傳播人才，面對快速變動的媒體環境。</p>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <a href="#admission" class="rounded-full bg-white px-6 py-3 text-base font-semibold text-ntu-maroon transition hover:bg-ntu-gold hover:text-white">
+                        了解招生資訊
+                    </a>
+                    <a href="#research" class="rounded-full border border-white/70 px-6 py-3 text-base font-semibold transition hover:border-white hover:bg-white/10">
+                        探索師資研究
+                    </a>
+                </div>
+            </div>
+            <div class="rounded-3xl bg-white/10 p-6 backdrop-blur lg:w-1/3">
+                <p class="text-sm uppercase tracking-[0.3em] text-ntu-gold">快訊</p>
+                <ul class="mt-4 space-y-4 text-sm">
+                    <li>
+                        <p class="font-semibold">113 學年度碩士班甄試簡章</p>
+                        <p class="text-white/70">報名期間：10/02 – 10/12</p>
+                    </li>
+                    <li>
+                        <p class="font-semibold">學生作品入圍卓越新聞獎</p>
+                        <p class="text-white/70">專題：青年參與公共議題</p>
+                    </li>
+                    <li>
+                        <p class="font-semibold">國際合作：與日、韓名校締盟</p>
+                        <p class="text-white/70">交換計畫即將啟動</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Cards -->
+    <section id="about" class="mx-auto max-w-6xl space-y-6 px-6 py-12">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <article class="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.4em] text-ntu-maroon">About</p>
+                <h3 class="mt-3 font-serif text-2xl">本所沿革與特色</h3>
+                <p class="mt-3 text-sm leading-relaxed text-neutral-600">自 1967 年成立以來，持續推動新聞教育革新，建構多元跨領域課程與實習平台，連結媒體產業與公民社會。</p>
+                <a class="mt-4 inline-flex items-center text-sm font-semibold text-ntu-maroon hover:text-ntu-dark" href="#">了解更多
+                    <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+            </article>
+            <article class="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.4em] text-ntu-maroon">Programs</p>
+                <h3 class="mt-3 font-serif text-2xl">課程與學程</h3>
+                <ul class="mt-3 space-y-2 text-sm text-neutral-600">
+                    <li>．新聞理論與批判研究</li>
+                    <li>．資料新聞與數據敘事</li>
+                    <li>．影像敘事與多媒體製作</li>
+                    <li>．公共傳播與政策倡議</li>
+                </ul>
+                <a class="mt-4 inline-flex items-center text-sm font-semibold text-ntu-maroon hover:text-ntu-dark" href="#">查看課程</a>
+            </article>
+            <article class="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.4em] text-ntu-maroon">Partners</p>
+                <h3 class="mt-3 font-serif text-2xl">跨域合作</h3>
+                <p class="mt-3 text-sm text-neutral-600">與中央社、公共電視、天下雜誌、台達電永續基金會等建立產學合作，打造真實專題與國際交流。</p>
+                <a class="mt-4 inline-flex items-center text-sm font-semibold text-ntu-maroon hover:text-ntu-dark" href="#">媒體合作</a>
+            </article>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section id="news" class="bg-white">
+        <div class="mx-auto max-w-6xl px-6 py-12">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-ntu-maroon">News</p>
+                    <h3 class="mt-2 font-serif text-3xl">最新消息</h3>
+                </div>
+                <a href="#" class="text-sm font-semibold text-ntu-maroon">瀏覽全部消息 →</a>
+            </div>
+            <div class="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?auto=format&fit=crop&w=800&q=80" alt="New Media"
+                            class="h-48 w-full object-cover transition duration-500 group-hover:scale-105" />
+                        <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ntu-maroon">公告</span>
+                    </div>
+                    <div class="flex flex-1 flex-col px-6 py-5">
+                        <p class="text-xs uppercase tracking-[0.4em] text-neutral-500">2024.03.15</p>
+                        <h4 class="mt-2 text-xl font-semibold">113 學年度碩士班甄試第二階段面試資訊</h4>
+                        <p class="mt-3 flex-1 text-sm text-neutral-600">面試名單、公文及注意事項已公告，請考生依規定完成報到。</p>
+                        <a href="#" class="mt-4 text-sm font-semibold text-ntu-maroon">詳細內容 →</a>
+                    </div>
+                </article>
+                <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=800&q=80" alt="Seminar"
+                            class="h-48 w-full object-cover transition duration-500 group-hover:scale-105" />
+                        <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ntu-maroon">演講</span>
+                    </div>
+                    <div class="flex flex-1 flex-col px-6 py-5">
+                        <p class="text-xs uppercase tracking-[0.4em] text-neutral-500">2024.03.10</p>
+                        <h4 class="mt-2 text-xl font-semibold">「AI 與新聞專題」國際講座暨工作坊</h4>
+                        <p class="mt-3 flex-1 text-sm text-neutral-600">邀請日本早稻田與韓國高麗大學學者分享資料新聞與自動化編輯的實務經驗。</p>
+                        <a href="#" class="mt-4 text-sm font-semibold text-ntu-maroon">立即報名 →</a>
+                    </div>
+                </article>
+                <article class="group flex h-full flex-col overflow-hidden rounded-3xl border border-neutral-200 bg-white shadow-sm">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1495020689067-958852a7765e?auto=format&fit=crop&w=800&q=80" alt="Awards"
+                            class="h-48 w-full object-cover transition duration-500 group-hover:scale-105" />
+                        <span class="absolute left-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-ntu-maroon">榮譽</span>
+                    </div>
+                    <div class="flex flex-1 flex-col px-6 py-5">
+                        <p class="text-xs uppercase tracking-[0.4em] text-neutral-500">2024.02.28</p>
+                        <h4 class="mt-2 text-xl font-semibold">學生團隊勇奪卓越新聞獎</h4>
+                        <p class="mt-3 flex-1 text-sm text-neutral-600">「氣候變遷與海岸線撤退」專題榮獲大專組最佳調查報導。</p>
+                        <a href="#" class="mt-4 text-sm font-semibold text-ntu-maroon">作品介紹 →</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Admission & Research Section -->
+    <section id="admission" class="bg-neutral-100">
+        <div class="mx-auto grid max-w-6xl gap-8 px-6 py-12 lg:grid-cols-2">
+            <div class="rounded-3xl bg-white p-8 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.4em] text-ntu-maroon">Admission</p>
+                <h3 class="mt-3 font-serif text-3xl">招生資訊</h3>
+                <p class="mt-4 text-sm text-neutral-600">提供碩士班甄試、考試入學與在職專班，並與國際頂尖學府建立雙聯學位。</p>
+                <ul class="mt-6 space-y-4 text-sm text-neutral-700">
+                    <li class="flex items-start gap-3">
+                        <span class="mt-1 h-2 w-2 rounded-full bg-ntu-maroon"></span>
+                        甄試報名與面試時程公告
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="mt-1 h-2 w-2 rounded-full bg-ntu-maroon"></span>
+                        碩士班課程、學分與畢業門檻
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="mt-1 h-2 w-2 rounded-full bg-ntu-maroon"></span>
+                        獎助學金與海外交換機會
+                    </li>
+                </ul>
+                <div class="mt-6 flex flex-wrap gap-4">
+                    <a href="#" class="rounded-full bg-ntu-maroon px-6 py-3 text-white transition hover:bg-ntu-dark">下載簡章</a>
+                    <a href="#" class="rounded-full border border-ntu-maroon px-6 py-3 text-ntu-maroon transition hover:bg-ntu-maroon/5">線上報名</a>
+                </div>
+            </div>
+            <div id="research" class="rounded-3xl bg-gradient-to-br from-neutral-900 to-neutral-800 p-8 text-white">
+                <p class="text-xs uppercase tracking-[0.4em] text-ntu-gold">Research</p>
+                <h3 class="mt-3 font-serif text-3xl">研究與出版</h3>
+                <p class="mt-4 text-sm text-white/80">專注於公共溝通、新聞倫理、資料新聞、媒體科技與社會影響等領域，推動跨國合作研究。</p>
+                <div class="mt-6 grid gap-4">
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <p class="text-sm text-white/60">研究中心</p>
+                        <h4 class="mt-1 text-lg font-semibold">公共傳播與民主治理研究群</h4>
+                        <p class="mt-2 text-sm text-white/70">與法律、社會學、政治領域共授課程，提供政策建議。</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <p class="text-sm text-white/60">出版</p>
+                        <h4 class="mt-1 text-lg font-semibold">臺大新聞評論 &amp; 學術期刊</h4>
+                        <p class="mt-2 text-sm text-white/70">收錄師生研究成果、深度專題與訪談。</p>
+                    </div>
+                    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+                        <p class="text-sm text-white/60">實驗室</p>
+                        <h4 class="mt-1 text-lg font-semibold">資料新聞與媒體科技 Lab</h4>
+                        <p class="mt-2 text-sm text-white/70">結合資料分析、互動設計與敘事工具。</p>
+                    </div>
+                </div>
+                <a href="#" class="mt-6 inline-flex items-center text-sm font-semibold text-ntu-gold">更多研究成果 →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="mx-auto max-w-6xl px-6 py-12">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <p class="text-xs uppercase tracking-[0.4em] text-ntu-maroon">Events</p>
+                <h3 class="mt-2 font-serif text-3xl">活動與講座</h3>
+            </div>
+            <a href="#" class="text-sm font-semibold text-ntu-maroon">更多活動 →</a>
+        </div>
+        <div class="mt-8 grid gap-6 lg:grid-cols-3">
+            <article class="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.4em] text-neutral-500">Mar 21 · Thu</p>
+                <h4 class="mt-2 text-xl font-semibold">國際媒體與民主治理論壇</h4>
+                <p class="mt-3 text-sm text-neutral-600">邀請美國哥倫比亞大學新聞學院教授對談媒體信任、新興技術與政策規範。</p>
+                <a href="#" class="mt-4 inline-flex items-center text-sm font-semibold text-ntu-maroon">報名參加 →</a>
+            </article>
+            <article class="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.4em] text-neutral-500">Mar 28 · Thu</p>
+                <h4 class="mt-2 text-xl font-semibold">資料新聞工作坊</h4>
+                <p class="mt-3 text-sm text-neutral-600">實作 Python 與 Flourish 圖表，協助同學完成年度調查專題。</p>
+                <a href="#" class="mt-4 inline-flex items-center text-sm font-semibold text-ntu-maroon">查看議程 →</a>
+            </article>
+            <article class="rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm">
+                <p class="text-xs uppercase tracking-[0.4em] text-neutral-500">Apr 03 · Wed</p>
+                <h4 class="mt-2 text-xl font-semibold">媒體創業圓桌</h4>
+                <p class="mt-3 text-sm text-neutral-600">與校友創辦的數位媒體公司共同探討新聞商業模式。</p>
+                <a href="#" class="mt-4 inline-flex items-center text-sm font-semibold text-ntu-maroon">我要參加 →</a>
+            </article>
+        </div>
+    </section>
+
+    <!-- Resources / Quick Links -->
+    <section id="resources" class="bg-neutral-900">
+        <div class="mx-auto max-w-6xl px-6 py-12 text-white">
+            <div class="flex flex-wrap items-end justify-between gap-4">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.4em] text-ntu-gold">Resources</p>
+                    <h3 class="mt-2 font-serif text-3xl">資源與服務</h3>
+                </div>
+            </div>
+            <div class="mt-8 grid gap-6 lg:grid-cols-4">
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <h4 class="text-xl font-semibold">學生專區</h4>
+                    <ul class="mt-4 space-y-2 text-sm text-white/80">
+                        <li><a class="hover:text-white" href="#">行事曆</a></li>
+                        <li><a class="hover:text-white" href="#">表單下載</a></li>
+                        <li><a class="hover:text-white" href="#">獎助學金</a></li>
+                    </ul>
+                </article>
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <h4 class="text-xl font-semibold">校友連結</h4>
+                    <ul class="mt-4 space-y-2 text-sm text-white/80">
+                        <li><a class="hover:text-white" href="#">校友會訊</a></li>
+                        <li><a class="hover:text-white" href="#">捐款方式</a></li>
+                        <li><a class="hover:text-white" href="#">分享故事</a></li>
+                    </ul>
+                </article>
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <h4 class="text-xl font-semibold">媒體服務</h4>
+                    <ul class="mt-4 space-y-2 text-sm text-white/80">
+                        <li><a class="hover:text-white" href="#">新聞稿</a></li>
+                        <li><a class="hover:text-white" href="#">採訪申請</a></li>
+                        <li><a class="hover:text-white" href="#">研究合作</a></li>
+                    </ul>
+                </article>
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-6">
+                    <h4 class="text-xl font-semibold">空間與設備</h4>
+                    <ul class="mt-4 space-y-2 text-sm text-white/80">
+                        <li><a class="hover:text-white" href="#">媒體實驗室</a></li>
+                        <li><a class="hover:text-white" href="#">錄音室預約</a></li>
+                        <li><a class="hover:text-white" href="#">影像器材借用</a></li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-neutral-950 text-white">
+        <div class="mx-auto flex max-w-6xl flex-col gap-6 px-6 py-10 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <p class="text-sm uppercase tracking-[0.3em] text-ntu-gold">NTU Journalism</p>
+                <h4 class="mt-2 font-serif text-2xl">國立臺灣大學新聞研究所 Graduate Institute of Journalism</h4>
+                <p class="mt-3 text-sm text-white/70">10617 臺北市大安區羅斯福路四段 1 號 · 電話 (02) 3366-3183</p>
+            </div>
+            <div class="text-sm text-white/70">
+                <p>© 2024 National Taiwan University. All rights reserved.</p>
+                <p class="mt-1">Designed with Tailwind CSS · 示意版</p>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

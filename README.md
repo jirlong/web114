@@ -39,7 +39,6 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 - [parallax-storytelling-horizontal-chatgpt.html](./parallax/parallax-storytelling-horizontal-chatgpt.html) - Horizontal storytelling parallax (ChatGPT version) (Added: 2025-11-12)
 - [parallax-storytelling-horizontal-copilot.html](./parallax/parallax-storytelling-horizontal-copilot.html) - Horizontal storytelling parallax (Copilot refined version) (Added: 2025-11-12)
 
-
 ---
 
 ## Project Features
