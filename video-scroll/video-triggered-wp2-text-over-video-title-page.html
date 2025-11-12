@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式視頻滾動體驗</title>
+    <!-- Bootstrap 5.3 CSS and jQuery 3.6 (stable CDN links) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Landing section */
+        .landing {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0b0b0d; /* dark */
+            color: #fff;
+            text-align: center;
+            z-index: 5;
+        }
+
+        .landing h1 {
+            font-size: 3rem;
+            letter-spacing: 2px;
+        }
+
+        /* Theme section: 200vh container */
+        .theme-section {
+            height: 200vh;
+            /* let Bootstrap .row handle horizontal layout */
+            background: #f7f7f7;
+            padding: 4rem 2rem;
+        }
+
+        /* Ensure row and columns stretch full height so sticky works */
+        .theme-section .row {
+            height: 100%; /* will become 200vh because .theme-section is 200vh */
+            margin: 0; /* avoid Bootstrap negative margins affecting layout */
+        }
+
+        .theme-left,
+        .theme-right {
+            height: 100%;
+        }
+
+        .theme-left {
+            position: relative;
+        }
+
+        .sticky-videos {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-grid {
+            width: 90%;
+            max-width: 720px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 8px;
+            align-items: center;
+            justify-items: center;
+        }
+
+        .video-grid video {
+            width: 100%;
+            height: calc(50vh - 24px);
+            object-fit: cover;
+            background: #000;
+        }
+
+        .theme-right {
+            padding-left: 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+        }
+
+        .theme-text {
+            width: 100%;
+            max-width: 600px;
+            padding-top: 6vh;
+            height: 100%; /* fill the column's height */
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #222;
+        }
+
+        /* 滾動容器 */
+        .scroll-container {
+            position: relative;
+        }
+
+        /* 每個視頻的外層容器 - 控制sticky時間 */
+        .video-outer-container {
+            position: relative;
+        }
+
+        /* 每個視頻section - 100vh高度，sticky定位 */
+        .video-section {
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            overflow: hidden;
+        }
+
+        /* 視頻元素 */
+        .video-section video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 視頻內容覆蓋層 */
+        .video-content {
+            position: relative;
+            text-align: center;
+            color: white;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 3rem 2rem;
+            max-width: 800px;
+            width: 90%;
+            min-height: 200vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            padding-top: 10vh;
+        }
+
+        .video-content h2 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .video-content p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            line-height: 1.8;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        /* 滾動進度指示器 */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: 1000;
+        }
+
+        .scroll-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1);
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        /* 視頻控制按鈕 */
+        .video-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .control-btn {
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 768px) {
+            .video-content h2 {
+                font-size: 2rem;
+            }
+            
+            .video-content p {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Landing -->
+    <section class="landing">
+        <div>
+            <h1>Border: Video Storytelling Practice</h1>
+            <p style="margin-top:1rem;opacity:.85">An exploration of narrative through location-based video panels.</p>
+        </div>
+    </section>
+
+    <!-- Theme section: left sticky 2x2 video grid and right 200vh text -->
+    <section class="theme-section container-fluid">
+        <div class="row">
+            <div class="col-md-6 theme-left">
+                <div class="sticky-videos">
+                    <div class="video-grid" id="gridVideos">
+                        <video muted preload="metadata" loop>
+                            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4" type="video/mp4">
+                        </video>
+                        <video muted preload="metadata" loop>
+                            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57effca6e4b0bc3a464cdea0/57fb0043e4b037a240c7b2ad_1439399835595-cf9g26_t_1476067421749_1280_720_2000.mp4" type="video/mp4">
+                        </video>
+                        <video muted preload="metadata" loop>
+                            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efff8ce4b0bc3a464ce0e7/57fb009de4b037a240c7b2c9_1439399835595-cf9g26_t_1476067527078_1280_720_2000.mp4" type="video/mp4">
+                        </video>
+                        <video muted preload="metadata" loop>
+                            <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57f0003fe4b0bc3a464ce193/57fb0113e4b037a240c7b2e9_1439399835595-cf9g26_t_1476067636559_1280_720_2000.mp4" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 theme-right">
+                <div class="theme-text">
+                    <h3>About this project</h3>
+                    <p>This project experiments with scroll-driven storytelling using short documentary clips. The left panel presents four video tiles in a 2x2 grid, kept visible via a sticky container as the user scrolls the right-hand text area which is 200vh tall. The aim is to let the viewer read contextual information while the video grid provides ambient visual narrative cues.</p>
+                    <p>Design notes: videos are muted by default to allow autoplay in most browsers. They loop to provide continuous motion. The text area provides deeper context, including credits, sources, and editorial notes.</p>
+                    <p>Credits: video clips from public news footage used for demo purposes.</p>
+                    <p>Interaction: you can scroll the right column to read. The left grid remains sticky and centered vertically within the viewport.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 滾動進度指示器 -->
+    <div class="scroll-progress">
+        <div class="scroll-progress-bar" id="progressBar"></div>
+    </div>
+
+    <!-- 視頻控制按鈕 -->
+    <div class="video-controls">
+        <button class="control-btn" id="playAllBtn">播放全部</button>
+        <button class="control-btn" id="pauseAllBtn">暫停全部</button>
+        <button class="control-btn" id="muteAllBtn">靜音</button>
+    </div>
+
+    <!-- 滾動容器 -->
+    <div class="scroll-container">
+        <!-- 第一個視頻外層容器 -->
+        <div class="video-outer-container" data-container="1">
+            <div class="video-section" data-video="1">
+                <video muted preload="metadata" loop>
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efe827e4b0bc3a464cd99a/57fb002be4b037a240c7b2ab_1439399835595-cf9g26_t_1476067411708_1280_720_2000.mp4" type="video/mp4">
+                    您的瀏覽器不支持視頻播放。
+                </video>
+            </div>
+            <div class="video-content">
+                <h2>邊境故事</h2>
+                <p>探索美墨邊境的複雜現實，了解那些跨越邊境的人們的故事。</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.</p>
+                <p>Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+                <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
+            </div>
+        </div>
+
+        <!-- 第二個視頻外層容器 -->
+        <div class="video-outer-container" data-container="2">
+            <div class="video-section" data-video="2">
+                <video muted preload="metadata" loop>
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57effca6e4b0bc3a464cdea0/57fb0043e4b037a240c7b2ad_1439399835595-cf9g26_t_1476067421749_1280_720_2000.mp4" type="video/mp4">
+                    您的瀏覽器不支持視頻播放。
+                </video>
+            </div>
+            <div class="video-content">
+                <h2>移民之路</h2>
+                <p>跟隨移民者的腳步，體驗他們艱辛的旅程和對未來的希望。</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris vehicula ligula vitae mi dictum, in facilisis purus hendrerit. Proin tincidunt velit ut risus dignissim, a commodo turpis molestie. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit amet ligula.</p>
+                <p>Curabitur arcu erat, accumsan id imperdiet et, porttitor at sem. Vivamus magna justo, lacinia eget consectetur sed, convallis at tellus. Cras ultricies ligula sed magna dictum porta. Donec sollicitudin molestie malesuada. Pellentesque in ipsum id orci porta dapibus.</p>
+                <p>Vestibulum ac diam sit amet quam vehicula elementum sed sit amet dui. Quisque velit nisi, pretium ut lacinia in, elementum id enim. Vivamus suscipit tortor eget felis porttitor volutpat. Sed porttitor lectus nibh. Curabitur non nulla sit amet nisl tempus convallis quis ac lectus.</p>
+                <p>Praesent sapien massa, convallis a pellentesque nec, egestas non nisi. Nulla quis lorem ut libero malesuada feugiat. Donec rutrum congue leo eget malesuada. Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a. Curabitur aliquet quam id dui posuere blandit.</p>
+                <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+            </div>
+        </div>
+
+        <!-- 第三個視頻外層容器 -->
+        <div class="video-outer-container" data-container="3">
+            <div class="video-section" data-video="3">
+                <video muted preload="metadata" loop>
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57efff8ce4b0bc3a464ce0e7/57fb009de4b037a240c7b2c9_1439399835595-cf9g26_t_1476067527078_1280_720_2000.mp4" type="video/mp4">
+                    您的瀏覽器不支持視頻播放。
+                </video>
+            </div>
+            <div class="video-content">
+                <h2>邊境牆</h2>
+                <p>見證邊境牆的建設過程，思考這道牆對兩國關係的影響。</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Nullam id dolor id nibh ultricies vehicula ut id elit. Cras mattis consectetur purus sit amet fermentum.</p>
+                <p>Etiam porta sem malesuada magna mollis euismod. Donec id elit non mi porta gravida at eget metus. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                <p>Nullam quis risus eget urna mollis ornare vel eu leo. Maecenas faucibus mollis interdum. Aenean lacinia bibendum nulla sed consectetur. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Sed posuere consectetur est at lobortis.</p>
+                <p>Donec ullamcorper nulla non metus auctor fringilla. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
+                <p>Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+            </div>
+        </div>
+
+        <!-- 第四個視頻外層容器 -->
+        <div class="video-outer-container" data-container="4">
+            <div class="video-section" data-video="4">
+                <video muted preload="metadata" loop>
+                    <source src="https://d21rhj7n383afu.cloudfront.net/washpost-production/TWP/20161001/57f0003fe4b0bc3a464ce193/57fb0113e4b037a240c7b2e9_1439399835595-cf9g26_t_1476067636559_1280_720_2000.mp4" type="video/mp4">
+                    您的瀏覽器不支持視頻播放。
+                </video>
+            </div>
+            <div class="video-content">
+                <h2>新開始</h2>
+                <p>在邊境的另一邊，人們開始新的生活，尋找屬於自己的機會。</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam hendrerit nisi sed sollicitudin pellentesque. Nunc posuere purus rhoncus pulvinar aliquam. Ut aliquet tristique nisl vitae volutpat. Nulla aliquet porttitor venenatis. Donec a dui et dui fringilla consectetur id nec massa.</p>
+                <p>Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Cras mattis consectetur purus sit amet fermentum. Praesent commodo cursus magna, vel scelerisque nisl consectetur et. Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.</p>
+                <p>Aenean eu leo quam. Pellentesque ornare sem lacinia quam venenatis vestibulum. Donec sed odio dui. Curabitur blandit tempus porttitor. Vestibulum id ligula porta felis euismod semper. Nullam id dolor id nibh ultricies vehicula ut id elit. Aenean lacinia bibendum nulla sed consectetur.</p>
+                <p>Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Maecenas sed diam eget risus varius blandit sit amet non magna. Sed posuere consectetur est at lobortis. Etiam porta sem malesuada magna mollis euismod. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+                <p>Nullam quis risus eget urna mollis ornare vel eu leo. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Donec ullamcorper nulla non metus auctor fringilla. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 獲取所有視頻元素和外層容器
+        const videos = document.querySelectorAll('.video-section video');
+        const videoSections = document.querySelectorAll('.video-section');
+        const outerContainers = document.querySelectorAll('.video-outer-container');
+        const progressBar = document.getElementById('progressBar');
+        const playAllBtn = document.getElementById('playAllBtn');
+        const pauseAllBtn = document.getElementById('pauseAllBtn');
+        const muteAllBtn = document.getElementById('muteAllBtn');
+
+        let isMuted = true;
+        let currentVideoIndex = 0;
+
+        // 計算每個容器的累積高度
+        function getContainerHeights() {
+            const heights = [];
+            let cumulativeHeight = 0;
+            
+            outerContainers.forEach((container, index) => {
+                const height = container.offsetHeight;
+                heights.push({
+                    start: cumulativeHeight,
+                    end: cumulativeHeight + height,
+                    index: index
+                });
+                cumulativeHeight += height;
+            });
+            
+            return heights;
+        }
+
+        // Flag set while the user scrolls the right-hand text area
+        let userScrollingText = false;
+
+        // 滾動事件處理
+        function handleScroll() {
+            const scrollTop = window.pageYOffset;
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+
+            // 更新滾動進度條
+            const scrollProgress = (scrollTop / documentHeight) * 100;
+            progressBar.style.width = scrollProgress + '%';
+
+            // 獲取容器高度信息
+            const containerHeights = getContainerHeights();
+
+            // 找到當前滾動位置對應的視頻
+            let activeVideoIndex = -1;
+            containerHeights.forEach(container => {
+                if (scrollTop >= container.start && scrollTop < container.end) {
+                    activeVideoIndex = container.index;
+                }
+            });
+
+            // 控制視頻播放 — 如果使用者正在滾動右側文字，跳過暫停其他背景視頻的行為
+            videos.forEach((video, index) => {
+                if (index === activeVideoIndex) {
+                    if (video.paused) {
+                        video.play().catch(e => console.log('視頻播放失敗:', e));
+                    }
+                } else {
+                    // only pause other videos if the user is NOT actively scrolling the theme-text area
+                    if (!userScrollingText) {
+                        if (!video.paused) {
+                            video.pause();
+                        }
+                    }
+                }
+            });
+
+            currentVideoIndex = activeVideoIndex;
+        }
+
+        // 控制按鈕事件
+        playAllBtn.addEventListener('click', () => {
+            videos.forEach(video => {
+                video.play().catch(e => console.log('視頻播放失敗:', e));
+            });
+        });
+
+        pauseAllBtn.addEventListener('click', () => {
+            videos.forEach(video => {
+                video.pause();
+            });
+        });
+
+        muteAllBtn.addEventListener('click', () => {
+            isMuted = !isMuted;
+            videos.forEach(video => {
+                video.muted = isMuted;
+            });
+            muteAllBtn.textContent = isMuted ? '取消靜音' : '靜音';
+        });
+
+
+        // 視頻載入完成後自動播放第一個
+        videos[0].addEventListener('loadeddata', () => {
+            videos[0].play().catch(e => console.log('自動播放被阻止:', e));
+        });
+
+        // 監聽滾動事件
+        window.addEventListener('scroll', handleScroll);
+
+        // 監聽窗口大小變化
+        window.addEventListener('resize', handleScroll);
+
+        // 初始化
+        handleScroll();
+
+        // If user scrolls/interacts with theme text or any video section/content, set a short-lived flag
+        (function() {
+            const interactElements = Array.from(document.querySelectorAll('.theme-text, .video-content, .video-section'));
+            if (!interactElements.length) return;
+            let timeoutId = null;
+
+            function startUserScroll() {
+                userScrollingText = true;
+                if (timeoutId) clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    userScrollingText = false;
+                    timeoutId = null;
+                }, 300);
+            }
+
+            ['wheel', 'touchstart', 'touchmove', 'scroll'].forEach(ev => {
+                interactElements.forEach(el => el.addEventListener(ev, startUserScroll, { passive: true }));
+            });
+        })();
+
+    </script>
+
+    <script>
+        // Try to autoplay the grid videos (muted) when they are ready
+        (function() {
+            const grid = document.getElementById('gridVideos');
+            if (!grid) return;
+            const gridVideos = grid.querySelectorAll('video');
+
+            function tryPlayAll() {
+                gridVideos.forEach(v => {
+                    v.muted = true;
+                    v.play().catch(e => {
+                        // autoplay blocked; keep muted and wait for user
+                        console.log('Grid video autoplay blocked:', e);
+                    });
+                });
+            }
+
+            // Attempt once after DOM load
+            window.addEventListener('load', () => {
+                tryPlayAll();
+            });
+
+            // If user interacts, try again (some browsers permit after interaction)
+            ['click', 'touchstart', 'keydown'].forEach(ev => {
+                window.addEventListener(ev, () => tryPlayAll(), { once: true });
+            });
+        })();
+    </script>
+</body>
+</html>
+

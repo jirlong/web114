@@ -8,39 +8,18 @@
 - [bt_template.html](./bt_template.html) - Bootstrap + jQuery starting template (Updated: 2025-11-05)
 
 ### Basic HTML (basic-html/)
-
-- [index.html](./basic-html/index.html) - Basic HTML structure demo
-- [style.css](./basic-html/style.css) - Styles for basic HTML demo
-
-
 ### Bootstrap (bt/)
-
-- [bt.html](./bt/bt.html) - Bootstrap demo
-- [bt2.html](./bt/bt2.html) - Bootstrap demo 2
-- [bg-fixed.html](./bt/bg-fixed.html) - Background fixed demo
 
 ### jQuery (jquery/)
 
 - [jquery_basic.html](./jquery/jquery_basic.html) - jQuery basics
-- [jquery1008.html](./jquery/jquery1008.html) - jQuery demo (Oct 8)
-- [practice-sticky-top.html](./jquery/practice-sticky-top.html) - Sticky top practice
-
-### Prompting Examples (prompting/)
-
-- [jquery01_detect_top.html](./prompting/jquery01_detect_top.html) - Detect top position
 - [jquery02_detect_top_smooth_transition.html](./prompting/jquery02_detect_top_smooth_transition.html) - Detect top with smooth transition
 - [jquery03_detect_top_html_first.html](./prompting/jquery03_detect_top_html_first.html) - Detect top (HTML first approach)
-- [keyframe_as.html](./prompting/keyframe_as.html) - Keyframe animation demo
-
-
-### Horizontal Scrolling (horizontal/)
 - [horizontal_nice.html](./horizontal/horizontal_nice.html) - Horizontal nice layout
 - [horizontal_section.html](./horizontal/horizontal_section.html) - Horizontal section layout
-
-
 ### Video Projects (video-scroll/)
-
 #### Scrolled Video Series
+Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.html` - added landing section and 200vh theme layout with sticky 2x2 video grid; ensured background `video-section` videos continue playing while interacting/scrolling text and video areas (2025-11-12)
 - [video-scrolled01.html](./video-scroll/video-scrolled01.html) - A fixed video followed by several content sections
 - [video-scrolled02.html](./video-scroll/video-scrolled02.html) - Adding leading and ending sections
 - [video-scrolled03.html](./video-scroll/video-scrolled03.html) - Only playing video in the sections after leading section and before ending section
@@ -52,6 +31,7 @@
 - [video-triggered-cw02-better-video-control.html](./video-scroll/video-triggered-cw02-better-video-control.html) - Smoother JS-only play/pause via IntersectionObserver + rAF fallback (Renamed: 2025-11-05)
 - [video-triggered-wp1-text-with-video.html](./video-scroll/video-triggered-wp1-text-with-video.html) - Triggered video with text (Renamed: 2025-11-05)
 - [video-triggered-wp2-text-over-video.html](./video-scroll/video-triggered-wp2-text-over-video.html) - Triggered video with text overlay (Renamed: 2025-11-05)
+- [video-triggered-wp2-text-over-video-title-page.html](./video-scroll/video-triggered-wp2-text-over-video-title-page.html) - Enhanced version with landing page and sticky 2x2 video grid layout (Added: 2025-11-12)
 
 ### Parallax Scrolling
 - [parallax-h1-section.html](./parallax/parallax-h1-section.html) - Parallax H1 section with jQuery scroll effects
