@@ -6,7 +6,6 @@
 
 - [bootstrap_template.html](./bootstrap_template.html) - Bootstrap template
 - [bt_template.html](./bt_template.html) - Bootstrap + jQuery starting template (Updated: 2025-11-05)
-- [data01_hbar_copilot.html](./data01_hbar_copilot.html) - Data visualization with horizontal bar chart and line plot for Miyazaki films (Added: 2025-11-18)
 
 ### Basic HTML (basic-html/)
 ### Bootstrap (bt/)
@@ -39,6 +38,9 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 - [parallax-pure-css.html](./parallax/parallax-pure-css.html) - Pure CSS parallax demo
 - [parallax-storytelling-horizontal-chatgpt.html](./parallax/parallax-storytelling-horizontal-chatgpt.html) - Horizontal storytelling parallax (ChatGPT version) (Added: 2025-11-12)
 - [parallax-storytelling-horizontal-copilot.html](./parallax/parallax-storytelling-horizontal-copilot.html) - Horizontal storytelling parallax (Copilot refined version) (Added: 2025-11-12)
+
+### Data Visualization and Charts
+- [data01_hbar_copilot.html](./data-visualization/data01_hbar_copilot.html) - Data visualization with horizontal bar chart and line plot (Copilot refined version) (Added: 2025-11-18)
 
 ---
 
