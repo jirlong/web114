@@ -6,6 +6,7 @@
 
 - [bootstrap_template.html](./bootstrap_template.html) - Bootstrap template
 - [bt_template.html](./bt_template.html) - Bootstrap + jQuery starting template (Updated: 2025-11-05)
+- [data01_hbar_copilot.html](./data01_hbar_copilot.html) - Data visualization with horizontal bar chart and line plot for Miyazaki films (Added: 2025-11-18)
 
 ### Basic HTML (basic-html/)
 ### Bootstrap (bt/)
@@ -43,7 +44,39 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 
 ## Project Features
 
-### Latest: Parallax H1 Section Effects (Updated: 2025-11-11)
+### Latest: Data Visualization with Charts (Updated: 2025-11-18)
+
+#### data01_hbar_copilot.html
+**Key Features:**
+- **Horizontal Bar Chart (#chart01)**: Top 10 Miyazaki films by box office revenue
+  - Animated bars with gradient colors (blue-green)
+  - Displays movie name, year, and revenue
+  - Sequential animation triggered by Intersection Observer
+  - Ranked display with position badges
+  
+- **Line Plot Chart (#chart02)**: Box office trends over time
+  - SVG-based line chart with animated drawing effect
+  - X-axis: Year (1986-2013)
+  - Y-axis: Box office sales (億日圓)
+  - Interactive data points with hover tooltips
+  - Grid lines and axis labels for clarity
+
+**Layout:**
+- Two-column sticky layout (200vh content sections)
+- Left column: Detailed text about Miyazaki films
+- Right column: Sticky charts that remain visible while scrolling
+- Bootstrap 5 grid with responsive design
+
+**Technologies:**
+- jQuery 3.7.1 for DOM manipulation
+- Intersection Observer API for scroll-triggered animations
+- SVG for scalable line chart graphics
+- CSS animations and transitions
+- Bootstrap 5 sticky positioning
+
+---
+
+### Parallax H1 Section Effects (Updated: 2025-11-11)
 
 #### 1. parallax-h1-section.html (jQuery Implementation)
 **Key Features:**
@@ -99,4 +132,4 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 
 ---
 
-*Last updated: 2025-11-12*
+*Last updated: 2025-11-18*

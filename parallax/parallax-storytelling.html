@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Parallax vertical</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/shadow.css">
+
+
+    <style>
+    </style>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+    <div class="" style="background-color:black;height:100vh;"></div>
+    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
+        <img src="../novel/2/bg.jpg" style="width:100vw">
+        <img id="testing" src="../novel/2/chair.png" data-left1=20 data-left2=15 class="scrollable dropshadow1" style="position:absolute;
+                    width:  20%;
+                    bottom: 0%;
+                    left:   20%;
+                    filter: grayscale(.2) blur(2px);">
+
+        <img src="../novel/2/girl.png" class="scrollable dropshadow1" data-left1=40 data-left2=45 data-width1=30 data-width2=32 style="position:absolute;
+                    width:  30%;
+                    bottom: 0%;
+                    left:   40%;
+                    filter: blur(0px);">
+    </div>
+    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
+        <img src="../novel/3/bg.jpg" style="width:100vw">
+        <img src="../novel/3/girl.png" class="scrollable dropshadow1" data-left1=45 data-left2=50 data-width1=30 data-width2=35 data-bottom1=0 data-bottom2=-10 style="position:absolute;
+                    width:  30%;
+                    bottom: 0%;
+                    left:   45%;
+                    filter: blur(0px);
+                    z-index: 10">
+        <img id="testing" src="../novel/3/verre.png" class="scrollable dropshadow1" data-top1=-10 data-top2=10 data-left1=25 data-left2=28 style="position:absolute;
+                    width:  100%;
+                    left:   25%;
+                    top:    -10%;
+                    filter: grayscale(.2) blur(0px) opacity(0.8);
+                    z-index: 10">
+    </div>
+    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
+        <img src="../novel/4/bg.jpg" style="width:100vw">
+        <img src="../novel/4/girl.png" class="scrollable dropshadow1" style="position:absolute;
+                    width:  30%;
+                    bottom: 0%;
+                    left:   50%;
+                    filter: blur(0px);">
+        <img id="testing" src="../novel/4/debris.png" class="scrollable dropshadow1" data-bottom1=10 data-bottom2=0 style="position:absolute;
+                    width:  100%;
+                    left:   25%;
+                    bottom: 10%;
+                    filter: grayscale(.2) blur(0px) opacity(0.8);">
+    </div>
+    <div class="innershadow1 horizontal" style="height:200vh;position:relative;overflow:hidden;">
+        <div style="position:sticky;top:0;height:100vh;width:100vw;">
+            <img src="../novel/9/bg.jpg" class="scrollable dropshadow1" data-left1=0 data-left2=-50 style="position:absolute;
+                        top: 0px;
+                        height: 100vh;
+                        left: 0%;">
+            <img src="../novel/9/girl.png" style="position:absolute;
+                        height: 50vh;
+                        left: 0%;
+                        bottom: 0%;
+                        filter: grayscale(.2) blur(0px) opacity(0.8);
+                        z-index: 10;">
+        </div>
+    </div>
+
+
+    <div class="container-fluid" style="background-color:black;min-height: 200vh"></div>
+    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
+        <img src="../novel/4/bg.jpg" style="width:100vw">
+        <img src="../novel/4/girl.png" class="scrollable dropshadow1" style="position:absolute;
+                    width:  30%;
+                    bottom: 0%;
+                    left:   50%;
+                    filter: blur(0px);">
+        <img id="testing" src="../novel/4/debris.png" class="scrollable dropshadow1" data-bottom1=10 data-bottom2=0 style="position:absolute;
+                    width:  100%;
+                    left:   25%;
+                    bottom: 10%;
+                    filter: grayscale(.2) blur(0px) opacity(0.8)">
+    </div>
+    <div class="container-fluid" style="background-color:black;height: 200vh"></div>
+    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
+        <img src="../novel/4/bg.jpg" style="width:100vw">
+        <img src="../novel/4/girl.png" class="scrollable dropshadow1" style="position:absolute;
+                    width:  30%;
+                    bottom: 0%;
+                    left:   50%;
+                    filter: blur(0px);">
+        <img id="testing" src="../novel/4/debris.png" class="scrollable dropshadow1" data-bottom1=10 data-bottom2=0 style="position:absolute;
+                    width:  100%;
+                    left:   25%;
+                    bottom: 10%;
+                    filter: grayscale(.2) blur(0px) opacity(0.8)">
+    </div>
+    <div class="container-fluid" style="background-color:black;min-height: 200vh"></div>
+
+
+
+    <script>
+        $(document).ready(function() {
+            $(window).scroll(function() {
+                var scrolled = $(window).scrollTop();
+                var winh = $(window).height();
+                $(".scrollable").each(function() {
+                    var parent_pos = $(this).parent().offset().top;
+                    var next_pos = $(this).parent().next().offset().top;
+                    var parent_height = $(this).parent().height();
+                    var parent_scrolled = scrolled - parent_pos + winh * 0.25;
+
+                    if ($(this).parent().parent().hasClass("horizontal")) {
+                        var horizontal_parent = $(this).parent().parent();
+                        var horizontal_parent_pos = horizontal_parent.offset().top;
+                        var horizontal_parent_height = horizontal_parent.height();
+                        var horizontal_scrolled = scrolled - horizontal_parent_pos + winh;
+
+                        if (scrolled >= horizontal_parent_pos - winh && scrolled <= horizontal_parent_pos + horizontal_parent_height) {
+                            if ($(this).attr("data-left1")) {
+                                var progress = Math.max(0, Math.min(horizontal_scrolled / (horizontal_parent_height + winh), 1));
+                                var leftValue = ($(this).data('left2') - $(this).data('left1')) * progress + $(this).data('left1');
+                                $(this).css('left', leftValue + '%');
+                            }
+                        }
+
+                    } else {
+                        if (scrolled > parent_pos - winh * 0.25 && scrolled < next_pos - winh * 0.25) {
+
+                            if ($(this).attr("data-left1")) {
+                                $(this).css('left', (($(this).data('left2') - $(this).data('left1')) * parent_scrolled / parent_height + $(this).data('left1')) + '%    ');
+                            }
+                            if ($(this).attr("data-top1")) {
+                                $(this).css('top', (($(this).data('top2') - $(this).data('top1')) * parent_scrolled / parent_height + $(this).data('top1')) + '%');
+                            }
+                            if ($(this).attr("data-width1")) {
+                                $(this).css('width', (($(this).data('width2') - $(this).data('width1')) * parent_scrolled / parent_height + $(this).data('width1')) + '%');
+                            }
+                            if ($(this).attr("data-height1")) {
+                                $(this).css('height', (($(this).data('height2') - $(this).data('height1')) * parent_scrolled / parent_height + $(this).data('height1')) + '%');
+                            }
+                            if ($(this).attr("data-bottom1")) {
+                                $(this).css('bottom', (($(this).data('bottom2') - $(this).data('bottom1')) * parent_scrolled / parent_height + $(this).data('bottom1')) + '%');
+                            }
+                        }
+
+                    }
+
+                });
+                //                console.log($("#testing").offset().left/$(window).width());
+            });
+        });
+    </script>
+</body>
+
+</html>
