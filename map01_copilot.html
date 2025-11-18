@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Bootstrap template with jQuery">
+    <meta name="author" content="">
+    <title>Bootstrap Template</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Custom CSS -->
+    <style>
+        body {
+            padding-top: 20px;
+        }
+        
+        #chart01 {
+            position: sticky;
+            top: 20px;
+            height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .map-container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+        
+        .map-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .taiwan-map {
+            width: 100%;
+            height: auto;
+        }
+        
+        .city-path {
+            fill: #e9ecef;
+            stroke: #fff;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .city-path:hover {
+            fill: #4a90e2;
+            opacity: 0.8;
+        }
+        
+        .city-path.active {
+            fill: #67b26f;
+            stroke: #4a90e2;
+            stroke-width: 3;
+        }
+        
+        .city-info {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            margin-top: 20px;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+        
+        .city-info.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .city-info h3 {
+            color: #4a90e2;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        
+        .city-info-item {
+            margin: 8px 0;
+            color: #555;
+        }
+        
+        .city-info-label {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .city-section {
+            height: 100vh;
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .city-section h2 {
+            font-size: 2.5rem;
+            color: #4a90e2;
+            margin-bottom: 30px;
+        }
+        
+        .city-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .city-section h3 {
+            font-size: 1.5rem;
+            color: #67b26f;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        #taipei-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        #taichung-section {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+        
+        #kaohsiung-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Main Container -->
+    <div class="container-fluid">
+        <div class="row">
+            <div id="chart01" class="col-md-6">
+                <h2 class="map-title">台灣縣市地圖</h2>
+                <div class="map-container">
+                    <svg class="taiwan-map" viewBox="0 0 400 600" xmlns="http://www.w3.org/2000/svg">
+                        <!-- 台北市 -->
+                        <path id="taipei" class="city-path" d="M 200 80 L 220 75 L 235 85 L 240 105 L 225 120 L 205 115 L 195 100 Z"/>
+                        
+                        <!-- 新北市 (環繞台北) -->
+                        <path id="new-taipei" class="city-path" d="M 180 70 L 200 60 L 220 55 L 245 65 L 255 85 L 250 115 L 235 135 L 215 140 L 190 130 L 175 110 L 170 85 Z"/>
+                        
+                        <!-- 基隆市 -->
+                        <path id="keelung" class="city-path" d="M 210 45 L 230 40 L 245 50 L 240 65 L 225 60 Z"/>
+                        
+                        <!-- 桃園市 -->
+                        <path id="taoyuan" class="city-path" d="M 160 110 L 175 95 L 195 90 L 210 100 L 205 125 L 185 135 L 165 130 Z"/>
+                        
+                        <!-- 新竹縣市 -->
+                        <path id="hsinchu" class="city-path" d="M 145 135 L 165 125 L 185 130 L 190 150 L 175 165 L 155 160 Z"/>
+                        
+                        <!-- 苗栗縣 -->
+                        <path id="miaoli" class="city-path" d="M 155 170 L 175 165 L 195 175 L 200 195 L 180 210 L 160 200 Z"/>
+                        
+                        <!-- 台中市 -->
+                        <path id="taichung" class="city-path" d="M 165 215 L 185 205 L 210 210 L 225 230 L 220 255 L 195 265 L 170 255 L 160 235 Z"/>
+                        
+                        <!-- 彰化縣 -->
+                        <path id="changhua" class="city-path" d="M 170 260 L 190 252 L 210 258 L 210 280 L 190 290 L 170 285 Z"/>
+                        
+                        <!-- 南投縣 -->
+                        <path id="nantou" class="city-path" d="M 215 220 L 235 215 L 255 230 L 260 260 L 245 285 L 220 280 L 210 255 Z"/>
+                        
+                        <!-- 雲林縣 -->
+                        <path id="yunlin" class="city-path" d="M 165 295 L 185 287 L 210 290 L 215 310 L 195 325 L 170 318 Z"/>
+                        
+                        <!-- 嘉義縣市 -->
+                        <path id="chiayi" class="city-path" d="M 170 325 L 190 318 L 215 325 L 220 350 L 200 365 L 175 355 Z"/>
+                        
+                        <!-- 台南市 -->
+                        <path id="tainan" class="city-path" d="M 175 365 L 200 357 L 225 365 L 235 390 L 220 410 L 190 405 L 170 385 Z"/>
+                        
+                        <!-- 高雄市 -->
+                        <path id="kaohsiung" class="city-path" d="M 180 415 L 205 408 L 235 420 L 250 450 L 245 485 L 220 505 L 190 495 L 170 465 L 165 435 Z"/>
+                        
+                        <!-- 屏東縣 -->
+                        <path id="pingtung" class="city-path" d="M 185 510 L 210 500 L 230 515 L 235 545 L 220 565 L 200 560 L 185 540 Z"/>
+                        
+                        <!-- 宜蘭縣 -->
+                        <path id="yilan" class="city-path" d="M 260 70 L 285 65 L 305 85 L 310 120 L 295 145 L 270 135 L 255 110 Z"/>
+                        
+                        <!-- 花蓮縣 -->
+                        <path id="hualien" class="city-path" d="M 270 160 L 295 155 L 320 175 L 330 220 L 325 280 L 305 310 L 280 300 L 265 260 L 260 210 Z"/>
+                        
+                        <!-- 台東縣 -->
+                        <path id="taitung" class="city-path" d="M 270 320 L 295 315 L 315 340 L 320 390 L 315 445 L 295 480 L 270 470 L 255 430 L 250 375 Z"/>
+                        
+                        <!-- 澎湖縣 -->
+                        <path id="penghu" class="city-path" d="M 80 310 L 95 305 L 110 315 L 110 335 L 95 345 L 80 340 Z"/>
+                        
+                        <!-- 金門縣 -->
+                        <path id="kinmen" class="city-path" d="M 40 250 L 55 245 L 65 255 L 62 270 L 48 272 L 38 265 Z"/>
+                        
+                        <!-- 連江縣(馬祖) -->
+                        <path id="lienchiang" class="city-path" d="M 45 90 L 58 88 L 65 98 L 62 110 L 50 112 L 43 105 Z"/>
+                    </svg>
+                    
+                    <div id="cityInfoCard" class="city-info">
+                        <h3 id="cityName">台北市</h3>
+                        <div class="city-info-item">
+                            <span class="city-info-label">人口：</span>
+                            <span id="cityPopulation">約 260 萬人</span>
+                        </div>
+                        <div class="city-info-item">
+                            <span class="city-info-label">面積：</span>
+                            <span id="cityArea">271.8 km²</span>
+                        </div>
+                        <div class="city-info-item">
+                            <span class="city-info-label">特色：</span>
+                            <span id="cityFeature">中華民國首都，政經文化中心</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <section id="taipei-section" class="city-section">
+                    <h2>台北市</h2>
+                    <p>台北市是中華民國首都及最大城市，位於台灣北部的台北盆地，四周均與新北市接壤。全市下轄12個區，總面積271.8平方公里，人口約260萬人，為台灣第四大城市。</p>
+                    
+                    <h3>歷史與發展</h3>
+                    <p>台北自清代以來即為台灣北部的政治、經濟中心。1875年欽差大臣沈葆楨在此建立台北府，1894年台灣巡撫劉銘傳更將台灣首府遷至台北。日治時期，台北成為台灣總督府所在地，奠定了現代化都市的基礎。</p>
+                    
+                    <h3>經濟與文化</h3>
+                    <p>台北市是台灣的政治、經濟、文化、教育中心，擁有眾多跨國企業總部、金融機構和商業中心。著名地標包括台北101、國父紀念館、中正紀念堂等。台北也以豐富的夜市文化、故宮博物院的珍貴文物聞名於世。</p>
+                    
+                    <h3>交通樞紐</h3>
+                    <p>台北捷運系統四通八達，連接市區各重要地點。台北車站為台灣鐵路、高鐵、捷運三鐵共構的交通樞紐，松山機場和桃園國際機場則提供國內外航空服務。</p>
+                </section>
+                
+                <section id="taichung-section" class="city-section">
+                    <h2>台中市</h2>
+                    <p>台中市位於台灣中部，是台灣第二大城市，也是中台灣的政治、經濟、文化中心。全市面積2,215平方公里，人口約282萬人，是台灣人口第二多的城市。</p>
+                    
+                    <h3>地理位置</h3>
+                    <p>台中市地處台灣中心位置，氣候宜人，四季如春。市區位於台中盆地，東側有中央山脈屏障，西臨台灣海峽，地理位置優越，自古即為台灣中部的交通要道。</p>
+                    
+                    <h3>文化特色</h3>
+                    <p>台中擁有豐富的文化資產，包括台中公園、台中火車站（古蹟）、彩虹眷村等著名景點。逢甲夜市、一中商圈等是年輕人喜愛的聚集地。台中國家歌劇院更是世界級的建築地標。</p>
+                    
+                    <h3>產業發展</h3>
+                    <p>台中是台灣精密機械、航太、光電產業的重鎮，中科園區聚集了眾多高科技產業。此外，台中港是台灣第二大港，也是中部地區重要的貿易門戶。</p>
+                    
+                    <h3>美食天堂</h3>
+                    <p>台中以美食聞名，太陽餅、鳳梨酥等傳統糕餅是著名伴手禮。珍珠奶茶發源於台中，逢甲夜市更是台灣創意小吃的發源地之一。</p>
+                </section>
+                
+                <section id="kaohsiung-section" class="city-section">
+                    <h2>高雄市</h2>
+                    <p>高雄市位於台灣南部，是台灣第三大城市，也是南台灣的政治、經濟、文化中心。全市面積2,952平方公里，人口約275萬人，擁有台灣最大的國際港口。</p>
+                    
+                    <h3>港都風情</h3>
+                    <p>高雄港是台灣最大的國際商港，也是世界前十大貨櫃港之一。港都的海洋文化孕育了高雄獨特的城市性格，西子灣、旗津等海岸景點是市民休閒的好去處。</p>
+                    
+                    <h3>工業重鎮</h3>
+                    <p>高雄是台灣重工業的核心，石化、鋼鐵、造船等產業發達。近年來積極轉型，發展觀光、文創、綠能等產業，並打造亞洲新灣區，成為南台灣的新地標。</p>
+                    
+                    <h3>觀光景點</h3>
+                    <p>高雄擁有豐富的觀光資源，愛河、蓮池潭、駁二藝術特區、旗津海岸等都是著名景點。佛光山、義大世界等也吸引大量遊客。高雄85大樓曾是台灣第一高樓，至今仍是高雄的地標建築。</p>
+                    
+                    <h3>多元文化</h3>
+                    <p>高雄是個移民城市，融合了閩南、客家、原住民、外省等多元文化。六合夜市、瑞豐夜市等提供豐富的南台灣小吃。高雄人熱情開朗的性格，也為這座城市增添獨特魅力。</p>
+                </section>
+            </div>
+        </div>
+    </div> 
+    
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        $(document).ready(function() {
+            console.log('jQuery and Bootstrap loaded successfully!');
+            
+            // 城市資料
+            const cityData = {
+                taipei: {
+                    name: '台北市',
+                    population: '約 260 萬人',
+                    area: '271.8 km²',
+                    feature: '中華民國首都，政經文化中心'
+                },
+                taichung: {
+                    name: '台中市',
+                    population: '約 282 萬人',
+                    area: '2,215 km²',
+                    feature: '台灣第二大城市，文化創意之都'
+                },
+                kaohsiung: {
+                    name: '高雄市',
+                    population: '約 275 萬人',
+                    area: '2,952 km²',
+                    feature: '南台灣第一大城，國際海港'
+                }
+            };
+            
+            // 更新地圖和城市資訊
+            function updateMapCity(cityId) {
+                // 移除所有活動狀態
+                $('.city-path').removeClass('active');
+                
+                // 如果有指定城市，設置為活動狀態
+                if (cityId && cityData[cityId]) {
+                    $(`#${cityId}`).addClass('active');
+                    
+                    // 更新城市資訊卡
+                    const data = cityData[cityId];
+                    $('#cityName').text(data.name);
+                    $('#cityPopulation').text(data.population);
+                    $('#cityArea').text(data.area);
+                    $('#cityFeature').text(data.feature);
+                    $('#cityInfoCard').addClass('show');
+                } else {
+                    $('#cityInfoCard').removeClass('show');
+                }
+            }
+            
+            // 使用 Intersection Observer 偵測哪個 section 在視窗中
+            const sections = document.querySelectorAll('.city-section');
+            
+            const observerOptions = {
+                threshold: 0.5, // 當 section 有 50% 進入視窗時觸發
+                rootMargin: '-100px 0px -100px 0px'
+            };
+            
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionId = entry.target.id;
+                        const cityId = sectionId.replace('-section', '');
+                        updateMapCity(cityId);
+                    }
+                });
+            }, observerOptions);
+            
+            // 觀察所有 section
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+            
+            // 地圖上的城市點擊事件
+            $('.city-path').on('click', function() {
+                const cityId = $(this).attr('id');
+                if (cityData[cityId]) {
+                    // 滾動到對應的 section
+                    const section = $(`#${cityId}-section`);
+                    if (section.length) {
+                        $('html, body').animate({
+                            scrollTop: section.offset().top
+                        }, 600);
+                    }
+                }
+            });
+            
+            // 初始化：檢查當前在哪個 section
+            setTimeout(() => {
+                const viewportMiddle = $(window).scrollTop() + $(window).height() / 2;
+                
+                sections.forEach(section => {
+                    const sectionTop = $(section).offset().top;
+                    const sectionBottom = sectionTop + $(section).height();
+                    
+                    if (viewportMiddle >= sectionTop && viewportMiddle <= sectionBottom) {
+                        const sectionId = $(section).attr('id');
+                        const cityId = sectionId.replace('-section', '');
+                        updateMapCity(cityId);
+                    }
+                });
+            }, 100);
+        });
+    </script>
+    
+</body>
+</html>

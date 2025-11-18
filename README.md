@@ -42,11 +42,69 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 ### Data Visualization and Charts
 - [data01_hbar_copilot.html](./data-visualization/data01_hbar_copilot.html) - Data visualization with horizontal bar chart and line plot (Copilot refined version) (Added: 2025-11-18)
 
+### Interactive Maps
+- [map02_topojson_d3_copilot.html](./map02_topojson_d3_copilot.html) - Taiwan county map with D3.js and TopoJSON, scroll-triggered interactions (Added: 2025-11-18)
+- [map03_leaflet.html](./map03_leaflet.html) - Leaflet-based Taiwan city map with OpenStreetMap tiles and circle markers (Added: 2025-11-18)
+- [map04_leaflet_topojson.html](./map04_leaflet_topojson.html) - Leaflet + TopoJSON Taiwan county area map with polygon boundaries (Added: 2025-11-18)
+
 ---
 
 ## Project Features
 
-### Latest: Data Visualization with Charts (Updated: 2025-11-18)
+### Latest: Interactive Taiwan Maps (Updated: 2025-11-18)
+
+#### map02_topojson_d3_copilot.html
+**Key Features:**
+- **D3.js + TopoJSON Integration**: Renders Taiwan county boundaries from `county_moi.json`
+- **Scroll-Triggered Interactions**: Map highlights cities as you scroll through content sections
+- **Dynamic City Info Card**: Displays population, area, and features with smooth animations
+- **Geo Projection**: Uses `d3.geoMercator()` for accurate Taiwan map projection
+- **Responsive Positioning**: Info card positioned dynamically below highlighted counties using `getBBox()`
+
+**Technologies:**
+- D3.js v7.8.5 for SVG manipulation and geo projections
+- TopoJSON v3.0.2 for compressed topology data
+- Intersection Observer API for scroll detection
+- Bootstrap 5 for layout (50% fixed map + 50% scrolling content)
+
+#### map03_leaflet.html
+**Key Features:**
+- **Leaflet Map Library**: Interactive web mapping with OpenStreetMap tiles
+- **City Markers**: Circle markers for Taipei, Taichung, and Kaohsiung
+- **Range Circles**: 15km radius circles highlighting city areas
+- **Smooth Animations**: `map.flyTo()` transitions when scrolling to city sections
+- **Active State Styling**: Markers enlarge and change color when active
+
+**Technologies:**
+- Leaflet 1.9.4 for interactive mapping
+- OpenStreetMap tile layers
+- Custom CSS for marker styling
+- Intersection Observer for scroll-based activation
+
+#### map04_leaflet_topojson.html
+**Key Features:**
+- **Hybrid Approach**: Combines Leaflet's interactivity with TopoJSON county boundaries
+- **Polygon Area Rendering**: All Taiwan counties displayed as colored polygons
+- **Clickable Counties**: Click any county to jump to its description section
+- **Hover Effects**: Counties highlight on mouseover with opacity and stroke changes
+- **Active County Highlighting**: Current county shows with distinct color and thicker border
+- **Popup Information**: Click counties to view names and features
+
+**Technologies:**
+- Leaflet 1.9.4 map engine
+- L.geoJSON() for rendering TopoJSON features
+- D3.js + topojson.js for data processing
+- CartoDB light basemap for clean background
+- Dynamic styling with county-specific colors
+
+**Comparison:**
+- **map02 (D3.js)**: Best for custom SVG styling and precise geo projections
+- **map03 (Leaflet + Markers)**: Ideal for point-based city locations with real map tiles
+- **map04 (Leaflet + TopoJSON)**: Perfect for area/polygon visualizations with full map interactivity
+
+---
+
+### Data Visualization with Charts (Updated: 2025-11-18)
 
 #### data01_hbar_copilot.html
 **Key Features:**

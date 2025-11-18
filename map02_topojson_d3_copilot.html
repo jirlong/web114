@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Taiwan Interactive Map with D3.js">
+    <meta name="author" content="">
+    <title>台灣互動地圖</title>
+    
+    <!-- D3.js and TopoJSON -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #67b26f;
+            --hover-color: #5ba3f5;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+        
+        #map-container {
+            position: fixed;
+            width: 50%;
+            height: 100vh;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            overflow: visible;
+        }
+        
+        #map-container svg {
+            width: 90%;
+            max-width: 600px;
+            height: auto;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+            position: relative;
+        }
+        
+        .map-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .county-path {
+            fill: #e9ecef;
+            stroke: #fff;
+            stroke-width: 1.5;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        
+        .county-path:hover {
+            fill: var(--hover-color);
+            opacity: 0.9;
+            stroke-width: 2;
+        }
+        
+        .county-path.active {
+            fill: var(--secondary-color);
+            stroke: var(--primary-color);
+            stroke-width: 2.5;
+            opacity: 1;
+        }
+        
+        .city-info {
+            position: absolute;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            padding: 15px 20px;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            max-width: 280px;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            border: 2px solid var(--secondary-color);
+        }
+        
+        .city-info.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .city-info h3 {
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-size: 1.3rem;
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 8px;
+        }
+        
+        .city-info-item {
+            margin: 8px 0;
+            color: #555;
+            font-size: 0.95rem;
+        }
+        
+        .city-info-label {
+            font-weight: 600;
+            color: #333;
+            display: inline-block;
+            min-width: 80px;
+        }
+        
+        #content-container {
+            position: relative;
+            width: 50%;
+            margin-left: 50%;
+            min-height: 100vh;
+        }
+        
+        .city-section {
+            min-height: 100vh;
+            padding: 80px 60px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .city-section h2 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .city-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+            text-align: justify;
+        }
+        
+        .city-section h3 {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        #taipei-section {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        #taichung-section {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+        }
+        
+        #kaohsiung-section {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            #map-container, #content-container {
+                width: 100%;
+                position: relative;
+                margin-left: 0;
+            }
+            
+            #map-container {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- 地圖容器 -->
+    <div id="map-container">
+        <h2 class="map-title">台灣縣市地圖</h2>
+        <div style="position: relative; width: 90%; max-width: 600px;">
+            <svg id="taiwan-map" preserveAspectRatio="xMidYMid meet" aria-label="Taiwan County Map"></svg>
+            
+            <div id="cityInfoCard" class="city-info">
+                <h3 id="cityName">台北市</h3>
+                <div class="city-info-item">
+                    <span class="city-info-label">人口：</span>
+                    <span id="cityPopulation">約 260 萬人</span>
+                </div>
+                <div class="city-info-item">
+                    <span class="city-info-label">面積：</span>
+                    <span id="cityArea">271.8 km²</span>
+                </div>
+                <div class="city-info-item">
+                    <span class="city-info-label">特色：</span>
+                    <span id="cityFeature">中華民國首都，政經文化中心</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 內容容器 -->
+    <div id="content-container">
+                <section id="taipei-section" class="city-section">
+                    <h2>台北市</h2>
+                    <p>台北市是中華民國首都及最大城市，位於台灣北部的台北盆地，四周均與新北市接壤。全市下轄12個區，總面積271.8平方公里，人口約260萬人，為台灣第四大城市。</p>
+                    
+                    <h3>歷史與發展</h3>
+                    <p>台北自清代以來即為台灣北部的政治、經濟中心。1875年欽差大臣沈葆楨在此建立台北府，1894年台灣巡撫劉銘傳更將台灣首府遷至台北。日治時期，台北成為台灣總督府所在地，奠定了現代化都市的基礎。</p>
+                    
+                    <h3>經濟與文化</h3>
+                    <p>台北市是台灣的政治、經濟、文化、教育中心，擁有眾多跨國企業總部、金融機構和商業中心。著名地標包括台北101、國父紀念館、中正紀念堂等。台北也以豐富的夜市文化、故宮博物院的珍貴文物聞名於世。</p>
+                    
+                    <h3>交通樞紐</h3>
+                    <p>台北捷運系統四通八達，連接市區各重要地點。台北車站為台灣鐵路、高鐵、捷運三鐵共構的交通樞紐，松山機場和桃園國際機場則提供國內外航空服務。</p>
+                </section>
+                
+                <section id="taichung-section" class="city-section">
+                    <h2>台中市</h2>
+                    <p>台中市位於台灣中部，是台灣第二大城市，也是中台灣的政治、經濟、文化中心。全市面積2,215平方公里，人口約282萬人，是台灣人口第二多的城市。</p>
+                    
+                    <h3>地理位置</h3>
+                    <p>台中市地處台灣中心位置，氣候宜人，四季如春。市區位於台中盆地，東側有中央山脈屏障，西臨台灣海峽，地理位置優越，自古即為台灣中部的交通要道。</p>
+                    
+                    <h3>文化特色</h3>
+                    <p>台中擁有豐富的文化資產，包括台中公園、台中火車站（古蹟）、彩虹眷村等著名景點。逢甲夜市、一中商圈等是年輕人喜愛的聚集地。台中國家歌劇院更是世界級的建築地標。</p>
+                    
+                    <h3>產業發展</h3>
+                    <p>台中是台灣精密機械、航太、光電產業的重鎮，中科園區聚集了眾多高科技產業。此外，台中港是台灣第二大港，也是中部地區重要的貿易門戶。</p>
+                    
+                    <h3>美食天堂</h3>
+                    <p>台中以美食聞名，太陽餅、鳳梨酥等傳統糕餅是著名伴手禮。珍珠奶茶發源於台中，逢甲夜市更是台灣創意小吃的發源地之一。</p>
+                </section>
+                
+                <section id="kaohsiung-section" class="city-section">
+                    <h2>高雄市</h2>
+                    <p>高雄市位於台灣南部，是台灣第三大城市，也是南台灣的政治、經濟、文化中心。全市面積2,952平方公里，人口約275萬人，擁有台灣最大的國際港口。</p>
+                    
+                    <h3>港都風情</h3>
+                    <p>高雄港是台灣最大的國際商港，也是世界前十大貨櫃港之一。港都的海洋文化孕育了高雄獨特的城市性格，西子灣、旗津等海岸景點是市民休閒的好去處。</p>
+                    
+                    <h3>工業重鎮</h3>
+                    <p>高雄是台灣重工業的核心，石化、鋼鐵、造船等產業發達。近年來積極轉型，發展觀光、文創、綠能等產業，並打造亞洲新灣區，成為南台灣的新地標。</p>
+                    
+                    <h3>觀光景點</h3>
+                    <p>高雄擁有豐富的觀光資源，愛河、蓮池潭、駁二藝術特區、旗津海岸等都是著名景點。佛光山、義大世界等也吸引大量遊客。高雄85大樓曾是台灣第一高樓，至今仍是高雄的地標建築。</p>
+                    
+                    <h3>多元文化</h3>
+                    <p>高雄是個移民城市，融合了閩南、客家、原住民、外省等多元文化。六合夜市、瑞豐夜市等提供豐富的南台灣小吃。高雄人熱情開朗的性格，也為這座城市增添獨特魅力。</p>
+                </section>
+            </div>
+        </div>
+    </div> 
+    
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // 城市資料
+        const cityData = {
+            '臺北市': {
+                name: '台北市',
+                population: '約 260 萬人',
+                area: '271.8 km²',
+                feature: '中華民國首都，政經文化中心'
+            },
+            '臺中市': {
+                name: '台中市',
+                population: '約 282 萬人',
+                area: '2,215 km²',
+                feature: '台灣第二大城市，文化創意之都'
+            },
+            '高雄市': {
+                name: '高雄市',
+                population: '約 275 萬人',
+                area: '2,952 km²',
+                feature: '南台灣第一大城，國際海港'
+            }
+        };
+        
+        // 城市名稱對應
+        const cityMapping = {
+            '臺北市': 'taipei',
+            '臺中市': 'taichung',
+            '高雄市': 'kaohsiung'
+        };
+        
+        // 當前活動城市
+        let currentActiveCity = null;
+        
+        // 更新地圖和城市資訊
+        function updateMapCity(countyName) {
+            // 移除所有活動狀態
+            d3.selectAll('.county-path').classed('active', false);
+            
+            // 如果有指定城市且有對應資料
+            if (countyName && cityData[countyName]) {
+                // 設置為活動狀態
+                const activePath = d3.select(`path[data-county="${countyName}"]`);
+                activePath.classed('active', true);
+                
+                // 取得該縣市的中心點座標
+                const pathNode = activePath.node();
+                if (pathNode) {
+                    const bbox = pathNode.getBBox();
+                    const centerX = bbox.x + bbox.width / 2;
+                    const centerY = bbox.y + bbox.height;
+                    
+                    // 更新城市資訊卡
+                    const data = cityData[countyName];
+                    document.getElementById('cityName').textContent = data.name;
+                    document.getElementById('cityPopulation').textContent = data.population;
+                    document.getElementById('cityArea').textContent = data.area;
+                    document.getElementById('cityFeature').textContent = data.feature;
+                    
+                    const infoCard = document.getElementById('cityInfoCard');
+                    infoCard.style.left = `${centerX}px`;
+                    infoCard.style.top = `${centerY + 10}px`;
+                    infoCard.style.transform = 'translateX(-50%)';
+                    infoCard.classList.add('show');
+                    
+                    currentActiveCity = countyName;
+                }
+            } else {
+                document.getElementById('cityInfoCard').classList.remove('show');
+                currentActiveCity = null;
+            }
+        }
+        
+        // 載入並繪製地圖
+        async function loadMap() {
+            try {
+                // 載入 TopoJSON 資料
+                const topoData = await d3.json('county_moi.json');
+                const features = topojson.feature(topoData, topoData.objects.COUNTY_MOI_1081121).features;
+                
+                // 設定 SVG 尺寸
+                const svg = d3.select("#taiwan-map");
+                const width = 600;
+                const height = 800;
+                svg.attr("viewBox", `0 0 ${width} ${height}`);
+                
+                // 地圖投影
+                const projection = d3.geoMercator()
+                    .center([121, 24])
+                    .scale(8000)
+                    .translate([width / 2, height / 2]);
+                
+                const path = d3.geoPath().projection(projection);
+                
+                // 繪製地圖
+                svg.selectAll("path")
+                    .data(features)
+                    .join("path")
+                    .attr("d", path)
+                    .attr("class", "county-path")
+                    .attr("data-county", d => d.properties.COUNTYNAME)
+                    .on("click", function(event, d) {
+                        const countyName = d.properties.COUNTYNAME;
+                        const sectionId = cityMapping[countyName];
+                        
+                        if (sectionId) {
+                            // 滾動到對應的 section
+                            const section = document.getElementById(`${sectionId}-section`);
+                            if (section) {
+                                section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            }
+                        }
+                    })
+                    .on("mouseenter", function(event, d) {
+                        if (!d3.select(this).classed('active')) {
+                            d3.select(this).style("opacity", 0.9);
+                        }
+                    })
+                    .on("mouseleave", function(event, d) {
+                        if (!d3.select(this).classed('active')) {
+                            d3.select(this).style("opacity", 0.7);
+                        }
+                    });
+                
+                console.log('地圖載入成功');
+                
+                // 初始化：檢查當前應該顯示哪個城市
+                setTimeout(checkCurrentSection, 500);
+                
+            } catch (error) {
+                console.error('載入地圖失敗:', error);
+            }
+        }
+        
+        // 檢查當前 section
+        function checkCurrentSection() {
+            const sections = document.querySelectorAll('.city-section');
+            const viewportMiddle = window.scrollY + window.innerHeight / 2;
+            
+            sections.forEach(section => {
+                const rect = section.getBoundingClientRect();
+                const sectionTop = window.scrollY + rect.top;
+                const sectionBottom = sectionTop + section.offsetHeight;
+                
+                if (viewportMiddle >= sectionTop && viewportMiddle <= sectionBottom) {
+                    const sectionId = section.id;
+                    const cityId = sectionId.replace('-section', '');
+                    
+                    // 找到對應的縣市名稱
+                    for (const [countyName, mappingId] of Object.entries(cityMapping)) {
+                        if (mappingId === cityId) {
+                            updateMapCity(countyName);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
+        
+        // 使用 Intersection Observer 偵測哪個 section 在視窗中
+        function setupObserver() {
+            const sections = document.querySelectorAll('.city-section');
+            
+            const observerOptions = {
+                threshold: 0.5,
+                rootMargin: '-100px 0px -100px 0px'
+            };
+            
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const sectionId = entry.target.id;
+                        const cityId = sectionId.replace('-section', '');
+                        
+                        // 找到對應的縣市名稱
+                        for (const [countyName, mappingId] of Object.entries(cityMapping)) {
+                            if (mappingId === cityId) {
+                                updateMapCity(countyName);
+                                break;
+                            }
+                        }
+                    }
+                });
+            }, observerOptions);
+            
+            // 觀察所有 section
+            sections.forEach(section => {
+                sectionObserver.observe(section);
+            });
+        }
+        
+        // 當 DOM 載入完成後執行
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMap();
+            setupObserver();
+            
+            // 監聽滾動事件作為備用
+            let scrollTimeout;
+            window.addEventListener('scroll', function() {
+                clearTimeout(scrollTimeout);
+                scrollTimeout = setTimeout(checkCurrentSection, 100);
+            });
+        });
+    </script>
+    
+</body>
+</html>
