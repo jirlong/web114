@@ -22,8 +22,9 @@
         }
 
         /* 確保所有 scene 容器不會超出視窗（除了 #scene04） */
+        /* 確保所有 scene 容器不會超出視窗（除了 #scene04） */
         [id^="scene"]:not(#scene04) {
-            overflow-x: hidden;
+            overflow: hidden;
             width: 100%;
             max-width: 100%;
         }
@@ -319,29 +320,42 @@
                         }
 
                     } else {
-                        // 安全地獲取下一個元素的位置（如果存在）
+                        // Vertical parallax logic
                         var $nextParent = $(this).parent().next();
                         var next_pos = $nextParent.length > 0 && $nextParent.offset() ? $nextParent.offset().top : parent_pos + parent_height + winh;
 
-                        if (scrolled > parent_pos - winh * 0.25 && scrolled < next_pos - winh * 0.25) {
+                        // Calculate the full scrollable range: from when section enters bottom to when it leaves top
+                        var startScroll = parent_pos - winh;
+                        var endScroll = parent_pos + parent_height;
+
+                        if (scrolled > startScroll && scrolled < endScroll) {
+                            // Calculate progress from 0 to 1 across the full visibility range
+                            var progress = (scrolled - startScroll) / (endScroll - startScroll);
+
+                            // Clamp progress to 0-1 just in case
+                            progress = Math.max(0, Math.min(progress, 1));
 
                             if ($(this).attr("data-left1")) {
-                                $(this).css('left', (($(this).data('left2') - $(this).data('left1')) * parent_scrolled / parent_height + $(this).data('left1')) + '%    ');
+                                var val = ($(this).data('left2') - $(this).data('left1')) * progress + $(this).data('left1');
+                                $(this).css('left', val + '%');
                             }
                             if ($(this).attr("data-top1")) {
-                                $(this).css('top', (($(this).data('top2') - $(this).data('top1')) * parent_scrolled / parent_height + $(this).data('top1')) + '%');
+                                var val = ($(this).data('top2') - $(this).data('top1')) * progress + $(this).data('top1');
+                                $(this).css('top', val + '%');
                             }
                             if ($(this).attr("data-width1")) {
-                                $(this).css('width', (($(this).data('width2') - $(this).data('width1')) * parent_scrolled / parent_height + $(this).data('width1')) + '%');
+                                var val = ($(this).data('width2') - $(this).data('width1')) * progress + $(this).data('width1');
+                                $(this).css('width', val + '%');
                             }
                             if ($(this).attr("data-height1")) {
-                                $(this).css('height', (($(this).data('height2') - $(this).data('height1')) * parent_scrolled / parent_height + $(this).data('height1')) + '%');
+                                var val = ($(this).data('height2') - $(this).data('height1')) * progress + $(this).data('height1');
+                                $(this).css('height', val + '%');
                             }
                             if ($(this).attr("data-bottom1")) {
-                                $(this).css('bottom', (($(this).data('bottom2') - $(this).data('bottom1')) * parent_scrolled / parent_height + $(this).data('bottom1')) + '%');
+                                var val = ($(this).data('bottom2') - $(this).data('bottom1')) * progress + $(this).data('bottom1');
+                                $(this).css('bottom', val + '%');
                             }
                         }
-
                     }
 
                 });
