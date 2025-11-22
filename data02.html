@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>台灣縣市人口 — Horizontal Bar</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body { padding: 20px; }
+    .bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+    .label { width: 140px; font-weight: 600; }
+    .bar { flex: 1; background: #e9ecef; border-radius: 6px; height: 36px; position: relative; overflow: hidden; }
+    /* initial hidden state: slide from left and grow width */
+    .bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg,#4e79a7,#59a14f);
+      border-radius: 6px 0 0 6px;
+      display:flex;
+      align-items:center;
+      padding-left:12px;
+      color:#fff;
+      font-weight:700;
+      white-space:nowrap;
+      transform: translateX(-18px);
+      opacity: 0;
+      width: 0%;
+      transition: width 700ms cubic-bezier(.2,.9,.2,1), transform 600ms ease, opacity 600ms ease;
+    }
+    /* when triggered */
+    .bar-inner.in {
+      transform: translateX(0);
+      opacity: 1;
+      animation: slideIn 600ms ease both;
+    }
+    @keyframes slideIn {
+      from { transform: translateX(-18px); opacity: 0; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+
+    .small-note { color:#666; font-size:0.9rem; }
+    @media (max-width: 767px) { .label { width: 110px; } }
+  </style>
+</head>
+<body>
+
+  <!-- opening banner (moved to top) -->
+  <div class="vh-100 bg-primary d-flex align-items-center justify-content-center text-white">
+    <div class="text-center">
+      <h1 class="display-4">台灣人口分佈</h1>
+      <p class="lead">示意水平長條圖：由多到少排列</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1 class="mb-3">台灣縣市人口（示意）</h1>
+    <p class="small-note">左側以水平長條圖顯示人口數，從多到少排列；右側為對應資料表。</p>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h4>人口長條圖</h4>
+        <div id="bars" aria-live="polite"></div>
+      </div>
+
+      <div class="col-md-6">
+        <h4>資料表（由多到少）</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-striped" id="pop-table">
+            <thead>
+              <tr><th>縣市</th><th class="text-end">人口數</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer / ending block (kept after content) -->
+  <div class="vh-100 bg-dark d-flex align-items-center justify-content-center text-white">
+    <div class="text-center">
+      <p class="mb-0">資料為示意值，僅供展示用途</p>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <h1 class="mb-3">台灣縣市人口（示意）</h1>
+    <p class="small-note">左側以水平長條圖顯示人口數，從多到少排列；右側為對應資料表。</p>
+
+    <div class="row">
+      <div class="col-md-6">
+        <h4>人口長條圖</h4>
+        <div id="bars" aria-live="polite"></div>
+      </div>
+
+      <div class="col-md-6">
+        <h4>資料表（由多到少）</h4>
+        <div class="table-responsive">
+          <table class="table table-sm table-striped" id="pop-table">
+            <thead>
+              <tr><th>縣市</th><th class="text-end">人口數</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- footer / ending block -->
+  <div class="vh-100 bg-dark d-flex align-items-center justify-content-center text-white">
+    <div class="text-center">
+      <p class="mb-0">資料為示意值，僅供展示用途</p>
+    </div>
+  </div>
+
+  <script>
+    // 1) Generated population data for each Taiwan county/city (approximate, demonstrated values)
+    const data = [
+      {name: '新北市', pop: 4010000},
+      {name: '台中市', pop: 2820000},
+      {name: '高雄市', pop: 2760000},
+      {name: '台北市', pop: 2640000},
+      {name: '桃園市', pop: 2230000},
+      {name: '台南市', pop: 1870000},
+      {name: '彰化縣', pop: 1260000},
+      {name: '屏東縣', pop: 780000},
+      {name: '雲林縣', pop: 690000},
+      {name: '新竹縣', pop: 580000},
+      {name: '苗栗縣', pop: 560000},
+      {name: '嘉義縣', pop: 510000},
+      {name: '南投縣', pop: 490000},
+      {name: '新竹市', pop: 450000},
+      {name: '宜蘭縣', pop: 460000},
+      {name: '基隆市', pop: 350000},
+      {name: '花蓮縣', pop: 320000},
+      {name: '嘉義市', pop: 270000},
+      {name: '台東縣', pop: 220000},
+      {name: '金門縣', pop: 140000},
+      {name: '澎湖縣', pop: 100000},
+      {name: '連江縣', pop: 13000}
+    ];
+
+    // 2) Sort descending by population
+    const sorted = data.slice().sort((a,b) => b.pop - a.pop);
+
+    // 3) Render horizontal bars (numbers shown on the bars)
+    const barsEl = document.getElementById('bars');
+    const maxPop = sorted[0].pop || 1;
+
+    sorted.forEach((item, idx) => {
+      const row = document.createElement('div');
+      row.className = 'bar-row';
+
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = item.name;
+
+      const barWrap = document.createElement('div');
+      barWrap.className = 'bar';
+
+      const inner = document.createElement('div');
+      inner.className = 'bar-inner';
+      // compute percentage width relative to largest
+      const pct = Math.round((item.pop / maxPop) * 10000) / 100; // percentage with 2 decimals
+      inner.dataset.target = pct; // store target width for later animation
+      inner.setAttribute('title', item.name + '：' + item.pop.toLocaleString());
+      inner.textContent = item.pop.toLocaleString();
+
+      barWrap.appendChild(inner);
+      row.appendChild(label);
+      row.appendChild(barWrap);
+
+      barsEl.appendChild(row);
+    });
+
+    // IntersectionObserver: trigger when #bars enters the central 50vh of the viewport
+    const observerOptions = {
+      root: null,
+      rootMargin: '-25vh 0px -25vh 0px', // central 50vh
+      threshold: 0.01
+    };
+
+    const onIntersect = (entries, obs) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const inners = entry.target.querySelectorAll('.bar-inner');
+          inners.forEach((el, i) => {
+            const target = el.dataset.target || '0';
+            // stagger the start slightly for nicer effect
+            setTimeout(() => {
+              el.style.width = target + '%';
+              el.classList.add('in');
+            }, i * 70);
+          });
+          // animation only once
+          obs.unobserve(entry.target);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(onIntersect, observerOptions);
+    const barsContainer = document.getElementById('bars');
+    if (barsContainer) observer.observe(barsContainer);
+
+    // 4) Populate right-side table
+    const tbody = document.querySelector('#pop-table tbody');
+    sorted.forEach(item => {
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td');
+      tdName.textContent = item.name;
+      const tdPop = document.createElement('td');
+      tdPop.className = 'text-end';
+      tdPop.textContent = item.pop.toLocaleString();
+      tr.appendChild(tdName);
+      tr.appendChild(tdPop);
+      tbody.appendChild(tr);
+    });
+  </script>
+
+</body>
+</html>

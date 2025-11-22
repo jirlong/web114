@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Simple Sticky Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .section {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        .section1 {
+            background-color: #333;
+        }
+        .section2 {
+            background-color: #666;
+            height: 200vh; /* 這個 section 有 200vh 高度 */
+        }
+        .sticky-box {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            background-color: red;
+            border: 10px solid blue;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+        .section3 {
+            background-color: #999;
+        }
+    </style>
+</head>
+<body>
+    <!-- Section 1: 前面的內容 -->
+    <div class="section section1">
+        <div>Section 1 (100vh)</div>
+    </div>
+    
+    <!-- Section 2: 包含 sticky 元素 -->
+    <div class="section section2">
+        <div class="sticky-box">
+            STICKY BOX<br>
+            應該粘在頂部
+        </div>
+    </div>
+    
+    <!-- Section 3: 後面的內容 -->
+    <div class="section section3">
+        <div>Section 3 (100vh)</div>
+    </div>
+</body>
+</html>
+

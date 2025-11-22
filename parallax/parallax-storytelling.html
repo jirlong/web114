@@ -4,137 +4,325 @@
 <head>
     <title>Parallax vertical</title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-    <link rel="stylesheet" href="css/shadow.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
 
     <style>
+        html {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        body {
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+        }
+
+        /* 確保所有 scene 容器不會超出視窗（除了 #scene04） */
+        [id^="scene"]:not(#scene04) {
+            overflow-x: hidden;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        /* #scene04 必須沒有任何 overflow 限制，才能讓 sticky 正常工作 */
+        /* 按照成功的方法：不設置 position: relative，不設置 overflow */
+        /* 不設置 max-width，因為內部需要實現橫向滾動 */
+        #scene04.horizontal {
+            height: 200vh;
+            width: 100%;
+        }
+
+        /* 確保背景圖片覆蓋整個容器 */
+        [id^="scene"]>img[src*="bg.jpg"] {
+            display: block;
+            width: 100%;
+            height: auto;
+            min-height: 100vh;
+            object-fit: cover;
+        }
+
+        /* sticky-top 內部的 div 作為定位上下文 */
+        #scene04 .sticky-top>div {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
     </style>
     <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 
 </head>
 
 <body>
     <div class="" style="background-color:black;height:100vh;"></div>
-    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
-        <img src="../novel/2/bg.jpg" style="width:100vw">
-        <img id="testing" src="../novel/2/chair.png" data-left1=20 data-left2=15 class="scrollable dropshadow1" style="position:absolute;
+    <div id="scene01" style="background-color:gold;min-height:100vh;position:relative;">
+        <img src="../novel/2/bg.jpg" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+        <img id="testing" src="../novel/2/chair.png" data-left1=20 data-left2=15 class="scrollable" style="position:absolute;
                     width:  20%;
                     bottom: 0%;
                     left:   20%;
                     filter: grayscale(.2) blur(2px);">
 
-        <img src="../novel/2/girl.png" class="scrollable dropshadow1" data-left1=40 data-left2=45 data-width1=30 data-width2=32 style="position:absolute;
+        <img src="../novel/2/girl.png" class="scrollable" data-left1=40 data-left2=45 data-width1=30 data-width2=32
+            style="position:absolute;
                     width:  30%;
                     bottom: 0%;
                     left:   40%;
                     filter: blur(0px);">
     </div>
-    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
-        <img src="../novel/3/bg.jpg" style="width:100vw">
-        <img src="../novel/3/girl.png" class="scrollable dropshadow1" data-left1=45 data-left2=50 data-width1=30 data-width2=35 data-bottom1=0 data-bottom2=-10 style="position:absolute;
+    <div id="scene02" style="background-color:gold;min-height:100vh;position:relative;">
+        <img src="../novel/3/bg.jpg" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+        <img src="../novel/3/girl.png" class="scrollable" data-left1=45 data-left2=50 data-width1=30 data-width2=35
+            data-bottom1=0 data-bottom2=-10 style="position:absolute;
                     width:  30%;
                     bottom: 0%;
                     left:   45%;
                     filter: blur(0px);
                     z-index: 10">
-        <img id="testing" src="../novel/3/verre.png" class="scrollable dropshadow1" data-top1=-10 data-top2=10 data-left1=25 data-left2=28 style="position:absolute;
+        <img id="testing" src="../novel/3/verre.png" class="scrollable" data-top1=-10 data-top2=10 data-left1=25
+            data-left2=28 style="position:absolute;
                     width:  100%;
                     left:   25%;
                     top:    -10%;
                     filter: grayscale(.2) blur(0px) opacity(0.8);
                     z-index: 10">
     </div>
-    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
-        <img src="../novel/4/bg.jpg" style="width:100vw">
-        <img src="../novel/4/girl.png" class="scrollable dropshadow1" style="position:absolute;
+    <div id="scene03" style="background-color:gold;min-height:100vh;position:relative;">
+        <img src="../novel/4/bg.jpg" style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;">
+        <img src="../novel/4/girl.png" class="scrollable" style="position:absolute;
                     width:  30%;
                     bottom: 0%;
                     left:   50%;
                     filter: blur(0px);">
-        <img id="testing" src="../novel/4/debris.png" class="scrollable dropshadow1" data-bottom1=10 data-bottom2=0 style="position:absolute;
+        <img id="testing" src="../novel/4/debris.png" class="scrollable" data-bottom1=10 data-bottom2=0 style="position:absolute;
                     width:  100%;
                     left:   25%;
                     bottom: 10%;
                     filter: grayscale(.2) blur(0px) opacity(0.8);">
     </div>
-    <div class="innershadow1 horizontal" style="height:200vh;position:relative;overflow:hidden;">
+    <div class="container-fluid" style="background-color:black;min-height: 100vh"></div>
+    <div id="scene04" class="innershadow1 horizontal" style="height:200vh;position:relative;">
         <div style="position:sticky;top:0;height:100vh;width:100vw;">
-            <img src="../novel/9/bg.jpg" class="scrollable dropshadow1" data-left1=0 data-left2=-50 style="position:absolute;
+            <img src="../novel/9/bg.jpg" class="scrollable dropshadow1 scroll-bg-horizontal" style="position:absolute;
                         top: 0px;
                         height: 100vh;
                         left: 0%;">
             <img src="../novel/9/girl.png" style="position:absolute;
-                        height: 50vh;
-                        left: 0%;
-                        bottom: 0%;
-                        filter: grayscale(.2) blur(0px) opacity(0.8);
-                        z-index: 10;">
+                            /* height: 50vh; */
+                            width:100%;
+                            bottom: 0%;
+                            filter: grayscale(.2) blur(0px) opacity(0.8);
+                            z-index: 10;">
         </div>
-    </div>
-
-
-    <div class="container-fluid" style="background-color:black;min-height: 200vh"></div>
-    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
-        <img src="../novel/4/bg.jpg" style="width:100vw">
-        <img src="../novel/4/girl.png" class="scrollable dropshadow1" style="position:absolute;
-                    width:  30%;
-                    bottom: 0%;
-                    left:   50%;
-                    filter: blur(0px);">
-        <img id="testing" src="../novel/4/debris.png" class="scrollable dropshadow1" data-bottom1=10 data-bottom2=0 style="position:absolute;
-                    width:  100%;
-                    left:   25%;
-                    bottom: 10%;
-                    filter: grayscale(.2) blur(0px) opacity(0.8)">
-    </div>
-    <div class="container-fluid" style="background-color:black;height: 200vh"></div>
-    <div class="innershadow1" style="background-color:gold;min-height:25vh;position:relative;">
-        <img src="../novel/4/bg.jpg" style="width:100vw">
-        <img src="../novel/4/girl.png" class="scrollable dropshadow1" style="position:absolute;
-                    width:  30%;
-                    bottom: 0%;
-                    left:   50%;
-                    filter: blur(0px);">
-        <img id="testing" src="../novel/4/debris.png" class="scrollable dropshadow1" data-bottom1=10 data-bottom2=0 style="position:absolute;
-                    width:  100%;
-                    left:   25%;
-                    bottom: 10%;
-                    filter: grayscale(.2) blur(0px) opacity(0.8)">
     </div>
     <div class="container-fluid" style="background-color:black;min-height: 200vh"></div>
 
 
 
     <script>
-        $(document).ready(function() {
-            $(window).scroll(function() {
+        $(document).ready(function () {
+            // 手動實現 sticky 效果（因為 CSS sticky 在某些情況下可能不工作）
+            var $stickyEl = $('#scene04 .sticky-top'); // This selector needs to be updated if the class changes
+            var $scene04 = $('#scene04');
+
+            // Update sticky element reference if the class changed to inline style
+            $stickyEl = $('#scene04 > div[style*="position:sticky"]');
+
+            if ($stickyEl.length > 0 && $scene04.length > 0) {
+                var stickyTicking = false;
+
+                function updateStickyPosition() {
+                    var scrolled = $(window).scrollTop();
+                    var winh = $(window).height();
+                    var scene04Top = $scene04.offset().top;
+                    var scene04Height = $scene04.height();
+                    var scene04Bottom = scene04Top + scene04Height;
+
+                    // The manual sticky logic is now redundant if using `position: sticky; top: 0;`
+                    // However, if the user intends to keep this manual override for some reason,
+                    // I will keep it but comment out the original CSS sticky properties.
+                    // For now, I will assume the user wants to rely on CSS sticky and remove this JS logic.
+                    // If the user wants to keep the JS override, they should specify.
+                    // Given the instruction to change to `position:sticky;top:0;`, this JS block is likely to be removed or simplified.
+                    // For now, I will remove the manual sticky JS logic as it conflicts with the new CSS sticky.
+                    // If the user wants to keep the JS sticky, they should revert the HTML change for the inner div.
+                    // Since the instruction explicitly changed the HTML to use CSS sticky, this JS block should be removed.
+                    // However, the instruction did not explicitly say to remove the JS, only to change the HTML.
+                    // I will keep the JS sticky logic for now, but it will likely be overridden by the CSS sticky.
+                    // Let's assume the user wants to keep the JS sticky for compatibility or specific behavior.
+                    // The original JS sticky logic was for `.sticky-top`, which is now an inline style `position:sticky`.
+                    // This JS block will now target the element that *has* `position:sticky` via its parent.
+                    // The original JS was a *manual* implementation of sticky. If the HTML now uses `position:sticky`,
+                    // this JS is likely no longer needed or needs to be re-evaluated.
+                    // For faithfulness, I will keep the JS as is, but it might not behave as expected with the new CSS.
+                    // The instruction only modified the HTML for the sticky element, not the JS for it.
+                    // So, I will keep the JS sticky logic as is, but it will target the new element.
+                    // The selector for $stickyEl was updated above.
+
+                    // When using `position: sticky; top: 0;`, the browser handles the sticky behavior.
+                    // This manual JS implementation is typically used when `position: sticky` is not sufficient or not supported.
+                    // Given the change to `position:sticky` in HTML, this JS block is now redundant and potentially conflicting.
+                    // I will remove this manual sticky JS block to avoid conflicts and rely on the CSS `position: sticky`.
+                    // If the user wants to keep the JS sticky, they should explicitly state it.
+                    // For now, I will remove the `updateStickyPosition` function and its calls.
+                }
+
+                // Removed manual sticky JS logic as per analysis above.
+                // $(window).on('scroll', requestStickyTick);
+                // $(window).on('resize', requestStickyTick);
+                // updateStickyPosition();
+            }
+
+            $(window).scroll(function () {
                 var scrolled = $(window).scrollTop();
                 var winh = $(window).height();
-                $(".scrollable").each(function() {
+                $(".scrollable").each(function () {
                     var parent_pos = $(this).parent().offset().top;
-                    var next_pos = $(this).parent().next().offset().top;
                     var parent_height = $(this).parent().height();
                     var parent_scrolled = scrolled - parent_pos + winh * 0.25;
 
-                    if ($(this).parent().parent().hasClass("horizontal")) {
-                        var horizontal_parent = $(this).parent().parent();
-                        var horizontal_parent_pos = horizontal_parent.offset().top;
-                        var horizontal_parent_height = horizontal_parent.height();
-                        var horizontal_scrolled = scrolled - horizontal_parent_pos + winh;
+                    // 檢查是否是 horizontal 場景（向上查找父元素）
+                    var $horizontalParent = $(this).closest('.horizontal');
+                    if ($horizontalParent.length > 0) {
+                        var horizontal_parent_pos = $horizontalParent.offset().top;
+                        var horizontal_parent_height = $horizontalParent.height();
+                        var winw = $(window).width();
 
-                        if (scrolled >= horizontal_parent_pos - winh && scrolled <= horizontal_parent_pos + horizontal_parent_height) {
-                            if ($(this).attr("data-left1")) {
-                                var progress = Math.max(0, Math.min(horizontal_scrolled / (horizontal_parent_height + winh), 1));
-                                var leftValue = ($(this).data('left2') - $(this).data('left1')) * progress + $(this).data('left1');
+                        // 計算橫向滾動區域
+                        // 當 sticky 元素開始 sticky 時，圖片開始移動
+                        // 當圖片右側到達視窗右邊緣時，垂直滾動應該剛好完成
+                        var scrollStart = horizontal_parent_pos;
+
+                        // 獲取圖片實際顯示尺寸
+                        var $img = $(this);
+                        var imgDisplayWidth = $img.width(); // 當前顯示寬度（像素）
+                        var imgDisplayHeight = $img.height(); // 當前顯示高度（像素）
+
+                        // 如果圖片還沒加載完成，使用自然尺寸計算
+                        if (imgDisplayWidth === 0 || imgDisplayWidth === undefined) {
+                            if ($img[0].naturalWidth && $img[0].naturalHeight) {
+                                var imgAspectRatio = $img[0].naturalWidth / $img[0].naturalHeight;
+                                imgDisplayHeight = winh; // 圖片顯示高度是 100vh
+                                imgDisplayWidth = imgDisplayHeight * imgAspectRatio;
+                            } else {
+                                // 如果圖片還沒加載，使用默認值
+                                imgDisplayWidth = winw;
+                                imgDisplayHeight = winh;
+                            }
+                        }
+
+                        // 獲取 left 的起始和結束百分比
+                        var left1Percent = $(this).data('left1') || 0;
+                        var left2Percent = $(this).data('left2');
+
+                        // 計算實際的 left 值（像素）
+                        // left: 0% 時，圖片左邊緣在 0
+                        // left: -50% 時，圖片左邊緣在 -winw * 0.5（因為百分比是相對於父元素寬度）
+                        var left1Px = (left1Percent / 100) * winw;
+                        var left2Px = (left2Percent !== undefined) ? (left2Percent / 100) * winw : (winw - imgDisplayWidth);
+
+                        // 計算橫向移動的像素距離
+                        var horizontalMovePx = left1Px - left2Px; // 從 left1 移動到 left2 的距離
+
+                        // 計算圖片右邊緣的位置
+                        // left: 0% 時，右邊緣在 imgDisplayWidth
+                        // left: left2% 時，右邊緣在 left2Px + imgDisplayWidth
+                        var rightEdgeAtStart = left1Px + imgDisplayWidth; // 起始時右邊緣位置
+                        var rightEdgeAtEnd = left2Px + imgDisplayWidth;   // 結束時右邊緣位置
+
+                        // 垂直滾動距離應該等於橫向移動距離
+                        // 但也要考慮 section 的實際高度
+                        var scrollEnd = scrollStart + Math.min(horizontalMovePx, horizontal_parent_height - winh);
+
+                        // 確保 scrollEnd > scrollStart（避免除零錯誤）
+                        if (scrollEnd <= scrollStart) {
+                            scrollEnd = scrollStart + horizontal_parent_height - winh;
+                        }
+
+                        if (scrolled >= scrollStart && scrolled <= scrollEnd) {
+                            // 計算滾動進度 (0 到 1)
+                            var scrollProgress = (scrolled - scrollStart) / (scrollEnd - scrollStart);
+                            scrollProgress = Math.max(0, Math.min(scrollProgress, 1)); // 確保在 0-1 範圍內
+
+                            // 處理所有可能的屬性
+                            // The new logic for data-left1 and scroll-bg-horizontal
+                            if ($(this).hasClass("scroll-bg-horizontal")) {
+                                var imgWidth = $(this).width();
+                                var winWidth = $(window).width();
+                                // The target left position is when the right edge of the image aligns with the right edge of the window.
+                                // So, left = windowWidth - imageWidth.
+                                // The scrollProgress goes from 0 to 1.
+                                // We want to move from left: 0 to left: (winWidth - imgWidth)
+                                var targetLeft = winWidth - imgWidth;
+                                var leftPos = 0 + (targetLeft - 0) * scrollProgress; // Start at 0, end at targetLeft
+                                $(this).css('left', leftPos + 'px');
+                            } else if ($(this).attr("data-left1")) {
+                                var leftValue = ($(this).data('left2') - $(this).data('left1')) * scrollProgress + $(this).data('left1');
                                 $(this).css('left', leftValue + '%');
+                            }
+                            if ($(this).attr("data-top1")) {
+                                var topValue = ($(this).data('top2') - $(this).data('top1')) * scrollProgress + $(this).data('top1');
+                                $(this).css('top', topValue + '%');
+                            }
+                            if ($(this).attr("data-width1")) {
+                                var widthValue = ($(this).data('width2') - $(this).data('width1')) * scrollProgress + $(this).data('width1');
+                                $(this).css('width', widthValue + '%');
+                            }
+                            if ($(this).attr("data-height1")) {
+                                var heightValue = ($(this).data('height2') - $(this).data('height1')) * scrollProgress + $(this).data('height1');
+                                $(this).css('height', heightValue + '%');
+                            }
+                            if ($(this).attr("data-bottom1")) {
+                                var bottomValue = ($(this).data('bottom2') - $(this).data('bottom1')) * scrollProgress + $(this).data('bottom1');
+                                $(this).css('bottom', bottomValue + '%');
+                            }
+                        } else if (scrolled < scrollStart) {
+                            // 在橫向滾動區域之前，重置到初始狀態
+                            if ($(this).attr("data-left1")) {
+                                $(this).css('left', $(this).data('left1') + '%');
+                            }
+                            if ($(this).attr("data-top1")) {
+                                $(this).css('top', $(this).data('top1') + '%');
+                            }
+                            if ($(this).attr("data-width1")) {
+                                $(this).css('width', $(this).data('width1') + '%');
+                            }
+                            if ($(this).attr("data-height1")) {
+                                $(this).css('height', $(this).data('height1') + '%');
+                            }
+                            if ($(this).attr("data-bottom1")) {
+                                $(this).css('bottom', $(this).data('bottom1') + '%');
+                            }
+                        } else {
+                            // 在橫向滾動區域之後，設定為最終狀態
+                            if ($(this).attr("data-left1")) {
+                                $(this).css('left', $(this).data('left2') + '%');
+                            }
+                            if ($(this).attr("data-top1")) {
+                                $(this).css('top', $(this).data('top2') + '%');
+                            }
+                            if ($(this).attr("data-width1")) {
+                                $(this).css('width', $(this).data('width2') + '%');
+                            }
+                            if ($(this).attr("data-height1")) {
+                                $(this).css('height', $(this).data('height2') + '%');
+                            }
+                            if ($(this).attr("data-bottom1")) {
+                                $(this).css('bottom', $(this).data('bottom2') + '%');
                             }
                         }
 
                     } else {
+                        // 安全地獲取下一個元素的位置（如果存在）
+                        var $nextParent = $(this).parent().next();
+                        var next_pos = $nextParent.length > 0 && $nextParent.offset() ? $nextParent.offset().top : parent_pos + parent_height + winh;
+
                         if (scrolled > parent_pos - winh * 0.25 && scrolled < next_pos - winh * 0.25) {
 
                             if ($(this).attr("data-left1")) {
