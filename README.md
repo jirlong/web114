@@ -41,6 +41,7 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 - [parallax-pure-css.html](./parallax/parallax-pure-css.html) - Pure CSS parallax demo
 - [parallax-storytelling-horizontal-chatgpt.html](./parallax/parallax-storytelling-horizontal-chatgpt.html) - Horizontal storytelling parallax (ChatGPT version) (Added: 2025-11-12)
 - [parallax-storytelling-horizontal-copilot.html](./parallax/parallax-storytelling-horizontal-copilot.html) - Horizontal storytelling parallax (Copilot refined version) (Added: 2025-11-12)
+- [mask-scroll-demo.html](./parallax/mask-scroll-demo.html) - Parallax mask effect with sticky scroll and mix-blend-mode (Added: 2025-11-24)
 
 ### Data Visualization and Charts
 - [data01_hbar_copilot.html](./data-visualization/data01_hbar_copilot.html) - Data visualization with horizontal bar chart and line plot (Copilot refined version) (Added: 2025-11-18)
@@ -246,6 +247,26 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 - Vanilla JavaScript `IntersectionObserver` API
 - CSS Variables for theming
 - Dynamic DOM manipulation for visualizers
+
+---
+
+### Parallax Mask Demo (Added: 2025-11-24)
+
+#### mask-scroll-demo.html
+**Key Features:**
+- **Sticky Positioning**: Uses `position: sticky` to keep the visual area fixed while scrolling.
+- **Scroll Mapping**: Maps vertical scroll progress to horizontal animation.
+- **CSS Masking**: Utilizes `mix-blend-mode: screen` to create a see-through text effect where black text reveals the background image.
+- **3-Layer Architecture**:
+  1.  **Outer Track**: 300vh scrollable area.
+  2.  **Middle Layer**: Sticky container with fixed background image.
+  3.  **Inner Mask**: 400vw wide layer with white background and black text.
+
+**Technologies:**
+- CSS `mix-blend-mode`
+- CSS `position: sticky`
+- Vanilla JavaScript Scroll Event
+- Bootstrap 5 for layout
 
 ---
 

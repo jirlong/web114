@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NTU Mask Scroll Demo</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            /* Prevent default horizontal scroll */
+        }
+
+        /* 1st div: 100vh bg-primary */
+        .section-intro {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        /* 2nd div: Main Showcase */
+        .showcase-outer {
+            height: 300vh;
+            /* 1) 300vh outer for scrolling */
+            position: relative;
+        }
+
+        .showcase-sticky {
+            height: 100vh;
+            /* 2) 100vh middle layer sticky-top */
+            position: sticky;
+            top: 0;
+            overflow: hidden;
+            /* Hide the overflow of the inner layer */
+        }
+
+        .middle-layer-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            /* Background Image (NTU style placeholder) */
+            background-image: url('../novel/0/bg.jpg');
+            background-attachment: fixed;
+            /* fixed style */
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+        }
+
+        .inner-layer-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 400vw;
+            /* 3) 100vh, 400vw inner layer (Wider for more text) */
+            background-color: white;
+            /* The mask color (opaque) */
+            color: black;
+            /* The "transparent" part via mix-blend-mode */
+            display: flex;
+            align-items: center;
+            /* Large NTU sans-serif bold */
+            font-family: 'Arial Black', 'Helvetica Neue', sans-serif;
+            font-weight: 900;
+            font-size: 40vw;
+            white-space: nowrap;
+            mix-blend-mode: screen;
+            /* Key to the mask effect */
+            z-index: 2;
+            padding-left: 10vw;
+            box-sizing: border-box;
+            will-change: transform;
+        }
+
+        /* 3rd div: 100vh footer bg-dark */
+        .section-footer {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 1st div -->
+    <div class="section-intro bg-primary">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-center">
+                    <h1 class="display-4 fw-bold mb-4">Parallax Mask Design Structure</h1>
+                    <p class="lead mb-4">This effect is built using a 3-layer architecture:</p>
+
+                    <div class="row text-start mt-5">
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 bg-white text-dark border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">1. Outer Layer (Track)</h5>
+                                    <p class="card-text small">A tall container (300vh) that provides the scrollable
+                                        area. It acts as the "track" for the animation timeline.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 bg-white text-dark border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">2. Middle Layer (Sticky)</h5>
+                                    <p class="card-text small">A sticky container (100vh) that holds the
+                                        <strong>Background Image</strong>. It stays fixed in the viewport while the user
+                                        scrolls through the outer track.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card h-100 bg-white text-dark border-0 shadow-sm">
+                                <div class="card-body">
+                                    <h5 class="card-title text-primary">3. Inner Layer (Mask)</h5>
+                                    <p class="card-text small">A wide element (200vw) that moves horizontally. Using
+                                        <code>mix-blend-mode: screen</code>, its <strong>Black Text</strong> becomes
+                                        transparent to reveal the middle layer's image.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="mt-5 opacity-75">↓ Scroll down to see how they interact ↓</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2nd div: Main Showcase -->
+    <div class="showcase-outer">
+        <div class="showcase-sticky">
+            <!-- Middle Layer: Background Image -->
+            <div class="middle-layer-bg"></div>
+
+            <!-- Inner Layer: Mask -->
+            <div class="inner-layer-mask" id="maskLayer">
+                NTU CAMPUS
+            </div>
+        </div>
+    </div>
+
+    <!-- 3rd div -->
+    <div class="section-footer bg-dark">
+        <h1>Footer Section</h1>
+    </div>
+
+    <!-- Bootstrap JS (Optional) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const outer = document.querySelector('.showcase-outer');
+        const maskLayer = document.getElementById('maskLayer');
+
+        window.addEventListener('scroll', () => {
+            // Get the bounding rectangle of the outer container
+            const rect = outer.getBoundingClientRect();
+            const windowHeight = window.innerHeight;
+
+            // Calculate total scrollable distance within the outer container
+            // The sticky element is 100vh, so the "scrollable" part is (OuterHeight - StickyHeight)
+            // which is 300vh - 100vh = 200vh.
+            const scrollableDistance = outer.offsetHeight - windowHeight;
+
+            // Calculate how many pixels we have scrolled past the top of the outer container
+            // rect.top is positive when below viewport top, negative when scrolled past.
+            // We want 0 when rect.top is 0.
+            let scrolled = -rect.top;
+
+            // Clamp the value between 0 and scrollableDistance
+            if (scrolled < 0) scrolled = 0;
+            if (scrolled > scrollableDistance) scrolled = scrollableDistance;
+
+            // Calculate progress (0 to 1)
+            const progress = scrolled / scrollableDistance;
+
+            // We want to move the inner layer (400vw wide) to the left.
+            // To see the end of it, we need to move it by (400vw - 100vw) = 300vw.
+            // So translateX goes from 0vw to -300vw.
+            const moveX = progress * 300;
+
+            maskLayer.style.transform = `translateX(-${moveX}vw)`;
+        });
+    </script>
+</body>
+
+</html>
