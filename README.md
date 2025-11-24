@@ -6,6 +6,8 @@
 
 - [bootstrap_template.html](./bootstrap_template.html) - Bootstrap template
 - [bt_template.html](./bt_template.html) - Bootstrap + jQuery starting template (Updated: 2025-11-05)
+- [selecting.html](./selecting.html) - Psychological Test Application (Added: 2025-11-24)
+- [comic_demo.html](./comic_demo.html) - Comic Scroll Effect Demo (Added: 2025-11-24)
 - [demo_intersection.html](./demo_intersection.html) - IntersectionObserver visualizer and demo (Added: 2025-11-24)
 
 ### Basic HTML (basic-html/)
@@ -192,6 +194,41 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 - Flexbox Centering
 
 ---
+
+---
+
+### Psychological Test Application (Added: 2025-11-24)
+
+#### selecting.html
+**Key Features:**
+- **Complete User Flow**: Hero -> Intro -> Test -> Demographics -> Results.
+- **Dynamic Questionnaire**: Generates questions from data arrays.
+- **Data Processing**: Calculates score, age, and zodiac sign from user input.
+- **Interactive UI**:
+  - Smooth scrolling between sections.
+  - Animated transition overlay displaying age and zodiac before results.
+  - 5 distinct result states based on score ranges.
+- **Visual Design**: Color-coded sections and responsive layout.
+
+**Technologies:**
+- Vanilla JavaScript (ES6+)
+- CSS Custom Properties (Variables)
+- Flexbox for layout
+- `scrollIntoView` for navigation
+
+---
+
+### Comic Scroll Demo (Added: 2025-11-24)
+
+#### comic_demo.html
+**Key Features:**
+- **Scroll-Triggered Animations**: Panels fade in and slide up as they enter the viewport.
+- **Immersive Reading Experience**: Vertical layout mimicking webtoons.
+- **Performance**: Uses `IntersectionObserver` for efficient scroll detection.
+
+**Technologies:**
+- `IntersectionObserver` API
+- CSS Transitions (`opacity`, `transform`)
 
 ---
 
