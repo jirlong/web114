@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>情緒自我檢測</title>
+    <style>
+        :root {
+            --primary-color: #2A9D8F;
+            --secondary-color: #264653;
+            --accent-color: #E9C46A;
+            --text-light: #F4F1DE;
+            --text-dark: #333;
+            --range1-bg: #A7C957; /* Green - Good */
+            --range2-bg: #457B9D; /* Blue - Okay */
+            --range3-bg: #E9C46A; /* Yellow - Warning */
+            --range4-bg: #F4A261; /* Orange - Risk */
+            --range5-bg: #E76F51; /* Red - Danger */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            overflow-x: hidden;
+            background-color: #f0f0f0;
+        }
+
+        section, footer, .full-screen {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.5s ease;
+        }
+
+        /* Hero Section */
+        .bg-primary {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+        }
+
+        /* Intro Section */
+        #intro {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+        }
+
+        /* Test Section */
+        #test {
+            background-color: #fff;
+            color: var(--text-dark);
+            align-items: stretch;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .question-item {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+        }
+
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+
+        .options label {
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .options label:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Age Section */
+        #demographics {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            display: none; /* Hidden initially */
+        }
+
+        /* Result Sections */
+        .result-section {
+            display: none; /* Hidden initially */
+            color: white;
+        }
+
+        #range1 { background-color: var(--range1-bg); }
+        #range2 { background-color: var(--range2-bg); }
+        #range3 { background-color: var(--range3-bg); }
+        #range4 { background-color: var(--range4-bg); }
+        #range5 { background-color: var(--range5-bg); }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Overlay for Animations */
+        #transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2rem;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 2rem;
+            transition: transform 0.2s;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        h1 { font-size: 3rem; margin-bottom: 1rem; }
+        h2 { font-size: 2rem; margin-bottom: 1rem; }
+        p { font-size: 1.2rem; line-height: 1.6; max-width: 600px; }
+        
+        input[type="date"] {
+            padding: 1rem;
+            font-size: 1.5rem;
+            border-radius: 10px;
+            border: none;
+            margin: 1rem 0;
+        }
+
+        /* Utility */
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="bg-primary">
+        <h1>情緒自我檢測</h1>
+        <p>了解自己的情緒狀態，是愛自己的第一步。</p>
+        <button class="btn btn-primary" onclick="scrollToId('intro')">開始了解</button>
+    </section>
+
+    <!-- Intro Section -->
+    <section id="intro">
+        <h2>關於測驗</h2>
+        <p>本量表協助您了解最近一星期內的情緒狀態。請根據您的真實感受回答。</p>
+        <button class="btn btn-primary" onclick="scrollToId('test')">進入測驗</button>
+    </section>
+
+    <!-- Test Section -->
+    <section id="test">
+        <h2>臺灣人憂鬱症量表</h2>
+        <p style="margin-bottom: 2rem; color: #666;">請勾選最符合的一項 (0-3分)</p>
+        <form id="test-form">
+            <!-- Questions will be generated by JS to save space -->
+        </form>
+        <button class="btn btn-primary" onclick="submitTest()">下一步：基本資料</button>
+    </section>
+
+    <!-- Demographics Section -->
+    <section id="demographics">
+        <h2>請輸入您的生日</h2>
+        <p>我們將根據您的生日分析更多資訊。</p>
+        <input type="date" id="birthdate" required>
+        <button class="btn btn-primary" onclick="processResults()">查看結果</button>
+    </section>
+
+    <!-- Transition Overlay -->
+    <div id="transition-overlay">
+        <div id="overlay-text"></div>
+    </div>
+
+    <!-- Result Sections -->
+    <section id="range1" class="result-section">
+        <h1>總分：<span class="score-display"></span></h1>
+        <h2>真令人羨慕</h2>
+        <p>你目前的情緒狀態很穩定，是個懂得適時調整情緒及紓解壓力的人，繼續保持下去。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <section id="range2" class="result-section">
+        <h1>總分：<span class="score-display"></span></h1>
+        <h2>最近的情緒是否起伏不定?</h2>
+        <p>給自已多點關心，多注意情緒的變化，做適時的處理，比較不會陷入憂鬱情緒。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <section id="range3" class="result-section">
+        <h1>總分：<span class="score-display"></span></h1>
+        <h2>你是不是有許多事壓在心上?</h2>
+        <p>肩上總覺得很沉重?千萬別再「撐」了!趕快找個有相同經驗的朋友聊聊，給心找個出口。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <section id="range4" class="result-section">
+        <h1>總分：<span class="score-display"></span></h1>
+        <h2>一肚子苦惱及煩悶</h2>
+        <p>現在的你必定無法展露笑容，趕緊找專業機構或醫療單位協助。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <section id="range5" class="result-section">
+        <h1>總分：<span class="score-display"></span></h1>
+        <h2>心已「感冒」了</h2>
+        <p>你是不是會不由自主的沮喪、難過，無法掙脫? 心病需要心藥醫，請盡快到醫院找專業及可信賴的醫師。</p>
+        <button class="btn btn-primary" onclick="scrollToId('footer')">結束</button>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <h2>感謝您的參與</h2>
+        <p>本測驗僅供參考，如有需要請尋求專業醫療協助。</p>
+        <p>&copy; 2024 心理測驗網頁教學</p>
+        <button class="btn btn-primary" onclick="location.reload()">重新測驗</button>
+    </footer>
+
+    <script>
+        // Questions Data
+        const questions = [
+            "我常常覺得想哭。", "我覺得心情不好。", "我覺得比以前容易發脾氣", "我睡不好。", 
+            "我覺得不想吃東西。", "我覺得胸口悶悶的(心肝頭或胸坎綁綁的)。", "我覺得不輕鬆、不舒服( 不爽快 )。", 
+            "我覺得身體疲勞虛弱、無力(身體很虛、沒力氣、元氣及體力)。", "我覺得很煩。", "我覺得記憶力不好。", 
+            "我覺得做事時無法專心。", "我覺得想事情或做事時比平常要緩慢。", "我覺得比前沒信心。", 
+            "我覺得比較會往壞處想。", "我覺得想不開、甚至想死", "我覺得對甚麼事都失去興趣。", 
+            "我覺得身體不舒服(如頭痛、頭暈、心悸、肚子不舒服等)。", "我覺得自己很沒用。"
+        ];
+
+        const options = [
+            { label: "沒有或極少 (0分)", value: 0 },
+            { label: "有時候 (1分)", value: 1 },
+            { label: "時常 (2分)", value: 2 },
+            { label: "常常-總是 (3分)", value: 3 }
+        ];
+
+        // Render Questions
+        const form = document.getElementById('test-form');
+        questions.forEach((q, index) => {
+            const div = document.createElement('div');
+            div.className = 'question-item';
+            div.innerHTML = `
+                <p><strong>${index + 1}. ${q}</strong></p>
+                <div class="options">
+                    ${options.map(opt => `
+                        <label>
+                            <input type="radio" name="q${index}" value="${opt.value}" required>
+                            ${opt.label}
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+            form.appendChild(div);
+        });
+
+        let totalScore = 0;
+
+        function scrollToId(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function submitTest() {
+            // Calculate Score
+            const formData = new FormData(form);
+            let score = 0;
+            let answeredCount = 0;
+
+            for (let pair of formData.entries()) {
+                score += parseInt(pair[1]);
+                answeredCount++;
+            }
+
+            if (answeredCount < questions.length) {
+                alert("請回答所有問題！");
+                return;
+            }
+
+            totalScore = score;
+            
+            // Hide Test, Show Demographics
+            document.getElementById('test').style.display = 'none';
+            const demoSection = document.getElementById('demographics');
+            demoSection.style.display = 'flex';
+            demoSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function getZodiacSign(day, month) {
+            const zodiacSigns = [
+                '摩羯座', '水瓶座', '雙魚座', '牡羊座', '金牛座', '雙子座',
+                '巨蟹座', '獅子座', '處女座', '天秤座', '天蠍座', '射手座'
+            ];
+            const lastDay = [19, 18, 20, 19, 20, 20, 22, 22, 22, 22, 21, 21];
+            return (day > lastDay[month - 1]) ? zodiacSigns[month] : zodiacSigns[month - 1];
+        }
+
+        function calculateAge(birthDate) {
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const m = today.getMonth() - birthDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        async function processResults() {
+            const dateInput = document.getElementById('birthdate').value;
+            if (!dateInput) {
+                alert("請輸入生日！");
+                return;
+            }
+
+            const birthDate = new Date(dateInput);
+            const age = calculateAge(birthDate);
+            const zodiac = getZodiacSign(birthDate.getDate(), birthDate.getMonth() + 1);
+
+            // Start Animation Sequence
+            const overlay = document.getElementById('transition-overlay');
+            const overlayText = document.getElementById('overlay-text');
+            
+            overlay.style.opacity = '1';
+            overlay.style.pointerEvents = 'all';
+
+            // 1. Age
+            overlayText.innerText = `你的年齡是 ${age} 歲`;
+            await wait(3000);
+            
+            // Fade out briefly
+            overlayText.style.opacity = '0';
+            await wait(500);
+            
+            // 2. Zodiac
+            overlayText.innerText = `你的星座是 ${zodiac}`;
+            overlayText.style.opacity = '1';
+            await wait(3000);
+
+            // Fade out overlay
+            overlay.style.opacity = '0';
+            overlay.style.pointerEvents = 'none';
+
+            // Show Result
+            showResult(totalScore);
+        }
+
+        function wait(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function showResult(score) {
+            // Hide previous sections
+            document.getElementById('demographics').style.display = 'none';
+            document.getElementById('intro').style.display = 'none';
+            document.querySelector('.bg-primary').style.display = 'none';
+
+            let targetId = '';
+            if (score <= 8) targetId = 'range1';
+            else if (score <= 14) targetId = 'range2';
+            else if (score <= 18) targetId = 'range3';
+            else if (score <= 28) targetId = 'range4';
+            else targetId = 'range5';
+
+            const targetSection = document.getElementById(targetId);
+            targetSection.style.display = 'flex';
+            targetSection.querySelector('.score-display').innerText = score + '分';
+            
+            // Ensure footer is visible after result
+            document.getElementById('footer').style.display = 'flex';
+
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

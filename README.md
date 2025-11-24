@@ -6,6 +6,7 @@
 
 - [bootstrap_template.html](./bootstrap_template.html) - Bootstrap template
 - [bt_template.html](./bt_template.html) - Bootstrap + jQuery starting template (Updated: 2025-11-05)
+- [demo_intersection.html](./demo_intersection.html) - IntersectionObserver visualizer and demo (Added: 2025-11-24)
 
 ### Basic HTML (basic-html/)
 ### Bootstrap (bt/)
@@ -192,4 +193,23 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 
 ---
 
-*Last updated: 2025-11-18*
+---
+
+### Intersection Observer Demo (Added: 2025-11-24)
+
+#### demo_intersection.html
+**Key Features:**
+- **Interactive Controls**: Real-time adjustment of `threshold` and `rootMargin`.
+- **Visual Feedback**:
+  - **Effective Root Area**: Visualizes the `rootMargin` as a dashed box overlay.
+  - **Target Status**: Changes color and displays current intersection ratio.
+- **Educational Tool**: Demonstrates how `IntersectionObserver` triggers based on scroll position and margin settings.
+
+**Technologies:**
+- Vanilla JavaScript `IntersectionObserver` API
+- CSS Variables for theming
+- Dynamic DOM manipulation for visualizers
+
+---
+
+*Last updated: 2025-11-24*

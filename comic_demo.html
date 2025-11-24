@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comic Scroll Effect Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 200vh;
+            /* Ensure scrolling */
+        }
+
+        .comic-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .panel {
+            width: 100%;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            /* Smooth ease-out */
+        }
+
+        .panel.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .panel img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border: 2px solid #333;
+            /* Optional border */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #333;
+        }
+
+        .spacer {
+            height: 50vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="comic-container">
+        <h1>Scroll Down to Read</h1>
+
+        <div class="spacer">
+            <p>Scroll down...</p>
+        </div>
+
+        <!-- Panel 0 -->
+        <div class="panel">
+            <img src="comic_panels/panel_00.png" alt="Panel 1">
+        </div>
+
+        <!-- Panel 1 -->
+        <div class="panel">
+            <img src="comic_panels/panel_01.png" alt="Panel 2">
+        </div>
+
+        <!-- Panel 2 -->
+        <div class="panel">
+            <img src="comic_panels/panel_02.png" alt="Panel 3">
+        </div>
+
+        <!-- Panel 3 -->
+        <div class="panel">
+            <img src="comic_panels/panel_03.png" alt="Panel 4">
+        </div>
+
+        <div class="spacer">
+            <p>End of Chapter</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const panels = document.querySelectorAll('.panel');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1 // Trigger when 10% of the panel is visible
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Optional: Stop observing once visible if you don't want it to fade out again
+                        // observer.unobserve(entry.target); 
+                    } else {
+                        // Optional: Remove class to re-trigger animation when scrolling up
+                        // entry.target.classList.remove('visible');
+                    }
+                });
+            }, observerOptions);
+
+            panels.forEach(panel => {
+                observer.observe(panel);
+            });
+        });
+    </script>
+</body>
+
+</html>

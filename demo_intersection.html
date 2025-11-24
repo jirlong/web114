@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntersectionObserver Demo</title>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #4CAF50;
+            --root-border-color: #333;
+            --target-bg: #444;
+            --target-visible-bg: #2E7D32;
+            --margin-visualizer-color: rgba(76, 175, 80, 0.2);
+            --margin-line-color: #FF5722;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Controls */
+        aside {
+            width: 300px;
+            background-color: #252525;
+            padding: 20px;
+            border-right: 1px solid #333;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.2rem;
+            margin: 0 0 10px 0;
+        }
+
+        h2 {
+            font-size: 1rem;
+            margin: 0 0 10px 0;
+            color: #aaa;
+        }
+
+        .control-group {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        input[type="text"] {
+            width: 60px;
+            padding: 5px;
+            background: #222;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 4px;
+        }
+
+        .value-display {
+            float: right;
+            font-family: monospace;
+            color: var(--accent-color);
+        }
+
+        .margin-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .margin-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .margin-input label {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        /* Main Display Area */
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #111;
+        }
+
+        /* The Root Container */
+        #root-container {
+            width: 400px;
+            height: 600px;
+            border: 2px solid var(--root-border-color);
+            overflow-y: scroll;
+            position: relative;
+            background-color: #1a1a1a;
+            /* Create a stacking context */
+            z-index: 1;
+        }
+
+        /* Visualizer for Root Margin */
+        #root-margin-visualizer {
+            position: absolute;
+            pointer-events: none;
+            border: 2px dashed var(--margin-line-color);
+            background-color: var(--margin-visualizer-color);
+            z-index: 5;
+            /* Centered relative to main, will be sized via JS */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        #root-margin-label {
+            background: var(--margin-line-color);
+            color: white;
+            padding: 2px 6px;
+            font-size: 12px;
+            border-radius: 0 0 4px 4px;
+        }
+
+        /* Spacer to allow scrolling */
+        .spacer {
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #555;
+            font-style: italic;
+        }
+
+        /* Target Elements */
+        .target {
+            height: 150px;
+            margin: 20px 50px;
+            background-color: var(--target-bg);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s, transform 0.3s;
+            position: relative;
+        }
+
+        .target.visible {
+            background-color: var(--target-visible-bg);
+            /* transform: scale(1.02); */
+        }
+
+        .target-info {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .target-ratio {
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-top: 5px;
+            color: #ccc;
+        }
+
+        /* Fixed Line Indicator (Visual Aid) */
+        .fixed-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background-color: cyan;
+            z-index: 10;
+            pointer-events: none;
+            display: none;
+            /* Only used if we want to show a specific line */
+        }
+
+        /* Explanation overlay */
+        .explanation {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            border-left: 4px solid var(--accent-color);
+        }
+    </style>
+</head>
+
+<body>
+
+    <aside>
+        <h1>IntersectionObserver</h1>
+
+        <div class="control-group">
+            <h2>Threshold</h2>
+            <label>
+                Trigger Ratio
+                <span id="threshold-value" class="value-display">0.5</span>
+            </label>
+            <input type="range" id="threshold" min="0" max="1" step="0.1" value="0.5">
+            <p style="font-size: 0.8rem; color: #888; margin-top: 5px;">
+                0.0 = Trigger as soon as 1px is visible.<br>
+                1.0 = Trigger only when 100% visible.
+            </p>
+        </div>
+
+        <div class="control-group">
+            <h2>Root Margin (px)</h2>
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 10px;">
+                Expands/shrinks the "capture zone". <br>Negative values shrink it.
+            </p>
+            <div class="margin-inputs">
+                <div class="margin-input">
+                    <label>Top</label>
+                    <input type="text" id="margin-top" value="-50px">
+                </div>
+                <div class="margin-input">
+                    <label>Right</label>
+                    <input type="text" id="margin-right" value="0px" disabled style="opacity: 0.5; cursor: not-allowed;"
+                        title="Horizontal margins don't affect vertical scroll much visually here">
+                </div>
+                <div class="margin-input">
+                    <label>Bottom</label>
+                    <input type="text" id="margin-bottom" value="-50px">
+                </div>
+                <div class="margin-input">
+                    <label>Left</label>
+                    <input type="text" id="margin-left" value="0px" disabled style="opacity: 0.5; cursor: not-allowed;">
+                </div>
+            </div>
+            <button id="apply-margin"
+                style="margin-top: 10px; width: 100%; padding: 8px; background: var(--accent-color); border: none; color: white; border-radius: 4px; cursor: pointer;">Apply
+                Margins</button>
+        </div>
+
+        <div class="control-group">
+            <h2>Status</h2>
+            <div id="status-log"
+                style="font-family: monospace; font-size: 0.8rem; height: 100px; overflow-y: auto; color: #ccc;">
+                Ready.
+            </div>
+        </div>
+    </aside>
+
+    <main>
+        <!-- Visualizer for the effective root area -->
+        <div id="root-margin-visualizer">
+            <span id="root-margin-label">Effective Root Area</span>
+        </div>
+
+        <div id="root-container">
+            <div class="spacer">Scroll Down...</div>
+
+            <div class="target" id="target-1">
+                <div class="target-info">Target 1</div>
+                <div class="target-ratio">Ratio: 0%</div>
+            </div>
+
+            <div class="spacer">Keep Scrolling...</div>
+
+            <div class="target" id="target-2">
+                <div class="target-info">Target 2</div>
+                <div class="target-ratio">Ratio: 0%</div>
+            </div>
+
+            <div class="spacer">Almost there...</div>
+
+            <div class="target" id="target-3">
+                <div class="target-info">Target 3</div>
+                <div class="target-ratio">Ratio: 0%</div>
+            </div>
+
+            <div class="spacer">End of Content</div>
+        </div>
+
+        <div class="explanation">
+            <strong>How it works:</strong><br>
+            The <span style="color: var(--margin-line-color)">dashed box</span> represents the <strong>Root
+                Margin</strong>.
+            The Observer triggers when a Target intersects with this box by the specified <strong>Threshold</strong>
+            amount.
+        </div>
+    </main>
+
+    <script>
+        const rootContainer = document.getElementById('root-container');
+        const marginVisualizer = document.getElementById('root-margin-visualizer');
+        const thresholdInput = document.getElementById('threshold');
+        const thresholdDisplay = document.getElementById('threshold-value');
+        const marginTopInput = document.getElementById('margin-top');
+        const marginBottomInput = document.getElementById('margin-bottom');
+        const applyMarginBtn = document.getElementById('apply-margin');
+        const statusLog = document.getElementById('status-log');
+        const targets = document.querySelectorAll('.target');
+
+        let observer;
+
+        function log(msg) {
+            const div = document.createElement('div');
+            div.textContent = `> ${msg}`;
+            statusLog.prepend(div);
+            if (statusLog.children.length > 20) statusLog.lastElementChild.remove();
+
+
+        function updateVisualizer(top, bottom) {
+            // Get root container dimensions and position
+            const rect = rootContainer.getBoundingClientRect();
+            const mainRect = rootContainer.parentElement.getBoundingClientRect();
+
+            // Parse margins (assuming px for simplicity in this demo, though API supports %)
+            const topPx = parseInt(top) || 0;
+            const bottomPx = parseInt(bottom) || 0;
+
+            // Calculate visualizer position relative to the parent (main)
+            // We need to subtract the parent's position from the element's position
+            const relativeTop = rect.top - mainRect.top;
+            const relativeLeft = rect.left - mainRect.left;
+
+            marginVisualizer.style.top = `${relativeTop - topPx}px`;
+            marginVisualizer.style.height = `${rect.height + topPx + bottomPx}px`;
+            marginVisualizer.style.left = `${relativeLeft}px`;
+            marginVisualizer.style.width = `${rect.width}px`;
+        }
+
+        function buildThresholdList() {
+            let thresholds = [];
+            let numSteps = 100;
+            for (let i = 1.0; i <= numSteps; i++) {
+                let ratio = i / numSteps;
+                thresholds.push(ratio);
+            }
+            thresholds.push(0);
+            return thresholds;
+        }
+
+        function createObserver() {
+            if (observer) {
+                observer.disconnect();
+            }
+
+            const userThreshold = parseFloat(thresholdInput.value);
+            const top = marginTopInput.value;
+            const bottom = marginBottomInput.value;
+            const rootMargin = `${top} 0px ${bottom} 0px`;
+
+            thresholdDisplay.textContent = userThreshold;
+
+            const options = {
+                root: rootContainer,
+                rootMargin: rootMargin,
+                threshold: buildThresholdList() // Use dense thresholds for smooth updates
+            };
+
+            log(`New Observer: Thresh=${userThreshold}, Margin=${rootMargin}`);
+            updateVisualizer(top, bottom);
+
+            observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const ratio = Math.round(entry.intersectionRatio * 100);
+                    const target = entry.target;
+                    const ratioDisplay = target.querySelector('.target-ratio');
+
+                    ratioDisplay.textContent = `Ratio: ${ratio}%`;
+
+                    // Check against the user's selected threshold manually
+                    // We use the slider value (userThreshold) to decide visibility
+                    // Note: We need to read the *current* slider value inside the callback 
+                    // if we want it to react without recreating the observer, 
+                    // but here we recreate the observer on slider change anyway.
+                    // However, to be safe and consistent with the dense threshold firing:
+
+                    const isVisible = entry.intersectionRatio >= userThreshold && entry.intersectionRatio > 0;
+
+                    if (isVisible) {
+                        target.classList.add('visible');
+                    } else {
+                        target.classList.remove('visible');
+                    }
+                });
+            }, options);
+
+            targets.forEach(t => observer.observe(t));
+        }
+
+        // Event Listeners
+        thresholdInput.addEventListener('input', () => {
+            thresholdDisplay.textContent = thresholdInput.value;
+            createObserver();
+        });
+
+        applyMarginBtn.addEventListener('click', createObserver);
+
+        // Handle window resize to keep visualizer aligned
+        window.addEventListener('resize', () => {
+            const top = marginTopInput.value;
+            const bottom = marginBottomInput.value;
+            updateVisualizer(top, bottom);
+        });
+
+        // Initial setup
+        createObserver();
+
+    </script>
+
+</body>
+
+</html>
