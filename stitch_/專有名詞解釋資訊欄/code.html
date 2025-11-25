@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-Hant"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>名詞解釋：奶油風</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 24
+      }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#135bec",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+            },
+            fontFamily: {
+              "display": ["Work Sans", "Noto Sans TC", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display">
+<div class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark group/design-root overflow-x-hidden">
+<!-- Background Scrim/Overlay -->
+<div class="absolute inset-0 flex h-full w-full flex-col items-center justify-end bg-black/40 dark:bg-black/60 p-4">
+<!-- BottomSheet/Card Container -->
+<div class="flex w-full max-w-md flex-col overflow-hidden rounded-xl bg-background-light dark:bg-background-dark">
+<!-- Handle -->
+<div class="flex h-5 w-full shrink-0 items-center justify-center pt-3">
+<div class="h-1 w-9 rounded-full bg-gray-300 dark:bg-gray-600"></div>
+</div>
+<!-- Toolbar with Close Button -->
+<div class="flex items-center justify-between gap-2 px-4 py-3">
+<div class="w-10"></div> <!-- Spacer -->
+<h2 class="flex-grow text-center text-lg font-bold text-gray-800 dark:text-gray-100">名詞解釋</h2>
+<div class="flex w-10 justify-end">
+<button class="p-2 text-gray-600 dark:text-gray-400">
+<span class="material-symbols-outlined text-2xl">close</span>
+</button>
+</div>
+</div>
+<!-- Content Area -->
+<div class="flex-1 px-4 pb-6">
+<!-- Headline Text -->
+<h3 class="text-gray-900 dark:text-white tracking-tight text-2xl font-bold leading-tight text-left pb-2 pt-2">奶油風</h3>
+<!-- Body Text -->
+<p class="text-gray-700 dark:text-gray-300 text-base font-normal leading-relaxed pb-3 pt-1">
+                    一種源自社群平台的室內設計風格，其核心在於營造溫暖、柔和且明亮的空間氛圍。主要特徵包括使用低飽和度的奶油色、米色或燕麥色作為主色調，並搭配弧形線條的家具、柔軟的織品（如羊羔絨、棉麻）以及自然的材質（如原木），旨在創造出一個既簡潔又充滿療癒感的居住環境。
+                </p>
+</div>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="dark" lang="zh-TW" style="scroll-behavior: smooth;">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>小紅書對台灣室內設計的影響</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&amp;family=Noto+Sans+TC:wght@400;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "xiaohongshu-red": "#FF2442",
+                        "text-light": "#333333",
+                        "text-dark": "#EAE3DD",
+                        "accent-light": "#8D6E63",
+                        "accent-dark": "#BCA69D",
+                        "accent": "#E4CDC8", // Muted Pink
+                        "text-light-primary": "#2d3748",
+                        "text-dark-primary": "#e2e8f0",
+                        "text-light-secondary": "#718096",
+                        "text-dark-secondary": "#a0aec0",
+                    },
+                    fontFamily: {
+                        "display": ["Work Sans", "Noto Sans TC", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-zinc-900 dark:text-zinc-50">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 z-50 flex h-screen w-full flex-col items-center justify-center bg-xiaohongshu-red transition-opacity duration-500">
+        <div class="flex flex-col items-center justify-center flex-grow">
+            <h1 class="text-white tracking-light text-[32px] font-bold leading-tight px-4 text-center pb-3 pt-6">小紅書</h1>
+            <p class="text-white text-base font-normal leading-normal pb-3 pt-1 px-4 text-center">你的生活興趣社區</p>
+        </div>
+        <div class="flex w-full items-center justify-center pb-12">
+            <div class="h-1.5 w-1.5 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="relative w-full overflow-x-hidden">
+
+        <!-- Hero Section -->
+        <section id="hero" class="relative min-h-screen w-full flex flex-col">
+            <header class="absolute top-0 left-0 right-0 z-10 flex h-14 items-center justify-between px-4 bg-transparent">
+                <button class="flex items-center justify-center p-2 text-white">
+                    <span class="material-symbols-outlined text-2xl">arrow_back</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button class="flex items-center justify-center p-2 text-white">
+                        <span class="material-symbols-outlined text-2xl">bookmark_border</span>
+                    </button>
+                    <button class="flex items-center justify-center p-2 text-white">
+                        <span class="material-symbols-outlined text-2xl">share</span>
+                    </button>
+                </div>
+            </header>
+            <div class="flex-grow @container">
+                <div class="bg-cover bg-center flex flex-col justify-end overflow-hidden min-h-screen" data-alt="A modern, minimalist living room with beige and cream tones, reflecting a popular but generic interior design style." style='background-image: linear-gradient(0deg, rgba(16, 22, 34, 0.8) 0%, rgba(16, 22, 34, 0.2) 50%, rgba(16, 22, 34, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBD6KgrwiBpDgUT041g-PxdkrfmUVtvhW4G7BzUB0xf8la3obe5fnBq95aacimI6At6Bt_YROwfdS9IpWxbcUOHYFKXcgG0MIVffMFYLlk6Sf_Em4Tj9pdw9xUmOpbgtslfXXIBln0H7mo4o3cVvW-L7E5x8dvtnNYUtDb68ikdDlPfFiUcZUITQbtLhvLjtRnNPzJGGJXB3MkpTykqZMaT0BwX5-nE3cOzNZY9PMSgsTiEy9ncMbOKCErujdQbPEAViChHUVQg3bs");'>
+                    <div class="flex flex-col p-6 pt-20">
+                        <h1 class="text-white tracking-wide text-4xl font-bold leading-tight mb-4">HERO｜你的家，<span class="text-[#FF4500]">誰的</span>想像？</h1>
+                        <p class="text-white/90 text-base font-normal leading-relaxed">
+                            你的生活興趣社區——這句標語背後，是一個左右台灣居家審美的巨大內容場域。當你以為自己在打造理想的家，你可能其實正在複製平台設計的模板。
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <footer class="absolute bottom-0 left-0 right-0 flex flex-col items-center justify-center p-4 pb-8 pointer-events-none">
+                <p class="text-white/70 text-sm font-normal leading-normal mb-1">向下滑動，開始閱讀</p>
+                <a href="#report-home" class="pointer-events-auto">
+                    <span class="material-symbols-outlined text-white/70 text-2xl animate-bounce">keyboard_arrow_down</span>
+                </a>
+            </footer>
+        </section>
+
+        <!-- Report Homepage -->
+        <section id="report-home" class="relative min-h-screen w-full flex flex-col bg-background-light dark:bg-background-dark">
+            <div class="relative w-full h-[50vh] min-h-[350px]">
+                <div class="absolute inset-0 bg-cover bg-center" data-alt="A minimalist bedroom with neutral tones and soft lighting." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCa2Ea5EDuotRQEvSTRM2efJUPlWG-jX6rpnSLcc3xjGLWgZX6OduumMbZqVNzXpP6SUwtKrgFw1qwVd_R-T7-jgCRFRhcTJv5iFaRL46gn8bvt5QHpnY5Z9G5S2FIXW5Ikuh3GxsgxLTtm1_zMCyUoTVBhqJVXWHJbbeMwsP2xl-fC_n0ykyWdo-9O8yZfv-Hz6vPkdsPg5lHKJIWN8AjAu_pT6RnzYo32GgUbL6BNPO6ckWkyKSs2xdOWopC43riDD3Z6uNZrXgM");'></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-black/0"></div>
+                <div class="absolute bottom-0 left-0 right-0 p-6 flex flex-col justify-end text-white">
+                    <h1 class="text-3xl font-bold leading-tight font-display tracking-wide">小紅書上的網感設計：台灣居家美學的模板化危機？</h1>
+                    <p class="mt-2 text-base font-normal leading-normal text-white/90">從奶茶風到侘寂風，當社群美學成為標準答案，我們該如何找回真正屬於自己的「家」？</p>
+                </div>
+            </div>
+            <div class="flex-grow bg-background-light dark:bg-background-dark rounded-t-2xl -mt-4 relative z-10 pt-6 pb-8 px-4">
+                <div class="flex flex-col items-center justify-center text-accent-light dark:text-accent-dark mb-6">
+                    <span class="material-symbols-outlined">keyboard_arrow_down</span>
+                    <span class="text-xs font-medium">向下滑動閱讀</span>
+                </div>
+                <div class="flex flex-col gap-3">
+                    <a href="#chapter-1" class="flex items-center gap-4 bg-white dark:bg-black/20 p-4 rounded-xl min-h-[72px] justify-between shadow-sm hover:bg-gray-50 dark:hover:bg-black/30 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12 font-bold text-lg">01</div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-text-light dark:text-text-dark text-base font-medium leading-normal line-clamp-1">現象篇</p>
+                                <p class="text-accent-light dark:text-accent-dark text-sm font-normal leading-normal line-clamp-2">什麼是「網感」？小紅書如何定義當代居家美學。</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="text-accent-light dark:text-accent-dark flex size-7 items-center justify-center">
+                                <span class="material-symbols-outlined">arrow_forward_ios</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="flex items-center gap-4 bg-white dark:bg-black/20 p-4 rounded-xl min-h-[72px] justify-between shadow-sm opacity-50">
+                        <div class="flex items-center gap-4">
+                            <div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12 font-bold text-lg">02</div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-text-light dark:text-text-dark text-base font-medium leading-normal line-clamp-1">影響篇</p>
+                                <p class="text-accent-light dark:text-accent-dark text-sm font-normal leading-normal line-clamp-2">從設計師到素人，這股風潮如何席捲台灣。</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="text-accent-light dark:text-accent-dark flex size-7 items-center justify-center">
+                                <span class="material-symbols-outlined">arrow_forward_ios</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white dark:bg-black/20 p-4 rounded-xl min-h-[72px] justify-between shadow-sm opacity-50">
+                        <div class="flex items-center gap-4">
+                            <div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12 font-bold text-lg">03</div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-text-light dark:text-text-dark text-base font-medium leading-normal line-clamp-1">爭議篇</p>
+                                <p class="text-accent-light dark:text-accent-dark text-sm font-normal leading-normal line-clamp-2">複製貼上 vs. 風格啟發：模板化設計的利與弊。</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="text-accent-light dark:text-accent-dark flex size-7 items-center justify-center">
+                                <span class="material-symbols-outlined">arrow_forward_ios</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 bg-white dark:bg-black/20 p-4 rounded-xl min-h-[72px] justify-between shadow-sm opacity-50">
+                        <div class="flex items-center gap-4">
+                            <div class="text-primary flex items-center justify-center rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0 size-12 font-bold text-lg">04</div>
+                            <div class="flex flex-col justify-center">
+                                <p class="text-text-light dark:text-text-dark text-base font-medium leading-normal line-clamp-1">未來篇</p>
+                                <p class="text-accent-light dark:text-accent-dark text-sm font-normal leading-normal line-clamp-2">我們該如何找回真正屬於自己的「家」的模樣？</p>
+                            </div>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="text-accent-light dark:text-accent-dark flex size-7 items-center justify-center">
+                                <span class="material-symbols-outlined">arrow_forward_ios</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chapter 1 Cover -->
+        <section id="chapter-1" class="relative min-h-screen w-full flex flex-col bg-background-light dark:bg-background-dark">
+            <!-- TopAppBar -->
+            <div class="flex items-center bg-background-light dark:bg-background-dark p-4 pb-2 justify-between sticky top-0 z-10 border-b border-gray-200 dark:border-gray-800">
+                <div class="text-text-light-primary dark:text-text-dark-primary flex size-10 shrink-0 items-center justify-center">
+                    <span class="material-symbols-outlined text-2xl">arrow_back</span>
+                </div>
+                <h2 class="text-text-light-secondary dark:text-text-dark-secondary text-sm font-medium leading-tight flex-1 text-center">小紅書風格 Wohnen</h2>
+                <div class="flex size-10 shrink-0"></div>
+            </div>
+            <!-- Main Content Area -->
+            <main class="flex-grow px-4 pt-8 pb-12">
+                <!-- HeadlineText -->
+                <h1 class="text-[#E4CDC8] tracking-tighter text-[100px] font-bold leading-none text-left">01</h1>
+                <!-- TitleText -->
+                <h1 class="text-text-light-primary dark:text-text-dark-primary text-[28px] font-bold leading-tight tracking-tight text-left pb-4 pt-1">小紅書如何定錨台灣人的「家」</h1>
+                <!-- BodyText -->
+                <p class="text-text-light-secondary dark:text-text-dark-secondary text-base font-normal leading-relaxed pb-8 pt-1">本章將探討小紅書如何透過特定的內容形式和美學，影響台灣使用者對理想家居的想像與實踐。</p>
+                <!-- Separator -->
+                <hr class="border-t border-gray-200 dark:border-gray-700 my-6"/>
+                <!-- List of Subsections -->
+                <div class="flex flex-col space-y-2">
+                    <!-- ListItem 1 -->
+                    <a href="#section-1-1" class="flex items-center gap-4 py-3 min-h-14 justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 -mx-2 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="text-text-light-secondary dark:text-text-dark-secondary flex items-center justify-center shrink-0 w-10">
+                                <span class="font-mono text-sm">1-1</span>
+                            </div>
+                            <p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal flex-1">模板式美感：標籤風格化的快時尚</p>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="text-text-light-secondary dark:text-text-dark-secondary flex size-7 items-center justify-center">
+                                <span class="material-symbols-outlined text-2xl">arrow_forward_ios</span>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- ListItem 2 -->
+                    <a href="#section-1-2" class="flex items-center gap-4 py-3 min-h-14 justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 -mx-2 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="text-text-light-secondary dark:text-text-dark-secondary flex items-center justify-center shrink-0 w-10">
+                                <span class="font-mono text-sm">1-2</span>
+                            </div>
+                            <p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal flex-1">「乾貨」與「手把手」：素人專業化的假象</p>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="text-text-light-secondary dark:text-text-dark-secondary flex size-7 items-center justify-center">
+                                <span class="material-symbols-outlined text-2xl">arrow_forward_ios</span>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- ListItem 3 -->
+                    <a href="#section-1-3" class="flex items-center gap-4 py-3 min-h-14 justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 rounded-lg px-2 -mx-2 transition-colors">
+                        <div class="flex items-center gap-4">
+                            <div class="text-text-light-secondary dark:text-text-dark-secondary flex items-center justify-center shrink-0 w-10">
+                                <span class="font-mono text-sm">1-3</span>
+                            </div>
+                            <p class="text-text-light-primary dark:text-text-dark-primary text-base font-medium leading-normal flex-1">智慧家居：被行銷語言催生的科技想像</p>
+                        </div>
+                        <div class="shrink-0">
+                            <div class="text-text-light-secondary dark:text-text-dark-secondary flex size-7 items-center justify-center">
+                                <span class="material-symbols-outlined text-2xl">arrow_forward_ios</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </main>
+        </section>
+
+        <!-- Section 1-1 -->
+        <section id="section-1-1" class="relative w-full flex flex-col bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800">
+            <div class="sticky top-0 z-10 flex items-center justify-between bg-background-light/80 dark:bg-background-dark/80 p-4 pb-2 backdrop-blur-sm">
+                <div class="flex size-12 shrink-0 items-center justify-start">
+                    <span class="material-symbols-outlined text-zinc-900 dark:text-zinc-50">arrow_back</span>
+                </div>
+                <h2 class="flex-1 text-center text-lg font-bold leading-tight tracking-[-0.015em] text-zinc-900 dark:text-zinc-50">小紅書對台灣室內設計的影響</h2>
+                <div class="flex w-12 items-center justify-end">
+                    <button class="flex min-w-0 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-transparent p-0 text-base font-bold leading-normal tracking-[0.015em] text-zinc-900 dark:text-zinc-50">
+                        <span class="material-symbols-outlined">bookmark_border</span>
+                    </button>
+                </div>
+            </div>
+            <main class="flex-1">
+                <h1 class="text-text-light-primary dark:text-dark-primary text-[32px] font-bold leading-tight px-4 pb-3 pt-6">1-1 模板式美感：標籤風格化的快時尚</h1>
+                <p class="text-text-light-primary dark:text-dark-primary text-base font-normal leading-normal pb-3 pt-1 px-4">探討小紅書如何透過「奶油風」、「侘寂風」等標籤，將複雜的室內設計簡化為可複製的視覺模板。分析這種「去脈絡化」的美學如何影響台灣屋主的喜好，導致居家風格的同質化。</p>
+                <div class="p-4 @container">
+                    <div class="flex flex-col items-stretch justify-start rounded-xl @xl:flex-row @xl:items-start">
+                        <div class="w-full bg-center bg-no-repeat bg-cover aspect-video rounded-xl" data-alt="A split screen showing a 'Cream Style' living room on Xiaohongshu vs. a nearly identical real-life implementation in Taiwan." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuB2ZIq29ADSRUlhDdMwCIfb921oIwPoLoc23w56h636KqwuM896BCW1Yd7rgsfpY-1jHd8bI3WxLffLyzn3GFfSgiOJ2kBigO3tY0E8efp9DYFZaP8-UffyuwC4r5inxlaplbVijwee6Vv007Jrj1tx_m4UJEbloQF6s1FwxbfdEjwJGJ2wKjDU-Q4vpG9qjY3KSgQ9OQXd_tvmqeMKyrrZrnW0fSJR5gwOW8JgkU8Uen1vC8QAjJO3UTt8oowRszXC72Jiv707LCA");'></div>
+                    </div>
+                </div>
+                <h3 class="text-text-light-primary dark:text-dark-primary text-lg font-bold leading-tight px-4 pb-2 pt-4">關鍵字效應</h3>
+                <p class="text-text-light-primary dark:text-dark-primary text-base font-normal leading-normal pb-3 pt-1 px-4">「奶油風」、「懸浮頂」、「無主燈」...這些詞彙不僅是搜尋關鍵字，更成為了設計的標準答案。</p>
+                <div class="flex gap-3 p-3 flex-wrap pr-4">
+                    <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-zinc-200 dark:bg-zinc-700 pl-2 pr-2">
+                        <p class="text-text-light-primary dark:text-dark-primary text-sm font-medium leading-normal">#奶油風</p>
+                    </div>
+                    <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-zinc-200 dark:bg-zinc-700 pl-2 pr-2">
+                        <p class="text-text-light-primary dark:text-dark-primary text-sm font-medium leading-normal">#侘寂風</p>
+                    </div>
+                    <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-zinc-200 dark:bg-zinc-700 pl-2 pr-2">
+                        <p class="text-text-light-primary dark:text-dark-primary text-sm font-medium leading-normal">#去客廳化</p>
+                    </div>
+                    <div class="flex h-8 shrink-0 items-center justify-center gap-x-2 rounded-xl bg-zinc-200 dark:bg-zinc-700 pl-2 pr-2">
+                        <p class="text-text-light-primary dark:text-dark-primary text-sm font-medium leading-normal">#法式輕奢</p>
+                    </div>
+                </div>
+                <div class="px-4 py-6">
+                    <div class="w-full overflow-hidden rounded-lg">
+                        <img alt="A collage of four different living rooms from different users, all decorated in a nearly identical cream style, showcasing the template-like result." class="w-full h-auto object-cover" data-alt="A collage of four different living rooms from different users, all decorated in a nearly identical cream style, showcasing the template-like result." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBd5gT3NWTUsPqtuEGTrQ6jKgvTgt-ibIaWJvJ5jGsRkk1GGfTSzpSzfmNsao5BDcWO97A2Qy6GIZcIwQ5J1RFykPdNaUVpfEaCP5xvmPAkPCeh-ZhsAdIh0ijoF6wuHl_fNrK-s-aK8riZvaatxPOPEJASEL87YFq7b9CeQ2yfH7SyAYiZuwKeq2CIORIbJ_Ytt2CFpCMWIehY5UPpTTvt4Z_jrm690RRaPAGmOsp2h-IK1LLUhNsJJPKT0OyAKx1qd06y5LQUa6E"/>
+                    </div>
+                    <p class="text-text-light-secondary dark:text-dark-secondary text-sm text-center px-4 pt-2">模板化的結果：不同用戶的家，卻有著驚人相似的「奶油風」客廳。</p>
+                </div>
+                <p class="text-text-light-primary dark:text-dark-primary text-base font-normal leading-loose pb-12 pt-1 px-4">總結來說，「模板式美感」是一把雙面刃。它普及了設計美學，卻也可能扼殺了創意的多樣性。理解其背後的運作模式，是探討小紅書對設計領域影響的第一步。</p>
+            </main>
+        </section>
+
+        <!-- Section 1-2 -->
+        <section id="section-1-2" class="relative w-full flex flex-col bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800">
+            <div class="sticky top-0 z-10 flex items-center bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm p-4 pb-2 justify-between border-b border-white/10 dark:border-white/10">
+                <div class="flex size-12 shrink-0 items-center justify-start">
+                    <span class="material-symbols-outlined text-zinc-800 dark:text-white text-2xl">arrow_back</span>
+                </div>
+                <h1 class="text-zinc-800 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] flex-1 text-center truncate">小紅書對台灣室內設計的影響</h1>
+                <div class="flex w-12 items-center justify-end">
+                    <button class="flex max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 bg-transparent text-zinc-800 dark:text-white gap-2 text-base font-bold leading-normal tracking-[0.015em] min-w-0 p-0">
+                        <span class="material-symbols-outlined text-2xl">share</span>
+                    </button>
+                </div>
+            </div>
+            <main class="flex-1">
+                <h2 class="text-zinc-900 dark:text-white text-2xl md:text-3xl font-bold leading-tight tracking-tight px-4 pb-3 pt-8 font-display">1-2 「乾貨」與「手把手」：素人專業化的假象</h2>
+                <p class="text-zinc-700 dark:text-zinc-300 text-base font-normal leading-relaxed pb-3 pt-1 px-4 font-display">解釋何謂「乾貨」和「手把手」教學，以及它們如何在社群媒體上創造出人人都能成為專家的氛圍。這種現象讓許多使用者誤以為透過簡單的教學就能複製出專業級的設計，卻忽略了背後所需的深厚知識與實務經驗。</p>
+                <div class="px-4 py-6">
+                    <div class="grid grid-cols-2 gap-3">
+                        <div class="flex flex-col gap-2">
+                            <div class="w-full bg-center bg-no-repeat bg-cover aspect-square rounded-lg" data-alt="A professionally designed living room with balanced lighting, high-quality furniture, and a cohesive color scheme." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuA077mW_wyh3TXgMBP-YD9KNWYYtqNqfTJu2LITZQAMe9YvkJUzzreYgoxqgEQvriC4RKzy04fA_N52Vd2K5U2GXYyLATzmnk62F9c11aagOPnxUxctpoZnslBBOM7EIfjZEg6crFfCtPGiXPDgXuGPQgkUFXR5i74DaxIVPou54CUjaK_UoDomAEINUuauk7gliKe9bgMi28r7jRxtkZ489YcRs26ct8eQNeLunCrlO-RsqXvLxLpwc7otnjqDFZC3zN_iRdKiqx0");'></div>
+                            <p class="text-zinc-600 dark:text-zinc-400 text-xs font-normal text-center font-display">專業設計師作品</p>
+                        </div>
+                        <div class="flex flex-col gap-2">
+                            <div class="w-full bg-center bg-no-repeat bg-cover aspect-square rounded-lg" data-alt="An amateur interior photo from social media, featuring trendy but poorly matched items and harsh lighting." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCHxbR2ZW9cbWGUcbwubBT_mN9d4QHTugmwZ1DMjCCx7u2glHPDpHSxpL0SRM1rLlvcAN6rKuVAKhP1a3MDJMd9Oo-Jh4JGkwFXq1dKgaa_4pvaa0H0UUoFSc7-u1mO3B13LlBVAQYCvUaIE9XGfLYfATFq8cGrUWd29sA8xhRxkTPky9p73TWKSvewi9g01higgdiY48Rk390TPiQvbo514QVCzNA8WggISIGJTc9vjwAfqfD8WyMpXLmA9ZWl1QXuOmBG2pXY_Rk");'></div>
+                            <p class="text-zinc-600 dark:text-zinc-400 text-xs font-normal text-center font-display">小紅書素人作品</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-4 py-4">
+                    <blockquote class="border-l-4 border-primary dark:border-primary pl-4">
+                        <p class="text-zinc-800 dark:text-zinc-200 text-base italic leading-relaxed font-display">這種「素人專業化」現象背後的隱憂，是缺乏實務經驗、對安全法規的忽視，以及對材料科學的誤解。</p>
+                    </blockquote>
+                </div>
+                <div class="px-4 py-6">
+                    <h3 class="text-zinc-900 dark:text-white text-xl font-bold leading-tight tracking-tight pb-4 font-display">內容「搬運」現象</h3>
+                    <div class="w-full bg-zinc-100 dark:bg-zinc-900/50 rounded-lg overflow-hidden border border-zinc-200 dark:border-zinc-800">
+                        <div class="w-full bg-center bg-no-repeat bg-cover aspect-[16/10]" data-alt="An infographic explaining the process of content theft, showing an arrow from a professional portfolio to a social media account with text bubbles like '盜圖' and '搬運'." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAk5Lh52K3uz7b_E0ZSS_yWs6dsLwPDWNXOBIt4v-1QCaKFamnJzd9XC9dkhUkdueqm7lmeRIuhlrMELqkAaeVEEikGmjzksGnI9oaR6UB6Varn57dRC0zoDprN-ftYVqxFJBExFh3KrzMJlaBQhUU45um75TSKzUicepuWyfgsPARA6A5AzwPpajOWd0b_Q34E5Zgccje1Ibt3ptipU8kknKQd3mdTiJ4BT3Lj7JUs16UrKqp37-2UQyDgB4teHmdinS1EdXALpfU");'></div>
+                    </div>
+                    <p class="text-zinc-500 dark:text-zinc-500 text-sm font-normal leading-normal pt-3 px-1 text-center font-display">示意圖解釋部分創作者如何挪用專業作品來包裝自己，進行「盜圖」與「搬運」。</p>
+                </div>
+                <p class="text-zinc-700 dark:text-zinc-300 text-base font-normal leading-relaxed pb-8 pt-4 px-4 font-display">最終，本節旨在引導讀者反思，當我們在社群平台上尋找靈感時，應如何分辨資訊的真實性與可靠性，並意識到專業設計背後不可替代的價值。這為我們下一章節的討論鋪平了道路。</p>
+            </main>
+        </section>
+
+        <!-- Section 1-3 -->
+        <section id="section-1-3" class="relative w-full flex flex-col bg-background-light dark:bg-background-dark border-t border-gray-200 dark:border-gray-800">
+            <div class="sticky top-0 z-10 flex items-center justify-between bg-background-light/80 dark:bg-background-dark/80 p-4 pb-2 backdrop-blur-sm">
+                <div class="flex size-12 shrink-0 items-center justify-start">
+                    <span class="material-symbols-outlined text-zinc-900 dark:text-zinc-50">arrow_back</span>
+                </div>
+                <h2 class="flex-1 text-center text-lg font-bold leading-tight tracking-[-0.015em] text-zinc-900 dark:text-zinc-50">小紅書對台灣室內設計的影響</h2>
+                <div class="flex w-12 items-center justify-end">
+                    <button class="flex min-w-0 max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg bg-transparent p-0 text-base font-bold leading-normal tracking-[0.015em] text-zinc-900 dark:text-zinc-50">
+                        <span class="material-symbols-outlined">bookmark_border</span>
+                    </button>
+                </div>
+            </div>
+            <h1 class="px-4 pb-3 pt-6 text-left text-[32px] font-bold leading-tight tracking-tight text-zinc-900 dark:text-zinc-50">1-3 智慧家居：被行銷語言催生的科技想像</h1>
+            <p class="px-4 pb-3 pt-1 text-base font-normal leading-normal text-zinc-700 dark:text-zinc-400">闡述智慧家居的概念，以及它在台灣市場的初步發展。分析小紅書如何透過「生活儀式感」、「懶人經濟」等行銷詞彙，將科技產品包裝成提升生活品質的必需品。</p>
+            <div class="p-4 @container">
+                <div class="flex flex-col items-stretch justify-start rounded-xl bg-white dark:bg-[#1C2333] shadow-md shadow-zinc-200/50 dark:shadow-black/20 @xl:flex-row @xl:items-start">
+                    <div class="aspect-video w-full rounded-t-xl bg-cover bg-center bg-no-repeat @xl:rounded-l-xl @xl:rounded-tr-none" data-alt="A cozy living room at dusk, with a smart light bulb emitting a warm, adjustable glow, creating an inviting atmosphere." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB2ZIq29ADSRUlhDdMwCIfb921oIwPoLoc23w56h636KqwuM896BCW1Yd7rgsfpY-1jHd8bI3WxLffLyzn3GFfSgiOJ2kBigO3tY0E8efp9DYFZaP8-UffyuwC4r5inxlaplbVijwee6Vv007Jrj1tx_m4UJEbloQF6s1FwxbfdEjwJGJ2wKjDU-Q4vpG9qjY3KSgQ9OQXd_tvmqeMKyrrZrnW0fSJR5gwOW8JgkU8Uen1vC8QAjJO3UTt8oowRszXC72Jiv707LCA');"></div>
+                    <div class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-1 p-4 @xl:px-4">
+                        <p class="text-lg font-bold leading-tight tracking-[-0.015em] text-zinc-900 dark:text-zinc-50">下班後的療癒時光，就靠這個氛圍感燈泡！</p>
+                        <div class="flex items-end justify-between gap-3">
+                            <p class="text-base font-normal leading-normal text-zinc-600 dark:text-zinc-400">模擬小紅書標題，展示智慧燈泡調整色溫與亮度。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="px-4 pb-3 pt-1 text-base font-normal leading-normal text-zinc-700 dark:text-zinc-400">分析小紅書如何透過「生活儀式感」、「懶人經濟」等行銷詞彙，將科技產品包裝成提升生活品質的必需品，讓用戶不知不覺中被植入消費慾望。</p>
+            <div class="px-4 py-5">
+                <div class="relative rounded-lg border-l-4 border-primary bg-primary/10 p-4 dark:bg-primary/20">
+                    <h1 class="text-xl font-bold leading-tight tracking-[-0.015em] text-zinc-900 dark:text-zinc-50">「科技不再是冰冷的參數，而是一種可被展示的『精緻生活』標籤。」</h1>
+                </div>
+            </div>
+            <div class="p-4 @container">
+                <div class="flex flex-col items-stretch justify-start rounded-xl bg-white dark:bg-[#1C2333] shadow-md shadow-zinc-200/50 dark:shadow-black/20 @xl:flex-row @xl:items-start">
+                    <div class="aspect-video w-full rounded-t-xl bg-cover bg-center bg-no-repeat @xl:rounded-l-xl @xl:rounded-tr-none" data-alt="A sleek, white robot vacuum cleaning a pristine hardwood floor in a modern, sunlit apartment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBCGcriWHdkl7FdL5b_xWvU8-Os-4DulDIBMSE1GOUCRhIJZihDDAJOn8fDKWzFP6VVhjxKVtNMKWzZa6x8bTsxltoRa_yL4n1J1q3YNbo8eiQh5FsuxFPElqJnQZRoC-vHidqSj1PM6H2UNgKpp_ZLdRDwMMpaQY091DLU5Mxtgeod-fk9XyU4mJmju_Y_8NngXbznOHhKJMxdaZMQ5swZPJZVWc63dTEceNBc4qMcndMxmBuYVrboaIjibIsXMEgEPzkgniqLTtY');"></div>
+                    <div class="flex w-full min-w-72 grow flex-col items-stretch justify-center gap-2 p-4 @xl:px-4">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="rounded-full bg-primary/20 px-3 py-1 text-sm font-medium text-primary dark:text-primary/90">#解放雙手</span>
+                            <span class="rounded-full bg-primary/20 px-3 py-1 text-sm font-medium text-primary dark:text-primary/90">#新家標配</span>
+                            <span class="rounded-full bg-primary/20 px-3 py-1 text-sm font-medium text-primary dark:text-primary/90">#懶人福音</span>
+                        </div>
+                        <p class="pt-1 text-base font-normal leading-normal text-zinc-600 dark:text-zinc-400">用標籤強化產品在社群中的身份認同與價值。</p>
+                    </div>
+                </div>
+            </div>
+            <p class="px-4 pb-8 pt-1 text-base font-normal leading-normal text-zinc-700 dark:text-zinc-400">探討這種行銷方式如何催生了消費者對「全屋智能」的科技想像，即使實際需求與應用場景尚未完全普及。</p>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                }, 500);
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

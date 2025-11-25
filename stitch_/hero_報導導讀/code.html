@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-TW"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HERO｜你的家，誰的想像？</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;700&amp;family=Noto+Sans+TC:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "primary": "#135bec",
+            "background-light": "#f6f6f8",
+            "background-dark": "#101622",
+          },
+          fontFamily: {
+            "display": ["Work Sans", "Noto Sans TC", "sans-serif"]
+          },
+          borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+        },
+      },
+    }
+  </script>
+<style type="text/tailwindcss">
+    body {
+      @apply bg-background-light dark:bg-background-dark font-display;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-dark">
+<div class="relative flex h-auto min-h-screen w-full flex-col font-display dark group/design-root overflow-x-hidden">
+<header class="fixed top-0 left-0 right-0 z-10 flex h-14 items-center justify-between px-4 bg-background-dark/50 backdrop-blur-sm">
+<button class="flex items-center justify-center p-2 text-white">
+<span class="material-symbols-outlined text-2xl" data-icon="arrow_back">arrow_back</span>
+</button>
+<div class="flex items-center gap-2">
+<button class="flex items-center justify-center p-2 text-white">
+<span class="material-symbols-outlined text-2xl" data-icon="bookmark_border">bookmark_border</span>
+</button>
+<button class="flex items-center justify-center p-2 text-white">
+<span class="material-symbols-outlined text-2xl" data-icon="share">share</span>
+</button>
+</div>
+</header>
+<main class="flex-grow">
+<div class="@container">
+<div class="bg-cover bg-center flex flex-col justify-end overflow-hidden min-h-screen" data-alt="A modern, minimalist living room with beige and cream tones, reflecting a popular but generic interior design style." style='background-image: linear-gradient(0deg, rgba(16, 22, 34, 0.8) 0%, rgba(16, 22, 34, 0.2) 50%, rgba(16, 22, 34, 0) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBD6KgrwiBpDgUT041g-PxdkrfmUVtvhW4G7BzUB0xf8la3obe5fnBq95aacimI6At6Bt_YROwfdS9IpWxbcUOHYFKXcgG0MIVffMFYLlk6Sf_Em4Tj9pdw9xUmOpbgtslfXXIBln0H7mo4o3cVvW-L7E5x8dvtnNYUtDb68ikdDlPfFiUcZUITQbtLhvLjtRnNPzJGGJXB3MkpTykqZMaT0BwX5-nE3cOzNZY9PMSgsTiEy9ncMbOKCErujdQbPEAViChHUVQg3bs");'>
+<div class="flex flex-col p-6 pt-20">
+<h1 class="text-white tracking-wide text-4xl font-bold leading-tight mb-4">HERO｜你的家，<span class="text-[#FF4500]">誰的</span>想像？</h1>
+<p class="text-white/90 text-base font-normal leading-relaxed">
+            你的生活興趣社區——這句標語背後，是一個左右台灣居家審美的巨大內容場域。當你以為自己在打造理想的家，你可能其實正在複製平台設計的模板。
+          </p>
+</div>
+</div>
+</div>
+</main>
+<footer class="fixed bottom-0 left-0 right-0 flex flex-col items-center justify-center p-4 pb-8 pointer-events-none">
+<p class="text-white/70 text-sm font-normal leading-normal mb-1">向下滑動，開始閱讀</p>
+<span class="material-symbols-outlined text-white/70 text-2xl" data-icon="keyboard_arrow_down">keyboard_arrow_down</span>
+</footer>
+</div>
+</body></html>
