@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 地球儀 - 互動式國家展示</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', Arial, sans-serif;
+            overflow-x: hidden;
+        }
+
+        #banner {
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        #earth {
+            width: 100%;
+            height: 500vh;
+            position: relative;
+            background: #000;
+        }
+
+        #globeViz {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        #footer {
+            width: 100%;
+            height: 100vh;
+            background: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            position: relative;
+            z-index: 10;
+        }
+
+        #info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            min-width: 250px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            z-index: 100;
+        }
+
+        #info h2 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+            color: #4CAF50;
+        }
+
+        #info p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+
+        #info .label {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        #info .value {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .instructions {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <!-- Banner Section -->
+    <div id="banner">
+        歡迎來到 3D 地球儀
+    </div>
+
+    <!-- Earth Section -->
+    <div id="earth">
+        <div id="globeViz"></div>
+
+        <div id="info">
+            <h2>3D 互動式地球儀</h2>
+            <p class="label">向下捲動探索從紐約到台灣</p>
+        </div>
+
+        <div class="instructions">
+            向下捲動觀看地球從紐約旋轉到台灣
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div id="footer">
+        感謝觀賞
+    </div>
+
+    <script src="https://unpkg.com/globe.gl"></script>
+    <script>
+        // 繁體中文國家名稱對照表
+        const countryNamesChinese = {
+            'China': '中國',
+            'United States': '美國',
+            'United States of America': '美國',
+            'Russia': '俄羅斯',
+            'Canada': '加拿大',
+            'Brazil': '巴西',
+            'Australia': '澳洲',
+            'India': '印度',
+            'Argentina': '阿根廷',
+            'Kazakhstan': '哈薩克',
+            'Algeria': '阿爾及利亞',
+            'Democratic Republic of the Congo': '剛果民主共和國',
+            'Saudi Arabia': '沙烏地阿拉伯',
+            'Mexico': '墨西哥',
+            'Indonesia': '印尼',
+            'Libya': '利比亞',
+            'Iran': '伊朗',
+            'Mongolia': '蒙古',
+            'Peru': '秘魯',
+            'Chad': '查德',
+            'Niger': '尼日',
+            'Angola': '安哥拉',
+            'Mali': '馬利',
+            'South Africa': '南非',
+            'Colombia': '哥倫比亞',
+            'Ethiopia': '衣索比亞',
+            'Bolivia': '玻利維亞',
+            'Mauritania': '茅利塔尼亞',
+            'Egypt': '埃及',
+            'Tanzania': '坦尚尼亞',
+            'Nigeria': '奈及利亞',
+            'Venezuela': '委內瑞拉',
+            'Pakistan': '巴基斯坦',
+            'Namibia': '納米比亞',
+            'Mozambique': '莫三比克',
+            'Turkey': '土耳其',
+            'Chile': '智利',
+            'Zambia': '尚比亞',
+            'Myanmar': '緬甸',
+            'Afghanistan': '阿富汗',
+            'Somalia': '索馬利亞',
+            'Central African Republic': '中非共和國',
+            'South Sudan': '南蘇丹',
+            'Ukraine': '烏克蘭',
+            'Botswana': '波札那',
+            'Madagascar': '馬達加斯加',
+            'Kenya': '肯亞',
+            'France': '法國',
+            'Yemen': '葉門',
+            'Thailand': '泰國',
+            'Spain': '西班牙',
+            'Turkmenistan': '土庫曼',
+            'Cameroon': '喀麥隆',
+            'Papua New Guinea': '巴布亞紐幾內亞',
+            'Sweden': '瑞典',
+            'Uzbekistan': '烏茲別克',
+            'Morocco': '摩洛哥',
+            'Iraq': '伊拉克',
+            'Paraguay': '巴拉圭',
+            'Zimbabwe': '辛巴威',
+            'Japan': '日本',
+            'Germany': '德國',
+            'Republic of the Congo': '剛果共和國',
+            'Finland': '芬蘭',
+            'Vietnam': '越南',
+            'Malaysia': '馬來西亞',
+            'Norway': '挪威',
+            'Ivory Coast': '象牙海岸',
+            'Poland': '波蘭',
+            'Oman': '阿曼',
+            'Italy': '義大利',
+            'Philippines': '菲律賓',
+            'Ecuador': '厄瓜多',
+            'Burkina Faso': '布吉納法索',
+            'New Zealand': '紐西蘭',
+            'Gabon': '加彭',
+            'Guinea': '幾內亞',
+            'United Kingdom': '英國',
+            'Ghana': '迦納',
+            'Romania': '羅馬尼亞',
+            'Laos': '寮國',
+            'Uganda': '烏干達',
+            'Guyana': '蓋亞那',
+            'Belarus': '白俄羅斯',
+            'Kyrgyzstan': '吉爾吉斯',
+            'Senegal': '塞內加爾',
+            'Syria': '敘利亞',
+            'Cambodia': '柬埔寨',
+            'Uruguay': '烏拉圭',
+            'Suriname': '蘇利南',
+            'Tunisia': '突尼西亞',
+            'Bangladesh': '孟加拉',
+            'Nepal': '尼泊爾',
+            'Tajikistan': '塔吉克',
+            'Greece': '希臘',
+            'Nicaragua': '尼加拉瓜',
+            'Eritrea': '厄利垂亞',
+            'North Korea': '北韓',
+            'Malawi': '馬拉威',
+            'Benin': '貝南',
+            'Honduras': '宏都拉斯',
+            'Liberia': '賴比瑞亞',
+            'Bulgaria': '保加利亞',
+            'Cuba': '古巴',
+            'Guatemala': '瓜地馬拉',
+            'Iceland': '冰島',
+            'South Korea': '韓國',
+            'Hungary': '匈牙利',
+            'Portugal': '葡萄牙',
+            'Jordan': '約旦',
+            'Serbia': '塞爾維亞',
+            'Azerbaijan': '亞塞拜然',
+            'Austria': '奧地利',
+            'United Arab Emirates': '阿拉伯聯合大公國',
+            'Czech Republic': '捷克',
+            'Panama': '巴拿馬',
+            'Sierra Leone': '獅子山',
+            'Ireland': '愛爾蘭',
+            'Georgia': '喬治亞',
+            'Sri Lanka': '斯里蘭卡',
+            'Lithuania': '立陶宛',
+            'Latvia': '拉脫維亞',
+            'Togo': '多哥',
+            'Croatia': '克羅埃西亞',
+            'Bosnia and Herzegovina': '波士尼亞與赫塞哥維納',
+            'Costa Rica': '哥斯大黎加',
+            'Slovakia': '斯洛伐克',
+            'Dominican Republic': '多明尼加',
+            'Estonia': '愛沙尼亞',
+            'Denmark': '丹麥',
+            'Netherlands': '荷蘭',
+            'Switzerland': '瑞士',
+            'Bhutan': '不丹',
+            'Taiwan': '台灣',
+            'Guinea-Bissau': '幾內亞比索',
+            'Moldova': '摩爾多瓦',
+            'Belgium': '比利時',
+            'Lesotho': '賴索托',
+            'Armenia': '亞美尼亞',
+            'Albania': '阿爾巴尼亞',
+            'Solomon Islands': '索羅門群島',
+            'Equatorial Guinea': '赤道幾內亞',
+            'Burundi': '蒲隆地',
+            'Haiti': '海地',
+            'Rwanda': '盧安達',
+            'Macedonia': '馬其頓',
+            'Belize': '貝里斯',
+            'Israel': '以色列',
+            'El Salvador': '薩爾瓦多',
+            'Slovenia': '斯洛維尼亞',
+            'Fiji': '斐濟',
+            'Kuwait': '科威特',
+            'Swaziland': '史瓦帝尼',
+            'Timor-Leste': '東帝汶',
+            'Montenegro': '蒙特內哥羅',
+            'Bahamas': '巴哈馬',
+            'Vanuatu': '萬那杜',
+            'Qatar': '卡達',
+            'Gambia': '甘比亞',
+            'Jamaica': '牙買加',
+            'Lebanon': '黎巴嫩',
+            'Cyprus': '賽普勒斯',
+            'Puerto Rico': '波多黎各',
+            'Palestine': '巴勒斯坦',
+            'Brunei': '汶萊',
+            'Trinidad and Tobago': '千里達及托巴哥',
+            'Cape Verde': '維德角',
+            'Samoa': '薩摩亞',
+            'Luxembourg': '盧森堡',
+            'Comoros': '葛摩',
+            'Mauritius': '模里西斯',
+            'São Tomé and Príncipe': '聖多美普林西比',
+            'Dominica': '多米尼克',
+            'Tonga': '東加',
+            'Kiribati': '吉里巴斯',
+            'Micronesia': '密克羅尼西亞',
+            'Singapore': '新加坡',
+            'Bahrain': '巴林',
+            'Saint Lucia': '聖露西亞',
+            'Andorra': '安道爾',
+            'Palau': '帛琉',
+            'Seychelles': '塞席爾',
+            'Antigua and Barbuda': '安地卡及巴布達',
+            'Barbados': '巴貝多',
+            'Saint Vincent and the Grenadines': '聖文森及格瑞那丁',
+            'Grenada': '格瑞那達',
+            'Malta': '馬爾他',
+            'Maldives': '馬爾地夫',
+            'Saint Kitts and Nevis': '聖克里斯多福及尼維斯',
+            'Liechtenstein': '列支敦斯登',
+            'San Marino': '聖馬利諾',
+            'Tuvalu': '吐瓦魯',
+            'Nauru': '諾魯',
+            'Monaco': '摩納哥',
+            'Vatican City': '梵蒂岡'
+        };
+
+        // 繁體中文首都名稱對照表
+        const capitalsChinese = {
+            'Beijing': '北京',
+            'Washington, D.C.': '華盛頓特區',
+            'Moscow': '莫斯科',
+            'Ottawa': '渥太華',
+            'Brasília': '巴西利亞',
+            'Canberra': '坎培拉',
+            'New Delhi': '新德里',
+            'Buenos Aires': '布宜諾斯艾利斯',
+            'Nur-Sultan': '努爾蘇丹',
+            'Algiers': '阿爾及爾',
+            'Kinshasa': '金夏沙',
+            'Riyadh': '利雅德',
+            'Mexico City': '墨西哥城',
+            'Jakarta': '雅加達',
+            'Tripoli': '的黎波里',
+            'Tehran': '德黑蘭',
+            'Ulaanbaatar': '烏蘭巴托',
+            'Lima': '利馬',
+            'N\'Djamena': '恩將納',
+            'Niamey': '尼阿美',
+            'Luanda': '羅安達',
+            'Bamako': '巴馬科',
+            'Pretoria': '普勒托利亞',
+            'Bogotá': '波哥大',
+            'Addis Ababa': '阿迪斯阿貝巴',
+            'La Paz': '拉巴斯',
+            'Nouakchott': '諾克少',
+            'Cairo': '開羅',
+            'Dodoma': '多多馬',
+            'Abuja': '阿布賈',
+            'Caracas': '卡拉卡斯',
+            'Islamabad': '伊斯蘭馬巴德',
+            'Windhoek': '溫荷克',
+            'Maputo': '馬布多',
+            'Ankara': '安卡拉',
+            'Santiago': '聖地牙哥',
+            'Lusaka': '路沙卡',
+            'Naypyidaw': '奈比多',
+            'Kabul': '喀布爾',
+            'Mogadishu': '摩加迪休',
+            'Bangui': '班基',
+            'Juba': '朱巴',
+            'Kiev': '基輔',
+            'Gaborone': '嘉柏隆里',
+            'Antananarivo': '安塔那那利佛',
+            'Nairobi': '奈洛比',
+            'Paris': '巴黎',
+            'Sana\'a': '沙那',
+            'Bangkok': '曼谷',
+            'Madrid': '馬德里',
+            'Ashgabat': '阿什哈巴德',
+            'Yaoundé': '雅溫德',
+            'Port Moresby': '莫士比港',
+            'Stockholm': '斯德哥爾摩',
+            'Tashkent': '塔什干',
+            'Rabat': '拉巴特',
+            'Baghdad': '巴格達',
+            'Asunción': '亞松森',
+            'Harare': '哈拉雷',
+            'Tokyo': '東京',
+            'Berlin': '柏林',
+            'Brazzaville': '布拉薩',
+            'Helsinki': '赫爾辛基',
+            'Hanoi': '河內',
+            'Kuala Lumpur': '吉隆坡',
+            'Oslo': '奧斯陸',
+            'Yamoussoukro': '雅穆索戈',
+            'Warsaw': '華沙',
+            'Muscat': '馬斯喀特',
+            'Rome': '羅馬',
+            'Manila': '馬尼拉',
+            'Quito': '基多',
+            'Ouagadougou': '瓦加杜古',
+            'Wellington': '威靈頓',
+            'Libreville': '自由市',
+            'Conakry': '柯那克里',
+            'London': '倫敦',
+            'Accra': '阿克拉',
+            'Bucharest': '布加勒斯特',
+            'Vientiane': '永珍',
+            'Kampala': '坎帕拉',
+            'Georgetown': '喬治城',
+            'Minsk': '明斯克',
+            'Bishkek': '比什凱克',
+            'Dakar': '達卡',
+            'Damascus': '大馬士革',
+            'Phnom Penh': '金邊',
+            'Montevideo': '蒙特維多',
+            'Paramaribo': '巴拉馬利波',
+            'Tunis': '突尼斯',
+            'Dhaka': '達卡',
+            'Kathmandu': '加德滿都',
+            'Dushanbe': '杜尚別',
+            'Athens': '雅典',
+            'Managua': '馬拿瓜',
+            'Asmara': '阿斯馬拉',
+            'Pyongyang': '平壤',
+            'Lilongwe': '利隆威',
+            'Porto-Novo': '新港',
+            'Tegucigalpa': '德古西加巴',
+            'Monrovia': '蒙羅維亞',
+            'Sofia': '索非亞',
+            'Havana': '哈瓦那',
+            'Guatemala City': '瓜地馬拉市',
+            'Reykjavik': '雷克雅維克',
+            'Seoul': '首爾',
+            'Budapest': '布達佩斯',
+            'Lisbon': '里斯本',
+            'Amman': '安曼',
+            'Belgrade': '貝爾格勒',
+            'Baku': '巴庫',
+            'Vienna': '維也納',
+            'Abu Dhabi': '阿布達比',
+            'Prague': '布拉格',
+            'Panama City': '巴拿馬市',
+            'Freetown': '自由城',
+            'Dublin': '都柏林',
+            'Tbilisi': '第比利斯',
+            'Colombo': '可倫坡',
+            'Vilnius': '維爾紐斯',
+            'Riga': '里加',
+            'Lomé': '洛美',
+            'Zagreb': '札格瑞布',
+            'Sarajevo': '塞拉耶佛',
+            'San José': '聖荷西',
+            'Bratislava': '布拉提斯拉瓦',
+            'Santo Domingo': '聖多明哥',
+            'Tallinn': '塔林',
+            'Copenhagen': '哥本哈根',
+            'Amsterdam': '阿姆斯特丹',
+            'Bern': '伯恩',
+            'Thimphu': '廷布',
+            'Taipei': '台北',
+            'Bissau': '比索',
+            'Chișinău': '基希涅夫',
+            'Brussels': '布魯塞爾',
+            'Maseru': '馬塞魯',
+            'Yerevan': '葉里溫',
+            'Tirana': '地拉那',
+            'Honiara': '荷尼阿拉',
+            'Malabo': '馬拉博',
+            'Bujumbura': '布松布拉',
+            'Port-au-Prince': '太子港',
+            'Kigali': '吉佳利',
+            'Skopje': '史高比耶',
+            'Belmopan': '貝爾墨邦',
+            'Jerusalem': '耶路撒冷',
+            'San Salvador': '聖薩爾瓦多',
+            'Ljubljana': '盧比安納',
+            'Suva': '蘇瓦',
+            'Kuwait City': '科威特市',
+            'Mbabane': '墨巴本',
+            'Dili': '帝力',
+            'Podgorica': '波多里查',
+            'Nassau': '拿騷',
+            'Port Vila': '維拉港',
+            'Doha': '多哈',
+            'Banjul': '班竹',
+            'Kingston': '京斯敦',
+            'Beirut': '貝魯特',
+            'Nicosia': '尼古西亞',
+            'San Juan': '聖胡安',
+            'Ramallah': '拉馬拉',
+            'Bandar Seri Begawan': '斯里巴卡旺市',
+            'Port of Spain': '西班牙港',
+            'Praia': '培亞',
+            'Apia': '阿皮亞',
+            'Luxembourg City': '盧森堡市',
+            'Moroni': '莫洛尼',
+            'Port Louis': '路易港',
+            'São Tomé': '聖多美',
+            'Roseau': '羅索',
+            'Nuku\'alofa': '努瓜婁發',
+            'Tarawa': '塔拉瓦',
+            'Palikir': '帕利基爾',
+            'Singapore': '新加坡',
+            'Manama': '麥納瑪',
+            'Castries': '卡斯翠',
+            'Andorra la Vella': '安道爾城',
+            'Ngerulmud': '恩吉魯穆德',
+            'Victoria': '維多利亞',
+            'St. John\'s': '聖約翰',
+            'Bridgetown': '橋鎮',
+            'Kingstown': '金斯敦',
+            'St. George\'s': '聖喬治',
+            'Valletta': '瓦萊塔',
+            'Malé': '馬列',
+            'Basseterre': '巴斯特爾',
+            'Vaduz': '瓦都茲',
+            'San Marino': '聖馬利諾',
+            'Funafuti': '富那富提',
+            'Yaren': '亞倫',
+            'Monaco': '摩納哥',
+            'Vatican City': '梵蒂岡城'
+        };
+
+        let selectedCountry = null;
+        let countries = [];
+        let isGlobeReady = false;
+
+        // 紐約和台灣的經緯度
+        const newYork = { lat: 40.7128, lng: -74.0060 };
+        const taiwan = { lat: 23.5, lng: 121 };
+
+        // 航線路徑點（紐約 -> 倫敦 -> 巴黎 -> 維也納 -> 黑海 -> 孟買 -> 海南島 -> 台灣）
+        const routePoints = [
+            { lat: 40.7128, lng: -74.0060, name: '紐約' },      // 紐約
+            { lat: 51.5074, lng: -0.1278, name: '倫敦' },       // 倫敦
+            { lat: 48.8566, lng: 2.3522, name: '巴黎' },        // 巴黎
+            { lat: 48.2082, lng: 16.3738, name: '維也納' },     // 維也納
+            { lat: 42.0, lng: 35.0, name: '黑海' },             // 黑海
+            { lat: 19.0760, lng: 72.8777, name: '孟買' },       // 孟買
+            { lat: 20.0444, lng: 110.1999, name: '海南島' },    // 海南島
+            { lat: 23.5, lng: 121, name: '台灣' }               // 台灣
+        ];
+
+        // 創建航線段（每兩個點之間一段）
+        const createFlightArcs = () => {
+            const arcs = [];
+            for (let i = 0; i < routePoints.length - 1; i++) {
+                arcs.push({
+                    startLat: routePoints[i].lat,
+                    startLng: routePoints[i].lng,
+                    endLat: routePoints[i + 1].lat,
+                    endLng: routePoints[i + 1].lng,
+                    segmentIndex: i
+                });
+            }
+            return arcs;
+        };
+
+        const allFlightArcs = createFlightArcs();
+
+        const globe = Globe()
+            (document.getElementById('globeViz'))
+            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+            .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+            .enablePointerInteraction(false)
+            .polygonCapColor(d => d === selectedCountry ? '#ff6b6b' : 'rgba(100, 150, 200, 0.7)')
+            .polygonSideColor(() => 'rgba(100, 150, 200, 0.15)')
+            .polygonStrokeColor(() => '#111')
+            .polygonsTransitionDuration(300)
+            // 航線設定
+            .arcsData([])
+            .arcStartLat(d => d.startLat)
+            .arcStartLng(d => d.startLng)
+            .arcEndLat(d => d.endLat)
+            .arcEndLng(d => d.endLng)
+            .arcColor(() => '#FF6B35')
+            .arcStroke(0.8)
+            .arcDashLength(1)
+            .arcDashGap(0)
+            .arcDashAnimateTime(0)
+            .arcAltitude(0.25)
+            .arcAltitudeAutoScale(0.5)
+            // 路徑點標記
+            .pointsData(routePoints)
+            .pointLat(d => d.lat)
+            .pointLng(d => d.lng)
+            .pointColor(() => '#FFD700')
+            .pointAltitude(0.01)
+            .pointRadius(0.3)
+            .pointLabel(d => `
+                <div style="background: rgba(0,0,0,0.9); padding: 8px 12px; border-radius: 6px; font-family: 'Microsoft JhengHei', sans-serif;">
+                    <div style="color: #FFD700; font-size: 16px; font-weight: bold;">
+                        ${d.name}
+                    </div>
+                </div>
+            `);
+
+        // 載入國家地理數據
+        fetch('https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson')
+            .then(res => res.json())
+            .then(data => {
+                countries = data.features;
+                globe.polygonsData(countries);
+                isGlobeReady = true;
+
+                // 設定初始位置為紐約，altitude 1.2（非常近的距離）
+                globe.pointOfView({ lat: newYork.lat, lng: newYork.lng, altitude: 1.2 }, 0);
+            });
+
+        // 處理滾動事件
+        function handleScroll() {
+            if (!isGlobeReady) return;
+
+            const scrollY = window.scrollY;
+            const windowHeight = window.innerHeight;
+            const globeVizElement = document.getElementById('globeViz');
+            const infoElement = document.getElementById('info');
+
+            // Banner 高度
+            const bannerHeight = windowHeight;
+
+            // Earth section 的起始和結束位置
+            const earthStart = bannerHeight;
+            const earthHeight = windowHeight * 5; // 500vh
+            const earthEnd = earthStart + earthHeight;
+
+            // Footer 的起始位置（頁面上的實際位置）
+            const footerStart = earthEnd;
+
+            // 動畫應該在 footer 碰到螢幕底部時完成
+            // 也就是當 scrollY + windowHeight = footerStart
+            // 即 scrollY = footerStart - windowHeight
+            const animationEnd = footerStart - windowHeight;
+
+            // 如果還在 banner 區域，隱藏地球儀
+            if (scrollY < earthStart) {
+                globeVizElement.style.opacity = '0';
+                infoElement.style.display = 'none';
+                // 隱藏航線
+                globe.arcsData([]);
+                return;
+            }
+
+            // 如果進入 earth 區域或之後，顯示地球儀和資訊面板
+            globeVizElement.style.opacity = '1';
+            infoElement.style.display = 'block';
+
+            // 如果已經完成動畫（footer 頂部已經碰到或超過螢幕底部），固定在台灣
+            if (scrollY >= animationEnd) {
+                globe.pointOfView({ lat: taiwan.lat, lng: taiwan.lng, altitude: 1.2 }, 0);
+
+                // 顯示完整航線（所有段）
+                globe.arcsData(allFlightArcs);
+
+                // 更新資訊面板顯示台灣
+                infoElement.innerHTML = `
+                    <h2>目的地</h2>
+                    <div style="margin-top: 15px;">
+                        <p class="label">國家名稱</p>
+                        <p class="value">台灣</p>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <p class="label">首都</p>
+                        <p class="value">台北</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // 在 earth 區域內，計算從紐約到台灣的旋轉進度
+            if (scrollY >= earthStart && scrollY < animationEnd) {
+                // 計算在 earth section 中的進度 (0 到 1)
+                // 動畫區間是從 earthStart 到 animationEnd
+                const animationDistance = animationEnd - earthStart;
+                const progress = (scrollY - earthStart) / animationDistance;
+
+                // 計算航線段進度
+                const totalSegments = allFlightArcs.length; // 7 段
+                const segmentProgress = progress * totalSegments; // 0 到 7
+                const completedSegments = Math.floor(segmentProgress); // 完成的整段數
+                const currentSegmentProgress = segmentProgress - completedSegments; // 當前段的進度 (0-1)
+
+                // 根據航線路徑計算當前的經緯度
+                let currentLat, currentLng;
+
+                if (completedSegments >= routePoints.length - 1) {
+                    // 已到達最後一個點
+                    currentLat = taiwan.lat;
+                    currentLng = taiwan.lng;
+                } else {
+                    // 在當前航段中插值
+                    const startPoint = routePoints[completedSegments];
+                    const endPoint = routePoints[completedSegments + 1];
+                    currentLat = startPoint.lat + (endPoint.lat - startPoint.lat) * currentSegmentProgress;
+                    currentLng = startPoint.lng + (endPoint.lng - startPoint.lng) * currentSegmentProgress;
+                }
+
+                // 計算 altitude：先 zoom-out（拉遠）再 zoom-in（拉近）
+                // 使用拋物線：在中間（progress = 0.5）達到最大 altitude
+                // 起點和終點：altitude = 1.2（非常近）
+                // 中間：altitude = 1.2 + 3.0 = 4.2（拉遠）
+                const altitudeBoost = 3.0 * (1 - 4 * Math.pow(progress - 0.5, 2));
+                const currentAlt = 1.2 + altitudeBoost;
+
+                // 更新地球儀視角（不使用動畫）
+                globe.pointOfView({
+                    lat: currentLat,
+                    lng: currentLng,
+                    altitude: currentAlt
+                }, 0);
+
+                // 更新航線：根據進度顯示相應的航線段
+                const visibleArcs = [];
+
+                // 添加所有已完成的段
+                for (let i = 0; i < completedSegments && i < totalSegments; i++) {
+                    visibleArcs.push(allFlightArcs[i]);
+                }
+
+                // 添加當前正在繪製的段（部分顯示）
+                if (completedSegments < totalSegments && currentSegmentProgress > 0) {
+                    const currentArc = allFlightArcs[completedSegments];
+                    const partialEndLat = currentArc.startLat +
+                        (currentArc.endLat - currentArc.startLat) * currentSegmentProgress;
+                    const partialEndLng = currentArc.startLng +
+                        (currentArc.endLng - currentArc.startLng) * currentSegmentProgress;
+
+                    visibleArcs.push({
+                        startLat: currentArc.startLat,
+                        startLng: currentArc.startLng,
+                        endLat: partialEndLat,
+                        endLng: partialEndLng,
+                        segmentIndex: currentArc.segmentIndex
+                    });
+                }
+
+                globe.arcsData(visibleArcs);
+
+                // 更新資訊面板顯示進度和當前經過的城市
+                const percentage = Math.round(progress * 100);
+                const currentPointIndex = Math.min(completedSegments, routePoints.length - 1);
+                const currentCity = routePoints[currentPointIndex].name;
+                const nextCity = currentPointIndex < routePoints.length - 1 ?
+                    routePoints[currentPointIndex + 1].name : '台灣';
+
+                infoElement.innerHTML = `
+                    <h2>旅程進行中</h2>
+                    <div style="margin-top: 15px;">
+                        <p class="label">當前位置</p>
+                        <p class="value">${currentCity} → ${nextCity}</p>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <p class="label">進度</p>
+                        <p class="value">${percentage}%</p>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <p class="label">航段</p>
+                        <p class="value">${completedSegments + 1} / ${totalSegments}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 添加滾動事件監聽
+        window.addEventListener('scroll', handleScroll, { passive: true });
+
+        // 初始檢查
+        handleScroll();
+    </script>
+</body>
+</html>

@@ -35,6 +35,7 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 - [video-triggered-wp1-text-with-video.html](./video-scroll/video-triggered-wp1-text-with-video.html) - Triggered video with text (Renamed: 2025-11-05)
 - [video-triggered-wp2-text-over-video.html](./video-scroll/video-triggered-wp2-text-over-video.html) - Triggered video with text overlay (Renamed: 2025-11-05)
 - [video-triggered-wp2-text-over-video-title-page.html](./video-scroll/video-triggered-wp2-text-over-video-title-page.html) - Enhanced version with landing page and sticky 2x2 video grid layout (Added: 2025-11-12)
+- [video-triggered-wp2-text-over-video-title02.html](./video-scroll/video-triggered-wp2-text-over-video-title02.html) - Cinematic intro with flip-card video reveal and auto-reset (Added: 2025-12-02)
 
 ### Parallax Scrolling
 - [parallax-h1-section.html](./parallax/parallax-h1-section.html) - Parallax H1 section with jQuery scroll effects
@@ -50,6 +51,10 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 - [map02_topojson_d3_copilot.html](./map02_topojson_d3_copilot.html) - Taiwan county map with D3.js and TopoJSON, scroll-triggered interactions (Added: 2025-11-18)
 - [map03_leaflet.html](./map03_leaflet.html) - Leaflet-based Taiwan city map with OpenStreetMap tiles and circle markers (Added: 2025-11-18)
 - [map04_leaflet_topojson.html](./map04_leaflet_topojson.html) - Leaflet + TopoJSON Taiwan county area map with polygon boundaries (Added: 2025-11-18)
+
+### 3D Visualization
+- [earth.html](./earth.html) - Interactive 3D Globe with country data (Added: 2025-12-02)
+- [globe-3d.html](./globe-3d.html) - Scroll-driven 3D flight path storytelling (Added: 2025-12-02)
 
 ---
 
@@ -270,4 +275,56 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 
 ---
 
-*Last updated: 2025-11-24*
+### Cinematic Video Reveal (Added: 2025-12-02)
+
+#### video-triggered-wp2-text-over-video-title02.html
+**Key Features:**
+- **Cinematic Intro Sequence**:
+  - Scroll locked initially.
+  - Sequential fade-in of Title, Subtitle, and Scroll Hint.
+  - Animated SVG Arrow guiding user to scroll.
+- **Flip-Card Video Reveal**:
+  - 4 full-width (25%) transparent panels.
+  - Cards flip open to reveal videos when the section touches the top of the viewport.
+  - Videos play automatically upon reveal.
+- **State Reset**:
+  - Scrolling back to the top resets the flip cards to their closed state, ready for re-triggering.
+
+**Technologies:**
+- CSS 3D Transforms (`rotateY`, `perspective`)
+- `IntersectionObserver` with `rootMargin` for precise top-border triggering.
+- CSS Keyframe Animations for the arrow.
+- JavaScript for sequence control and state management.
+
+---
+
+---
+
+### 3D Visualization (Added: 2025-12-02)
+
+#### earth.html
+**Key Features:**
+- **Interactive 3D Globe**: Built with `globe.gl`, featuring realistic textures (Blue Marble, Topology, Night Sky).
+- **Country Data**: Displays country names in Traditional Chinese upon clicking.
+- **Auto-Rotation**: Smoothly rotates until user interaction.
+- **Visual Customization**: Highlights selected countries with custom polygon colors.
+
+**Technologies:**
+- `globe.gl` (Three.js wrapper)
+- GeoJSON/TopoJSON data integration
+
+#### globe-3d.html
+**Key Features:**
+- **Scroll-Driven Storytelling**: Controls the globe's camera and animation based on scroll position.
+- **Flight Path Animation**: Visualizes a flight route from New York to Taiwan with intermediate stops (London, Paris, etc.).
+- **Dynamic Camera Control**: Zooms out and in (parabolic altitude) while traversing the path.
+- **Progress Tracking**: Updates an info panel with current location, next destination, and flight progress percentage.
+
+**Technologies:**
+- `globe.gl`
+- Scroll event mapping to 3D coordinates
+- Dynamic arc and point rendering
+
+---
+
+*Last updated: 2025-12-02*

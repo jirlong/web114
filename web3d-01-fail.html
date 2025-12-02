@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3D Runner - Kaohsiung to Taipei</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            /* Hide horizontal scroll */
+            background-color: #000;
+            font-family: 'Microsoft JhengHei', sans-serif;
+        }
+
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: 1;
+        }
+
+        #scroll-track {
+            height: 1000vh;
+            /* Long scroll area */
+            position: relative;
+            z-index: 0;
+        }
+
+        #ui-layer {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10;
+            color: white;
+            pointer-events: none;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #00ffff;
+            width: 0%;
+            transition: width 0.1s;
+        }
+    </style>
+    <!-- Import Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+
+<body>
+
+    <div id="ui-layer">
+        <h1>台灣縱走跑者</h1>
+        <p>從 高雄 跑向 台北</p>
+        <p>向下捲動開始奔跑</p>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <p id="debug-info" style="font-family: monospace; font-size: 12px; margin-top: 10px;"></p>
+    </div>
+
+    <div id="canvas-container"></div>
+    <div id="scroll-track"></div>
+
+    <script>
+        // --- Configuration ---
+        const EARTH_RADIUS = 100; // Units
+        const CAMERA_HEIGHT = 0.5; // Height above ground
+        const RUNNER_SCALE = 0.05;
+
+        // Coordinates (Lat, Lng)
+        const START_POS = { lat: 22.6273, lng: 120.3014 }; // Kaohsiung
+        const END_POS = { lat: 25.0330, lng: 121.5654 };   // Taipei
+
+        // --- Three.js Setup ---
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+
+        // Fog for depth and horizon hiding
+        scene.fog = new THREE.FogExp2(0x000000, 0.08);
+
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.01, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 2); // Soft white light
+        scene.add(ambientLight);
+
+        const dirLight = new THREE.DirectionalLight(0xffffff, 1.5);
+        dirLight.position.set(50, 50, 50);
+        scene.add(dirLight);
+
+        // --- Earth ---
+        // Use a high-res texture if possible, or a generated grid for "Tech" look
+        const earthGeometry = new THREE.SphereGeometry(EARTH_RADIUS, 128, 128);
+        const earthMaterial = new THREE.MeshPhongMaterial({
+            map: new THREE.TextureLoader().load('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg'),
+            bumpMap: new THREE.TextureLoader().load('https://unpkg.com/three-globe/example/img/earth-topology.png'),
+            bumpScale: 0.5,
+            specular: new THREE.Color('grey'),
+            shininess: 10
+        });
+        const earth = new THREE.Mesh(earthGeometry, earthMaterial);
+        scene.add(earth);
+
+        // --- Helper Functions ---
+        function latLngToVector3(lat, lng, radius) {
+            const phi = (90 - lat) * (Math.PI / 180);
+            const theta = (lng + 180) * (Math.PI / 180);
+            const x = -(radius * Math.sin(phi) * Math.cos(theta));
+            const z = (radius * Math.sin(phi) * Math.sin(theta));
+            const y = (radius * Math.cos(phi));
+            return new THREE.Vector3(x, y, z);
+        }
+
+        // --- Highway Path ---
+        // Calculate points along the great circle
+        const pathPoints = [];
+        const numPoints = 100;
+        for (let i = 0; i <= numPoints; i++) {
+            const t = i / numPoints;
+            const lat = START_POS.lat + (END_POS.lat - START_POS.lat) * t;
+            const lng = START_POS.lng + (END_POS.lng - START_POS.lng) * t;
+            // Note: Linear interpolation of lat/lng is an approximation for short distances like KHH-TPE. 
+            // For longer distances, SLERP on sphere is needed. KHH-TPE is short enough.
+            pathPoints.push(latLngToVector3(lat, lng, EARTH_RADIUS + 0.05));
+        }
+
+        const curve = new THREE.CatmullRomCurve3(pathPoints);
+        const tubeGeometry = new THREE.TubeGeometry(curve, 100, 0.2, 8, false);
+        const tubeMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff, transparent: true, opacity: 0.6, wireframe: true });
+        const highway = new THREE.Mesh(tubeGeometry, tubeMaterial);
+        scene.add(highway);
+
+        // --- Runner Character ---
+        const runnerGroup = new THREE.Group();
+        scene.add(runnerGroup);
+
+        // Simple Robot/Runner Mesh
+        const bodyMat = new THREE.MeshPhongMaterial({ color: 0xff0055 });
+        const limbMat = new THREE.MeshPhongMaterial({ color: 0xcccccc });
+
+        // Torso
+        const torso = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.5, 0.2), bodyMat);
+        torso.position.y = 0.5;
+        runnerGroup.add(torso);
+
+        // Head
+        const head = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.25, 0.25), limbMat);
+        head.position.y = 0.9;
+        runnerGroup.add(head);
+
+        // Limbs (Groups for rotation)
+        const leftArm = new THREE.Group(); leftArm.position.set(-0.2, 0.7, 0); runnerGroup.add(leftArm);
+        const rightArm = new THREE.Group(); rightArm.position.set(0.2, 0.7, 0); runnerGroup.add(rightArm);
+        const leftLeg = new THREE.Group(); leftLeg.position.set(-0.1, 0.25, 0); runnerGroup.add(leftLeg);
+        const rightLeg = new THREE.Group(); rightLeg.position.set(0.1, 0.25, 0); runnerGroup.add(rightLeg);
+
+        // Limb Meshes
+        const armGeo = new THREE.BoxGeometry(0.1, 0.4, 0.1);
+        const legGeo = new THREE.BoxGeometry(0.12, 0.5, 0.12);
+
+        const lArmMesh = new THREE.Mesh(armGeo, limbMat); lArmMesh.position.y = -0.2; leftArm.add(lArmMesh);
+        const rArmMesh = new THREE.Mesh(armGeo, limbMat); rArmMesh.position.y = -0.2; rightArm.add(rArmMesh);
+        const lLegMesh = new THREE.Mesh(legGeo, limbMat); lLegMesh.position.y = -0.25; leftLeg.add(lLegMesh);
+        const rLegMesh = new THREE.Mesh(legGeo, limbMat); rLegMesh.position.y = -0.25; rightLeg.add(rLegMesh);
+
+        runnerGroup.scale.set(RUNNER_SCALE, RUNNER_SCALE, RUNNER_SCALE);
+
+        // --- Animation & Scroll Logic ---
+        let scrollProgress = 0;
+
+        function updateRunnerAnimation(time) {
+            const speed = 10;
+            const angle = Math.sin(time * speed) * 0.8;
+
+            // Run cycle
+            leftArm.rotation.x = angle;
+            rightArm.rotation.x = -angle;
+            leftLeg.rotation.x = -angle;
+            rightLeg.rotation.x = angle;
+
+            // Bobbing
+            runnerGroup.position.y = (Math.sin(time * speed * 2) * 0.05); // Relative to its container
+        }
+
+        function updateCameraAndRunner() {
+            // 1. Get position on curve
+            const point = curve.getPointAt(scrollProgress);
+            const tangent = curve.getTangentAt(scrollProgress).normalize();
+
+            // 2. Calculate Basis Vectors for Runner
+            // Y-axis = Up (Surface Normal)
+            const up = point.clone().normalize();
+
+            // Z-axis = Forward (Tangent)
+            // We want the runner to face the tangent.
+            // In Three.js, lookAt points +Z. Let's assume +Z is forward.
+            const forward = tangent.clone();
+
+            // X-axis = Right
+            const right = new THREE.Vector3().crossVectors(forward, up).normalize();
+
+            // Recalculate Forward to ensure orthogonality (Forward = Up x Right)
+            forward.crossVectors(up, right).normalize();
+
+            // 3. Apply Rotation Matrix
+            const rotationMatrix = new THREE.Matrix4();
+            rotationMatrix.makeBasis(right, up, forward);
+
+            runnerGroup.position.copy(point);
+            runnerGroup.quaternion.setFromRotationMatrix(rotationMatrix);
+
+            // 4. Position Camera
+            // "Standing behind the character" -> Camera at -Forward
+            // "Walking inwards and upwards" -> Camera low, looking up
+
+            const cameraDist = 2.5; // Further back to see more context
+            const cameraHeight = 1.5; // Slightly higher to see over the head clearly, but still "behind"
+
+            // Camera Position: Point - Forward * Dist + Up * Height
+            const cameraOffset = forward.clone().multiplyScalar(-cameraDist).add(up.clone().multiplyScalar(cameraHeight));
+            const cameraPos = point.clone().add(cameraOffset);
+
+            camera.position.copy(cameraPos);
+            camera.up.copy(up); // Align camera up with world up
+
+            // Look at: The runner's position + Forward * large_distance (Horizon)
+            // Adding some 'Up' component to the target makes the camera look "upwards" into the distance
+            const lookTarget = point.clone().add(forward.clone().multiplyScalar(10)).add(up.clone().multiplyScalar(2));
+            camera.lookAt(lookTarget);
+        }    // Debug
+        // document.getElementById('debug-info').innerText = `Progress: ${scrollProgress.toFixed(4)}`;
+
+
+        // --- Main Loop ---
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Calculate scroll progress
+            const scrollY = window.scrollY;
+            const maxScroll = document.body.scrollHeight - window.innerHeight;
+            scrollProgress = Math.max(0, Math.min(1, scrollY / maxScroll));
+
+            document.getElementById('progress-fill').style.width = (scrollProgress * 100) + '%';
+
+            // Update Scene
+            updateRunnerAnimation(Date.now() * 0.001);
+            updateCameraAndRunner();
+
+            renderer.render(scene, camera);
+        }
+
+        // Handle Window Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Start
+        animate();
+
+    </script>
+</body>
+
+</html>

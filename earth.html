@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D 地球 - 國家導覽</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #000;
+            font-family: "Microsoft JhengHei", "Heiti TC", sans-serif;
+        }
+
+        #globeViz {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #info-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            pointer-events: none;
+            display: none;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+            max-width: 300px;
+        }
+
+        #country-name {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ffff;
+            margin-bottom: 5px;
+        }
+
+        #country-name-en {
+            font-size: 14px;
+            color: #aaa;
+        }
+
+        .instruction {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            pointer-events: none;
+            text-align: center;
+        }
+    </style>
+    <script src="https://unpkg.com/globe.gl"></script>
+</head>
+
+<body>
+    <div id="globeViz"></div>
+    <div id="info-box">
+        <div id="country-name"></div>
+        <div id="country-name-en"></div>
+    </div>
+    <div class="instruction">點擊國家以顯示資訊 / 拖曳旋轉地球 / 滾輪縮放</div>
+
+    <script>
+        // Check if Globe is loaded
+        if (typeof Globe === 'undefined') {
+            alert('錯誤：無法載入 3D 地球函式庫 (Globe.gl)。\n\n請檢查您的網路連線。如果您是直接開啟檔案 (file://)，瀏覽器可能會阻擋載入。建議使用 Local Server 執行。');
+        }
+
+        // Traditional Chinese Country Name Mapping
+        const countryTranslations = {
+            "Afghanistan": "阿富汗",
+            "Albania": "阿爾巴尼亞",
+            "Algeria": "阿爾及利亞",
+            "Angola": "安哥拉",
+            "Antarctica": "南極洲",
+            "Argentina": "阿根廷",
+            "Armenia": "亞美尼亞",
+            "Australia": "澳洲",
+            "Austria": "奧地利",
+            "Azerbaijan": "亞塞拜然",
+            "Bahamas": "巴哈馬",
+            "Bangladesh": "孟加拉",
+            "Belarus": "白俄羅斯",
+            "Belgium": "比利時",
+            "Belize": "貝里斯",
+            "Benin": "貝南",
+            "Bhutan": "不丹",
+            "Bolivia": "玻利維亞",
+            "Bosnia and Herz.": "波士尼亞與赫塞哥維納",
+            "Botswana": "波札那",
+            "Brazil": "巴西",
+            "Brunei": "汶萊",
+            "Bulgaria": "保加利亞",
+            "Burkina Faso": "布吉納法索",
+            "Burundi": "蒲隆地",
+            "Cambodia": "柬埔寨",
+            "Cameroon": "喀麥隆",
+            "Canada": "加拿大",
+            "Central African Rep.": "中非共和國",
+            "Chad": "查德",
+            "Chile": "智利",
+            "China": "中國",
+            "Colombia": "哥倫比亞",
+            "Congo": "剛果",
+            "Costa Rica": "哥斯大黎加",
+            "Croatia": "克羅埃西亞",
+            "Cuba": "古巴",
+            "Cyprus": "賽普勒斯",
+            "Czechia": "捷克",
+            "Côte d'Ivoire": "象牙海岸",
+            "Dem. Rep. Congo": "剛果民主共和國",
+            "Denmark": "丹麥",
+            "Djibouti": "吉布地",
+            "Dominican Rep.": "多明尼加",
+            "Ecuador": "厄瓜多",
+            "Egypt": "埃及",
+            "El Salvador": "薩爾瓦多",
+            "Eq. Guinea": "赤道幾內亞",
+            "Eritrea": "厄利垂亞",
+            "Estonia": "愛沙尼亞",
+            "Ethiopia": "衣索比亞",
+            "Falkland Is.": "福克蘭群島",
+            "Fiji": "斐濟",
+            "Finland": "芬蘭",
+            "France": "法國",
+            "Gabon": "加彭",
+            "Gambia": "甘比亞",
+            "Georgia": "喬治亞",
+            "Germany": "德國",
+            "Ghana": "迦納",
+            "Greece": "希臘",
+            "Greenland": "格陵蘭",
+            "Guatemala": "瓜地馬拉",
+            "Guinea": "幾內亞",
+            "Guinea-Bissau": "幾內亞比索",
+            "Guyana": "蓋亞那",
+            "Haiti": "海地",
+            "Honduras": "宏都拉斯",
+            "Hungary": "匈牙利",
+            "Iceland": "冰島",
+            "India": "印度",
+            "Indonesia": "印尼",
+            "Iran": "伊朗",
+            "Iraq": "伊拉克",
+            "Ireland": "愛爾蘭",
+            "Israel": "以色列",
+            "Italy": "義大利",
+            "Jamaica": "牙買加",
+            "Japan": "日本",
+            "Jordan": "約旦",
+            "Kazakhstan": "哈薩克",
+            "Kenya": "肯亞",
+            "Kosovo": "科索沃",
+            "Kuwait": "科威特",
+            "Kyrgyzstan": "吉爾吉斯",
+            "Laos": "寮國",
+            "Latvia": "拉脫維亞",
+            "Lebanon": "黎巴嫩",
+            "Lesotho": "賴索托",
+            "Liberia": "賴比瑞亞",
+            "Libya": "利比亞",
+            "Lithuania": "立陶宛",
+            "Luxembourg": "盧森堡",
+            "Macedonia": "馬其頓",
+            "Madagascar": "馬達加斯加",
+            "Malawi": "馬拉威",
+            "Malaysia": "馬來西亞",
+            "Mali": "馬利",
+            "Mauritania": "茅利塔尼亞",
+            "Mexico": "墨西哥",
+            "Moldova": "摩爾多瓦",
+            "Mongolia": "蒙古",
+            "Montenegro": "蒙特內哥羅",
+            "Morocco": "摩洛哥",
+            "Mozambique": "莫三比克",
+            "Myanmar": "緬甸",
+            "Namibia": "納米比亞",
+            "Nepal": "尼泊爾",
+            "Netherlands": "荷蘭",
+            "New Caledonia": "新喀里多尼亞",
+            "New Zealand": "紐西蘭",
+            "Nicaragua": "尼加拉瓜",
+            "Niger": "尼日",
+            "Nigeria": "奈及利亞",
+            "North Korea": "北韓",
+            "Norway": "挪威",
+            "Oman": "阿曼",
+            "Pakistan": "巴基斯坦",
+            "Palestine": "巴勒斯坦",
+            "Panama": "巴拿馬",
+            "Papua New Guinea": "巴布亞紐幾內亞",
+            "Paraguay": "巴拉圭",
+            "Peru": "秘魯",
+            "Philippines": "菲律賓",
+            "Poland": "波蘭",
+            "Portugal": "葡萄牙",
+            "Puerto Rico": "波多黎各",
+            "Qatar": "卡達",
+            "Romania": "羅馬尼亞",
+            "Russia": "俄羅斯",
+            "Rwanda": "盧安達",
+            "S. Sudan": "南蘇丹",
+            "Saudi Arabia": "沙烏地阿拉伯",
+            "Senegal": "塞內加爾",
+            "Serbia": "塞爾維亞",
+            "Sierra Leone": "獅子山",
+            "Slovakia": "斯洛伐克",
+            "Slovenia": "斯洛維尼亞",
+            "Solomon Is.": "索羅門群島",
+            "Somalia": "索馬利亞",
+            "South Africa": "南非",
+            "South Korea": "南韓",
+            "Spain": "西班牙",
+            "Sri Lanka": "斯里蘭卡",
+            "Sudan": "蘇丹",
+            "Suriname": "蘇利南",
+            "Swaziland": "史瓦濟蘭",
+            "Sweden": "瑞典",
+            "Switzerland": "瑞士",
+            "Syria": "敘利亞",
+            "Taiwan": "台灣",
+            "Tajikistan": "塔吉克",
+            "Tanzania": "坦尚尼亞",
+            "Thailand": "泰國",
+            "Timor-Leste": "東帝汶",
+            "Togo": "多哥",
+            "Trinidad and Tobago": "千里達及托巴哥",
+            "Tunisia": "突尼西亞",
+            "Turkey": "土耳其",
+            "Turkmenistan": "土庫曼",
+            "Uganda": "烏干達",
+            "Ukraine": "烏克蘭",
+            "United Arab Emirates": "阿拉伯聯合大公國",
+            "United Kingdom": "英國",
+            "United States of America": "美國",
+            "Uruguay": "烏拉圭",
+            "Uzbekistan": "烏茲別克",
+            "Vanuatu": "萬那杜",
+            "Venezuela": "委內瑞拉",
+            "Vietnam": "越南",
+            "W. Sahara": "西撒哈拉",
+            "Yemen": "葉門",
+            "Zambia": "尚比亞",
+            "Zimbabwe": "辛巴威"
+        };
+
+        let selectedCountry = null;
+
+        const world = Globe()
+            (document.getElementById('globeViz'))
+            .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-blue-marble.jpg')
+            .bumpImageUrl('https://unpkg.com/three-globe/example/img/earth-topology.png')
+            .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+            .lineHoverPrecision(0)
+            .polygonsData([])
+            .polygonAltitude(0.06)
+            .polygonCapColor(d => d === selectedCountry ? 'rgba(0, 255, 255, 0.3)' : 'rgba(0, 0, 0, 0)')
+            .polygonSideColor(() => 'rgba(0, 100, 100, 0.15)')
+            .polygonStrokeColor(() => '#111')
+            .polygonLabel(({ properties: d }) => `
+        <div style="background: rgba(0,0,0,0.7); padding: 5px 10px; border-radius: 4px; color: white;">
+          <b>${countryTranslations[d.ADMIN] || d.ADMIN}</b> <span style="font-size: 0.8em; color: #ccc">(${d.ADMIN})</span>
+        </div>
+      `)
+            .onPolygonClick(d => {
+                selectedCountry = d;
+                world.polygonCapColor(world.polygonCapColor()); // Trigger update
+
+                // Update Info Box
+                const nameEn = d.properties.ADMIN;
+                const nameZh = countryTranslations[nameEn] || nameEn;
+
+                const infoBox = document.getElementById('info-box');
+                const nameEl = document.getElementById('country-name');
+                const nameEnEl = document.getElementById('country-name-en');
+
+                nameEl.textContent = nameZh;
+                nameEnEl.textContent = nameEn;
+                infoBox.style.display = 'block';
+
+                // Auto-rotate to the selected country
+                const bbox = d.bbox; // Some geojson sources have bbox, but let's calculate centroid if needed or use globe.gl utility
+                // globe.gl automatically calculates polygon center for pointOfView if we pass coords
+                // But d is the feature. Let's get the centroid or just use the click point?
+                // Actually, globe.gl's onPolygonClick passes the feature 'd', and the event 'event', and coords.
+                // Let's just focus on highlighting for now as requested.
+            });
+
+        // Load Country Data
+        fetch('https://unpkg.com/world-atlas/countries-110m.json').then(res => res.json()).then(countries => {
+            // We need GeoJSON features, world-atlas is TopoJSON usually? 
+            // Let's use the standard ne_110m_admin_0_countries.geojson which is safer for direct use
+        });
+
+        // Using the direct GeoJSON source often used in examples
+        fetch('https://raw.githubusercontent.com/vasturiano/globe.gl/master/example/datasets/ne_110m_admin_0_countries.geojson')
+            .then(res => res.json())
+            .then(countries => {
+                world.polygonsData(countries.features);
+            });
+
+        // Auto-rotate
+        world.controls().autoRotate = true;
+        world.controls().autoRotateSpeed = 0.5;
+
+        // Stop rotation on interaction
+        document.getElementById('globeViz').addEventListener('mousedown', () => {
+            world.controls().autoRotate = false;
+        });
+    </script>
+</body>
+
+</html>

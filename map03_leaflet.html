@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +8,14 @@
     <meta name="description" content="Taiwan Interactive Map with Leaflet">
     <meta name="author" content="">
     <title>台灣互動地圖 - Leaflet</title>
-    
+
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    
+
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
     <!-- Custom CSS -->
     <style>
         :root {
@@ -27,7 +29,7 @@
             padding: 0;
             overflow-x: hidden;
         }
-        
+
         #map-container {
             position: fixed;
             width: 50%;
@@ -41,7 +43,7 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             padding: 20px;
         }
-        
+
         .map-title {
             font-size: 2rem;
             font-weight: bold;
@@ -50,7 +52,7 @@
             text-align: center;
             z-index: 1000;
         }
-        
+
         #map {
             width: 90%;
             max-width: 600px;
@@ -59,7 +61,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 1;
         }
-        
+
         .city-info {
             background-color: rgba(255, 255, 255, 0.98);
             border-radius: 12px;
@@ -73,12 +75,12 @@
             z-index: 1000;
             border: 2px solid var(--secondary-color);
         }
-        
+
         .city-info.show {
             opacity: 1;
             transform: translateY(0);
         }
-        
+
         .city-info h3 {
             color: var(--primary-color);
             margin-bottom: 15px;
@@ -86,36 +88,36 @@
             border-bottom: 2px solid var(--secondary-color);
             padding-bottom: 10px;
         }
-        
+
         .city-info-item {
             margin: 10px 0;
             color: #555;
             font-size: 1rem;
         }
-        
+
         .city-info-label {
             font-weight: 600;
             color: #333;
             display: inline-block;
             min-width: 80px;
         }
-        
+
         #content-container {
             position: relative;
             width: 50%;
             margin-left: 50%;
             min-height: 100vh;
         }
-        
+
         .city-section {
             min-height: 100vh;
             padding: 80px 60px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         }
-        
+
         .city-section h2 {
             font-size: 3rem;
             margin-bottom: 30px;
@@ -125,7 +127,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         .city-section p {
             font-size: 1.1rem;
             line-height: 1.8;
@@ -133,7 +135,7 @@
             margin-bottom: 20px;
             text-align: justify;
         }
-        
+
         .city-section h3 {
             font-size: 1.5rem;
             color: var(--secondary-color);
@@ -141,60 +143,62 @@
             margin-bottom: 15px;
             font-weight: 600;
         }
-        
+
         #taipei-section {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
-        
+
         #taichung-section {
             background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
         }
-        
+
         #kaohsiung-section {
             background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
         }
-        
+
         /* Leaflet 自訂樣式 */
         .leaflet-popup-content-wrapper {
             border-radius: 8px;
         }
-        
+
         .leaflet-popup-content {
             margin: 15px;
             font-family: system-ui, -apple-system, sans-serif;
         }
-        
+
         .city-marker {
             background-color: var(--secondary-color);
             border: 3px solid white;
             border-radius: 50%;
             width: 20px;
             height: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
         }
-        
+
         .city-marker.active {
             background-color: var(--primary-color);
             width: 30px;
             height: 30px;
             border-width: 4px;
         }
-        
+
         /* Responsive */
         @media (max-width: 768px) {
-            #map-container, #content-container {
+
+            #map-container,
+            #content-container {
                 width: 100%;
                 position: relative;
                 margin-left: 0;
             }
-            
+
             #map-container {
                 position: sticky;
                 top: 0;
                 z-index: 100;
                 height: 60vh;
             }
-            
+
             #map {
                 width: 100%;
                 height: 50vh;
@@ -202,13 +206,14 @@
         }
     </style>
 </head>
+
 <body>
-    
+
     <!-- 地圖容器 -->
     <div id="map-container">
         <h2 class="map-title">台灣互動地圖</h2>
         <div id="map"></div>
-        
+
         <div id="cityInfoCard" class="city-info">
             <h3 id="cityName">台北市</h3>
             <div class="city-info-item">
@@ -225,64 +230,66 @@
             </div>
         </div>
     </div>
-    
+
     <!-- 內容容器 -->
     <div id="content-container">
         <section id="taipei-section" class="city-section">
             <h2>台北市</h2>
             <p>台北市是中華民國首都及最大城市，位於台灣北部的台北盆地，四周均與新北市接壤。全市下轄12個區，總面積271.8平方公里，人口約260萬人，為台灣第四大城市。</p>
-            
+
             <h3>歷史與發展</h3>
             <p>台北自清代以來即為台灣北部的政治、經濟中心。1875年欽差大臣沈葆楨在此建立台北府，1894年台灣巡撫劉銘傳更將台灣首府遷至台北。日治時期，台北成為台灣總督府所在地，奠定了現代化都市的基礎。</p>
-            
+
             <h3>經濟與文化</h3>
             <p>台北市是台灣的政治、經濟、文化、教育中心，擁有眾多跨國企業總部、金融機構和商業中心。著名地標包括台北101、國父紀念館、中正紀念堂等。台北也以豐富的夜市文化、故宮博物院的珍貴文物聞名於世。</p>
-            
+
             <h3>交通樞紐</h3>
             <p>台北捷運系統四通八達，連接市區各重要地點。台北車站為台灣鐵路、高鐵、捷運三鐵共構的交通樞紐，松山機場和桃園國際機場則提供國內外航空服務。</p>
         </section>
-        
+
         <section id="taichung-section" class="city-section">
             <h2>台中市</h2>
             <p>台中市位於台灣中部，是台灣第二大城市，也是中台灣的政治、經濟、文化中心。全市面積2,215平方公里，人口約282萬人，是台灣人口第二多的城市。</p>
-            
+
             <h3>地理位置</h3>
             <p>台中市地處台灣中心位置，氣候宜人，四季如春。市區位於台中盆地，東側有中央山脈屏障，西臨台灣海峽，地理位置優越，自古即為台灣中部的交通要道。</p>
-            
+
             <h3>文化特色</h3>
             <p>台中擁有豐富的文化資產，包括台中公園、台中火車站（古蹟）、彩虹眷村等著名景點。逢甲夜市、一中商圈等是年輕人喜愛的聚集地。台中國家歌劇院更是世界級的建築地標。</p>
-            
+
             <h3>產業發展</h3>
             <p>台中是台灣精密機械、航太、光電產業的重鎮，中科園區聚集了眾多高科技產業。此外，台中港是台灣第二大港，也是中部地區重要的貿易門戶。</p>
-            
+
             <h3>美食天堂</h3>
             <p>台中以美食聞名，太陽餅、鳳梨酥等傳統糕餅是著名伴手禮。珍珠奶茶發源於台中，逢甲夜市更是台灣創意小吃的發源地之一。</p>
         </section>
-        
+
         <section id="kaohsiung-section" class="city-section">
             <h2>高雄市</h2>
             <p>高雄市位於台灣南部，是台灣第三大城市，也是南台灣的政治、經濟、文化中心。全市面積2,952平方公里，人口約275萬人，擁有台灣最大的國際港口。</p>
-            
+
             <h3>港都風情</h3>
             <p>高雄港是台灣最大的國際商港，也是世界前十大貨櫃港之一。港都的海洋文化孕育了高雄獨特的城市性格，西子灣、旗津等海岸景點是市民休閒的好去處。</p>
-            
+
             <h3>工業重鎮</h3>
             <p>高雄是台灣重工業的核心，石化、鋼鐵、造船等產業發達。近年來積極轉型，發展觀光、文創、綠能等產業，並打造亞洲新灣區，成為南台灣的新地標。</p>
-            
+
             <h3>觀光景點</h3>
             <p>高雄擁有豐富的觀光資源，愛河、蓮池潭、駁二藝術特區、旗津海岸等都是著名景點。佛光山、義大世界等也吸引大量遊客。高雄85大樓曾是台灣第一高樓，至今仍是高雄的地標建築。</p>
-            
+
             <h3>多元文化</h3>
             <p>高雄是個移民城市，融合了閩南、客家、原住民、外省等多元文化。六合夜市、瑞豐夜市等提供豐富的南台灣小吃。高雄人熱情開朗的性格，也為這座城市增添獨特魅力。</p>
         </section>
     </div>
-    
+
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
+
     <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
     <!-- Custom JavaScript -->
     <script>
         // 城市資料（包含座標）
@@ -312,24 +319,24 @@
                 zoom: 11
             }
         };
-        
+
         // 初始化地圖
         const map = L.map('map').setView([23.5, 121], 7);
-        
+
         // 添加地圖圖層（使用 OpenStreetMap）
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             maxZoom: 18
         }).addTo(map);
-        
+
         // 儲存標記和圓圈
         const markers = {};
         const circles = {};
-        
+
         // 為每個城市添加標記和圓圈
         Object.keys(cityData).forEach(cityId => {
             const city = cityData[cityId];
-            
+
             // 添加圓圈表示城市範圍
             const circle = L.circle(city.coords, {
                 color: '#4a90e2',
@@ -338,7 +345,7 @@
                 radius: 15000,
                 weight: 2
             }).addTo(map);
-            
+
             // 添加標記
             const marker = L.marker(city.coords, {
                 icon: L.divIcon({
@@ -347,7 +354,7 @@
                     iconAnchor: [10, 10]
                 })
             }).addTo(map);
-            
+
             // 添加點擊事件
             marker.on('click', () => {
                 const section = document.getElementById(`${cityId}-section`);
@@ -355,17 +362,17 @@
                     section.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             });
-            
+
             // 添加 popup
             marker.bindPopup(`<b>${city.name}</b><br>${city.feature}`);
-            
+
             markers[cityId] = marker;
             circles[cityId] = circle;
         });
-        
+
         // 當前活動城市
         let currentActiveCity = null;
-        
+
         // 更新地圖和城市資訊
         function updateMapCity(cityId) {
             // 重置所有標記和圓圈
@@ -379,11 +386,11 @@
                     weight: 2
                 });
             });
-            
+
             // 如果有指定城市
             if (cityId && cityData[cityId]) {
                 const city = cityData[cityId];
-                
+
                 // 高亮當前城市
                 const markerElement = markers[cityId].getElement();
                 if (markerElement) {
@@ -393,20 +400,20 @@
                     fillOpacity: 0.6,
                     weight: 4
                 });
-                
+
                 // 移動地圖到該城市
                 map.flyTo(city.coords, city.zoom, {
                     duration: 1.5,
                     easeLinearity: 0.5
                 });
-                
+
                 // 更新城市資訊卡
                 document.getElementById('cityName').textContent = city.name;
                 document.getElementById('cityPopulation').textContent = city.population;
                 document.getElementById('cityArea').textContent = city.area;
                 document.getElementById('cityFeature').textContent = city.feature;
                 document.getElementById('cityInfoCard').classList.add('show');
-                
+
                 currentActiveCity = cityId;
             } else {
                 // 回到台灣全島視圖
@@ -417,40 +424,40 @@
                 currentActiveCity = null;
             }
         }
-        
+
         // 檢查當前 section
         function checkCurrentSection() {
             const sections = document.querySelectorAll('.city-section');
             const viewportMiddle = window.scrollY + window.innerHeight / 2;
-            
+
             let foundCity = null;
-            
+
             sections.forEach(section => {
                 const rect = section.getBoundingClientRect();
                 const sectionTop = window.scrollY + rect.top;
                 const sectionBottom = sectionTop + section.offsetHeight;
-                
+
                 if (viewportMiddle >= sectionTop && viewportMiddle <= sectionBottom) {
                     const sectionId = section.id;
                     const cityId = sectionId.replace('-section', '');
                     foundCity = cityId;
                 }
             });
-            
+
             if (foundCity !== currentActiveCity) {
                 updateMapCity(foundCity);
             }
         }
-        
+
         // 使用 Intersection Observer 偵測哪個 section 在視窗中
         function setupObserver() {
             const sections = document.querySelectorAll('.city-section');
-            
+
             const observerOptions = {
                 threshold: 0.5,
-                rootMargin: '-100px 0px -100px 0px'
+                rootMargin: '0px 0px 0px 0px'
             };
-            
+
             const sectionObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -460,28 +467,29 @@
                     }
                 });
             }, observerOptions);
-            
+
             // 觀察所有 section
             sections.forEach(section => {
                 sectionObserver.observe(section);
             });
         }
-        
+
         // 當 DOM 載入完成後執行
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             setupObserver();
-            
+
             // 監聽滾動事件作為備用
             let scrollTimeout;
-            window.addEventListener('scroll', function() {
+            window.addEventListener('scroll', function () {
                 clearTimeout(scrollTimeout);
                 scrollTimeout = setTimeout(checkCurrentSection, 100);
             });
-            
+
             // 初始化：檢查當前應該顯示哪個城市
             setTimeout(checkCurrentSection, 500);
         });
     </script>
-    
+
 </body>
+
 </html>
