@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrolled Image Background Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        #bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-image: url("https://p4css.github.io/webScroll/assets/stand90n.jpg");
+            background-repeat: no-repeat;
+            background-size: 180vw;
+            /* As per original code */
+            background-position: 0% 0%;
+            /* Initial position */
+            will-change: background-position;
+            /* 
+               Note: The original code had background-attachment: fixed.
+               However, since #bg itself is position: fixed, background-attachment: scroll (default) 
+               is usually smoother and easier to reason about when manipulating background-position manually.
+               If we use attachment: fixed, the position is relative to the viewport, which is also true for a fixed div.
+               But sometimes attachment: fixed has performance penalties on mobile.
+               I will stick to default attachment on a fixed div.
+            */
+        }
+
+        .loc {
+            width: 100vw;
+            height: 200vh;
+            background: rgba(0, 0, 0, 0.1);
+            /* Visual indicator of sections */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 0 0 10px black;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .spacer {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            text-shadow: 0 0 10px black;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="bg"></div>
+
+    <div class="spacer" style="background:rgba(0,0,0,0.5);">
+        Scroll Down to Pan Background
+    </div>
+
+    <!-- 
+        Original Data:
+        1. sx=0, sy=0, ex=0, ey=80
+        2. sx=0, sy=80, ex=120, ey=80
+        3. sx=120, sy=80, ex=120, ey=0
+        4. sx=120, sy=0, ex=0, ey=0
+    -->
+    <div class="loc" data-sx="0" data-sy="0" data-ex="0" data-ey="80">
+        Section 1: Pan Down
+    </div>
+    <div class="loc" data-sx="0" data-sy="80" data-ex="120" data-ey="80">
+        Section 2: Pan Right
+    </div>
+    <div class="loc" data-sx="120" data-sy="80" data-ex="120" data-ey="0">
+        Section 3: Pan Up
+    </div>
+    <div class="loc" data-sx="120" data-sy="0" data-ex="0" data-ey="0">
+        Section 4: Pan Left
+    </div>
+
+    <div class="spacer" style="background:rgba(0,0,0,0.5);">
+        End
+    </div>
+    <div style="background:grey;height:100vh"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const bg = document.getElementById('bg');
+            const locs = document.querySelectorAll('.loc');
+            const winH = window.innerHeight;
+
+            function handleScroll() {
+                // We want to find the current active section to update the background.
+                // Or update based on all of them?
+                // The original code iterates all .loc and updates if scrolled is within range.
+                // This implies that if multiple overlap (unlikely with standard flow) or if we scroll fast,
+                // the last one in the loop that matches wins.
+                // Since they are sequential blocks, usually only one or two (at boundary) match.
+
+                // Optimization: We can use requestAnimationFrame if this becomes heavy, 
+                // but for simple math it's fine.
+
+                locs.forEach(loc => {
+                    const rect = loc.getBoundingClientRect();
+
+                    // Check if the element is intersecting with the viewport in a way that we consider "active"
+                    // The original code: if (scrolled >= thispos && scrolled < thispos + thish)
+                    // This means the TOP of the viewport is INSIDE the element.
+                    // rect.top is distance from top of viewport.
+                    // So if rect.top <= 0 && rect.bottom > 0.
+
+                    // Let's check the logic:
+                    // scrolled (scrollTop) >= thispos (offsetTop) -> rect.top <= 0
+                    // scrolled < thispos + thish -> rect.top > -height -> rect.bottom > 0
+
+                    if (rect.top <= 0 && rect.bottom > 0) {
+                        const height = rect.height;
+                        // perc = (scrolled - thispos) / thish
+                        // perc = -rect.top / height
+                        let perc = -rect.top / height;
+
+                        // Clamp perc just in case
+                        perc = Math.max(0, Math.min(1, perc));
+
+                        const sx = parseFloat(loc.dataset.sx);
+                        const sy = parseFloat(loc.dataset.sy);
+                        const ex = parseFloat(loc.dataset.ex);
+                        const ey = parseFloat(loc.dataset.ey);
+
+                        const newx = perc * (ex - sx) + sx;
+                        const newy = perc * (ey - sy) + sy;
+
+                        bg.style.backgroundPosition = `${newx}% ${newy}%`;
+                        // console.log(`${newx}% ${newy}%`);
+                    }
+                });
+            }
+
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            handleScroll(); // Initial call
+        });
+    </script>
+</body>
+
+</html>

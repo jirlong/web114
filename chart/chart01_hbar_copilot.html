@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,33 +8,34 @@
     <meta name="description" content="Bootstrap template with jQuery">
     <meta name="author" content="">
     <title>Bootstrap Template</title>
-    
+
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
     <!-- Custom CSS -->
     <style>
         body {
             padding-top: 20px;
         }
-        
+
         #chart01 {
             padding: 40px 20px;
             max-height: 100vh;
             overflow-y: auto;
         }
-        
+
         .chart-title {
             font-size: 2rem;
             font-weight: bold;
             margin-bottom: 30px;
             color: #333;
         }
-        
+
         .bar-container {
             margin-bottom: 20px;
         }
-        
+
         .bar-label {
             font-size: 1rem;
             font-weight: 600;
@@ -43,17 +45,17 @@
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .bar-label .movie-name {
             flex: 1;
         }
-        
+
         .bar-label .box-office {
             font-size: 0.9rem;
             color: #666;
             margin-left: 10px;
         }
-        
+
         .bar-wrapper {
             background-color: #e9ecef;
             border-radius: 10px;
@@ -61,7 +63,7 @@
             height: 30px;
             position: relative;
         }
-        
+
         .bar {
             height: 100%;
             background: linear-gradient(90deg, #4a90e2, #67b26f);
@@ -73,11 +75,11 @@
             justify-content: flex-end;
             padding-right: 10px;
         }
-        
+
         .bar.animate {
             width: var(--bar-width);
         }
-        
+
         .bar-rank {
             position: absolute;
             left: 10px;
@@ -85,33 +87,33 @@
             transform: translateY(-50%);
             font-weight: bold;
             color: #fff;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
             z-index: 1;
         }
-        
+
         .sticky-top {
             top: 20px;
         }
-        
+
         #chart02 {
             padding: 40px 20px;
             max-height: 100vh;
             overflow-y: auto;
         }
-        
+
         .line-chart-container {
             position: relative;
             width: 100%;
             height: 500px;
             padding: 40px 60px 60px 60px;
         }
-        
+
         .line-chart-svg {
             position: relative;
             width: 100%;
             height: 100%;
         }
-        
+
         .line-path {
             fill: none;
             stroke: #4a90e2;
@@ -121,17 +123,17 @@
             stroke-dasharray: 2000;
             stroke-dashoffset: 2000;
         }
-        
+
         .line-path.animate {
             animation: drawLine 2s ease-out forwards;
         }
-        
+
         @keyframes drawLine {
             to {
                 stroke-dashoffset: 0;
             }
         }
-        
+
         .data-point {
             fill: #4a90e2;
             stroke: #fff;
@@ -140,40 +142,40 @@
             opacity: 0;
             transition: all 0.3s;
         }
-        
+
         .data-point.show {
             opacity: 1;
         }
-        
+
         .data-point:hover {
             r: 8;
             fill: #67b26f;
         }
-        
+
         .axis-line {
             stroke: #dee2e6;
             stroke-width: 2;
         }
-        
+
         .axis-text {
             fill: #6c757d;
             font-size: 12px;
             font-family: system-ui, -apple-system, sans-serif;
         }
-        
+
         .axis-label {
             fill: #495057;
             font-size: 14px;
             font-weight: 600;
             font-family: system-ui, -apple-system, sans-serif;
         }
-        
+
         .grid-line {
             stroke: #e9ecef;
             stroke-width: 1;
             stroke-dasharray: 4 4;
         }
-        
+
         .tooltip {
             position: absolute;
             background-color: rgba(0, 0, 0, 0.8);
@@ -186,46 +188,52 @@
             transition: opacity 0.3s;
             z-index: 1000;
         }
-        
+
         .tooltip.show {
             opacity: 1;
         }
     </style>
 </head>
+
 <body>
-    
+
     <!-- Main Container -->
-    <div class="w-100 mb-3 vh-100 bg-primary"></div> 
+    <div class="w-100 mb-3 vh-100 bg-primary"></div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6" style="height: 200vh;">
                 <h1>宮崎駿電影介紹</h1>
                 <p class="lead">根據這個範例在chart01的地方繪製宮崎駿動畫的前10名票房的horizontal bar</p>
-                
+
                 <h2 class="mt-5">宮崎駿的動畫世界</h2>
                 <p>宮崎駿（Hayao Miyazaki）是日本著名的動畫導演、製作人和漫畫家，也是吉卜力工作室的共同創辦人之一。他的作品以細膩的畫風、深刻的人文關懷和對自然環境的熱愛而聞名於世。</p>
-                
+
                 <h3 class="mt-4">神隱少女</h3>
-                <p>《神隱少女》是宮崎駿最成功的作品之一，於2001年上映。這部電影講述了10歲少女千尋誤入神靈世界後，為了拯救父母而努力工作的故事。影片融合了日本傳統文化、環保意識和成長主題，深受全球觀眾喜愛。該片不僅在日本創下驚人票房，更榮獲奧斯卡最佳動畫長片獎，成為日本動畫史上的里程碑。</p>
-                
+                <p>《神隱少女》是宮崎駿最成功的作品之一，於2001年上映。這部電影講述了10歲少女千尋誤入神靈世界後，為了拯救父母而努力工作的故事。影片融合了日本傳統文化、環保意識和成長主題，深受全球觀眾喜愛。該片不僅在日本創下驚人票房，更榮獲奧斯卡最佳動畫長片獎，成為日本動畫史上的里程碑。
+                </p>
+
                 <h3 class="mt-4">霍爾的移動城堡</h3>
-                <p>2004年上映的《霍爾的移動城堡》改編自英國作家黛安娜·韋恩·瓊斯的同名小說。故事描述少女蘇菲被女巫詛咒變成老婆婆後，與魔法師霍爾和他的移動城堡相遇的奇幻冒險。影片探討了戰爭、愛情與自我認同等深刻主題，視覺呈現更是美輪美奐。</p>
-                
+                <p>2004年上映的《霍爾的移動城堡》改編自英國作家黛安娜·韋恩·瓊斯的同名小說。故事描述少女蘇菲被女巫詛咒變成老婆婆後，與魔法師霍爾和他的移動城堡相遇的奇幻冒險。影片探討了戰爭、愛情與自我認同等深刻主題，視覺呈現更是美輪美奐。
+                </p>
+
                 <h3 class="mt-4">魔法公主</h3>
-                <p>《魔法公主》於1997年上映，是宮崎駿探討人類與自然關係最深入的作品。故事背景設定在日本室町時代，講述少年阿席達卡捲入人類與森林之神的衝突。影片不以簡單的善惡二分法，而是呈現各方立場的複雜性，引發觀眾對環境保護的深思。</p>
-                
+                <p>《魔法公主》於1997年上映，是宮崎駿探討人類與自然關係最深入的作品。故事背景設定在日本室町時代，講述少年阿席達卡捲入人類與森林之神的衝突。影片不以簡單的善惡二分法，而是呈現各方立場的複雜性，引發觀眾對環境保護的深思。
+                </p>
+
                 <h3 class="mt-4">崖上的波妞</h3>
-                <p>2008年的《崖上的波妞》是一部充滿童趣的作品，靈感來自安徒生童話《小美人魚》。故事講述金魚波妞想變成人類，與五歲男孩宗介之間純真的友誼。影片畫風溫暖可愛，配樂輕快動人，展現了宮崎駿對兒童視角的精準掌握。</p>
-                
+                <p>2008年的《崖上的波妞》是一部充滿童趣的作品，靈感來自安徒生童話《小美人魚》。故事講述金魚波妞想變成人類，與五歲男孩宗介之間純真的友誼。影片畫風溫暖可愛，配樂輕快動人，展現了宮崎駿對兒童視角的精準掌握。
+                </p>
+
                 <h3 class="mt-4">風起</h3>
-                <p>《風起》是宮崎駿2013年的作品，也是他宣布退休前的最後一部長篇動畫。影片以日本零式戰鬥機設計師堀越二郎的人生為藍本，描繪了一個追求夢想的飛機設計師在時代洪流中的掙扎。這部作品風格較為寫實，探討了夢想與現實、創造與毀滅的矛盾。</p>
-                
+                <p>《風起》是宮崎駿2013年的作品，也是他宣布退休前的最後一部長篇動畫。影片以日本零式戰鬥機設計師堀越二郎的人生為藍本，描繪了一個追求夢想的飛機設計師在時代洪流中的掙扎。這部作品風格較為寫實，探討了夢想與現實、創造與毀滅的矛盾。
+                </p>
+
                 <h3 class="mt-4">其他經典作品</h3>
                 <p>除了上述票房冠軍外，宮崎駿還創作了《天空之城》、《龍貓》、《魔女宅急便》、《紅豬》等膾炙人口的作品。每一部都有其獨特的魅力和深刻的內涵，共同構築了宮崎駿無可取代的動畫王國。</p>
-                
+
                 <h3 class="mt-4">票房成就</h3>
                 <p>宮崎駿的作品不僅在藝術上獲得高度評價，在商業上也取得了巨大成功。右側的圖表展示了他的動畫作品在日本的票房排名，可以看出《神隱少女》以超過316億日圓的票房遙遙領先，成為日本影史最賣座的電影之一。</p>
-                
+
                 <p class="mt-5">宮崎駿的作品跨越了文化和語言的界限，感動了全世界數億觀眾。他用動畫這個媒介，傳達了對生命、自然、和平與愛的深刻思考，為動畫藝術樹立了難以超越的標竿。</p>
             </div>
 
@@ -235,37 +243,42 @@
             </div>
         </div>
     </div>
-    <div class="w-100 mb-3 vh-100 bg-dark"></div> 
+    <div class="w-100 mb-3 vh-100 bg-dark"></div>
     <div class="container-fluid">
         <div class="row">
             <div class="col-md-6" style="height: 200vh;">
                 <h1>宮崎駿電影介紹</h1>
                 <p class="lead">根據這個範例在chart01的地方繪製宮崎駿動畫的前10名票房的horizontal bar</p>
-                
+
                 <h2 class="mt-5">宮崎駿的動畫世界</h2>
                 <p>宮崎駿（Hayao Miyazaki）是日本著名的動畫導演、製作人和漫畫家，也是吉卜力工作室的共同創辦人之一。他的作品以細膩的畫風、深刻的人文關懷和對自然環境的熱愛而聞名於世。</p>
-                
+
                 <h3 class="mt-4">神隱少女</h3>
-                <p>《神隱少女》是宮崎駿最成功的作品之一，於2001年上映。這部電影講述了10歲少女千尋誤入神靈世界後，為了拯救父母而努力工作的故事。影片融合了日本傳統文化、環保意識和成長主題，深受全球觀眾喜愛。該片不僅在日本創下驚人票房，更榮獲奧斯卡最佳動畫長片獎，成為日本動畫史上的里程碑。</p>
-                
+                <p>《神隱少女》是宮崎駿最成功的作品之一，於2001年上映。這部電影講述了10歲少女千尋誤入神靈世界後，為了拯救父母而努力工作的故事。影片融合了日本傳統文化、環保意識和成長主題，深受全球觀眾喜愛。該片不僅在日本創下驚人票房，更榮獲奧斯卡最佳動畫長片獎，成為日本動畫史上的里程碑。
+                </p>
+
                 <h3 class="mt-4">霍爾的移動城堡</h3>
-                <p>2004年上映的《霍爾的移動城堡》改編自英國作家黛安娜·韋恩·瓊斯的同名小說。故事描述少女蘇菲被女巫詛咒變成老婆婆後，與魔法師霍爾和他的移動城堡相遇的奇幻冒險。影片探討了戰爭、愛情與自我認同等深刻主題，視覺呈現更是美輪美奐。</p>
-                
+                <p>2004年上映的《霍爾的移動城堡》改編自英國作家黛安娜·韋恩·瓊斯的同名小說。故事描述少女蘇菲被女巫詛咒變成老婆婆後，與魔法師霍爾和他的移動城堡相遇的奇幻冒險。影片探討了戰爭、愛情與自我認同等深刻主題，視覺呈現更是美輪美奐。
+                </p>
+
                 <h3 class="mt-4">魔法公主</h3>
-                <p>《魔法公主》於1997年上映，是宮崎駿探討人類與自然關係最深入的作品。故事背景設定在日本室町時代，講述少年阿席達卡捲入人類與森林之神的衝突。影片不以簡單的善惡二分法，而是呈現各方立場的複雜性，引發觀眾對環境保護的深思。</p>
-                
+                <p>《魔法公主》於1997年上映，是宮崎駿探討人類與自然關係最深入的作品。故事背景設定在日本室町時代，講述少年阿席達卡捲入人類與森林之神的衝突。影片不以簡單的善惡二分法，而是呈現各方立場的複雜性，引發觀眾對環境保護的深思。
+                </p>
+
                 <h3 class="mt-4">崖上的波妞</h3>
-                <p>2008年的《崖上的波妞》是一部充滿童趣的作品，靈感來自安徒生童話《小美人魚》。故事講述金魚波妞想變成人類，與五歲男孩宗介之間純真的友誼。影片畫風溫暖可愛，配樂輕快動人，展現了宮崎駿對兒童視角的精準掌握。</p>
-                
+                <p>2008年的《崖上的波妞》是一部充滿童趣的作品，靈感來自安徒生童話《小美人魚》。故事講述金魚波妞想變成人類，與五歲男孩宗介之間純真的友誼。影片畫風溫暖可愛，配樂輕快動人，展現了宮崎駿對兒童視角的精準掌握。
+                </p>
+
                 <h3 class="mt-4">風起</h3>
-                <p>《風起》是宮崎駿2013年的作品，也是他宣布退休前的最後一部長篇動畫。影片以日本零式戰鬥機設計師堀越二郎的人生為藍本，描繪了一個追求夢想的飛機設計師在時代洪流中的掙扎。這部作品風格較為寫實，探討了夢想與現實、創造與毀滅的矛盾。</p>
-                
+                <p>《風起》是宮崎駿2013年的作品，也是他宣布退休前的最後一部長篇動畫。影片以日本零式戰鬥機設計師堀越二郎的人生為藍本，描繪了一個追求夢想的飛機設計師在時代洪流中的掙扎。這部作品風格較為寫實，探討了夢想與現實、創造與毀滅的矛盾。
+                </p>
+
                 <h3 class="mt-4">其他經典作品</h3>
                 <p>除了上述票房冠軍外，宮崎駿還創作了《天空之城》、《龍貓》、《魔女宅急便》、《紅豬》等膾炙人口的作品。每一部都有其獨特的魅力和深刻的內涵，共同構築了宮崎駿無可取代的動畫王國。</p>
-                
+
                 <h3 class="mt-4">票房成就</h3>
                 <p>宮崎駿的作品不僅在藝術上獲得高度評價，在商業上也取得了巨大成功。右側的圖表展示了他的動畫作品在日本的票房排名，可以看出《神隱少女》以超過316億日圓的票房遙遙領先，成為日本影史最賣座的電影之一。</p>
-                
+
                 <p class="mt-5">宮崎駿的作品跨越了文化和語言的界限，感動了全世界數億觀眾。他用動畫這個媒介，傳達了對生命、自然、和平與愛的深刻思考，為動畫藝術樹立了難以超越的標竿。</p>
             </div>
 
@@ -278,19 +291,23 @@
             </div>
         </div>
     </div>
-    <div class="w-100 mb-3 vh-100 bg-dark"></div> 
-    
+    <div class="w-100 mb-3 vh-100 bg-dark"></div>
+
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs" crossorigin="anonymous"></script>
-    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha384-1H217gwSVyLSIfaLxHbE7dRb3v4mYCKbpQvzx0cegeju1MVsGrX5xXxAvs/HgeFs"
+        crossorigin="anonymous"></script>
+
     <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+
     <!-- Custom JavaScript -->
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             console.log('jQuery and Bootstrap loaded successfully!');
-            
+
             // 宮崎駿動畫票房數據（單位：億日圓）
             const miyazakiMovies = [
                 { name: '神隱少女', boxOffice: 316.8, year: 2001 },
@@ -304,20 +321,20 @@
                 { name: '紅豬', boxOffice: 47.6, year: 1992 },
                 { name: '心之谷', boxOffice: 31.5, year: 1995 }
             ];
-            
+
             // 排序並取前10名
             miyazakiMovies.sort((a, b) => b.boxOffice - a.boxOffice);
             const top10 = miyazakiMovies.slice(0, 10);
-            
+
             // 找出最大票房用於計算比例
             const maxBoxOffice = top10[0].boxOffice;
-            
+
             // 生成圖表
             const chartContainer = $('#chartContainer');
-            
+
             top10.forEach((movie, index) => {
                 const percentage = (movie.boxOffice / maxBoxOffice) * 100;
-                
+
                 const barHtml = `
                     <div class="bar-container">
                         <div class="bar-label">
@@ -330,20 +347,20 @@
                         </div>
                     </div>
                 `;
-                
+
                 chartContainer.append(barHtml);
             });
-            
+
             // 使用 Intersection Observer 來觸發動畫
             const observerOptions = {
-                threshold: 0.2
+                threshold: 0.1
             };
-            
+
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         // 當圖表進入視窗時，依序觸發每個長條圖的動畫
-                        $('.bar').each(function(index) {
+                        $('.bar').each(function (index) {
                             const bar = $(this);
                             setTimeout(() => {
                                 bar.addClass('animate');
@@ -353,47 +370,47 @@
                     }
                 });
             }, observerOptions);
-            
+
             // 觀察圖表容器
             const chartElement = document.getElementById('chart01');
             if (chartElement) {
                 observer.observe(chartElement);
             }
-            
+
             // ===== Chart 02: Line Plot =====
             // 按年份排序數據
             const moviesByYear = [...miyazakiMovies].sort((a, b) => a.year - b.year);
-            
+
             // 繪製折線圖
             function drawLineChart() {
                 const svg = document.getElementById('lineChartSvg');
                 const container = document.getElementById('lineChartContainer');
                 const tooltip = document.getElementById('tooltip');
-                
+
                 const width = container.clientWidth - 120;
                 const height = container.clientHeight - 100;
                 const padding = { top: 20, right: 20, bottom: 50, left: 60 };
-                
+
                 // 設定 SVG viewBox
                 svg.setAttribute('viewBox', `0 0 ${width + padding.left + padding.right} ${height + padding.top + padding.bottom}`);
                 svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-                
+
                 // 找出數據範圍
                 const years = moviesByYear.map(m => m.year);
                 const sales = moviesByYear.map(m => m.boxOffice);
                 const minYear = Math.min(...years);
                 const maxYear = Math.max(...years);
                 const maxSale = Math.max(...sales);
-                
+
                 // 比例尺函數
                 const xScale = (year) => padding.left + ((year - minYear) / (maxYear - minYear)) * width;
                 const yScale = (sale) => padding.top + height - ((sale / maxSale) * height);
-                
+
                 // 繪製網格線
                 for (let i = 0; i <= 5; i++) {
                     const y = padding.top + (height / 5) * i;
                     const saleValue = (maxSale * (5 - i) / 5).toFixed(1);
-                    
+
                     // 水平網格線
                     const gridLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                     gridLine.setAttribute('class', 'grid-line');
@@ -402,7 +419,7 @@
                     gridLine.setAttribute('x2', padding.left + width);
                     gridLine.setAttribute('y2', y);
                     svg.appendChild(gridLine);
-                    
+
                     // Y軸標籤
                     const yLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                     yLabel.setAttribute('class', 'axis-text');
@@ -412,7 +429,7 @@
                     yLabel.textContent = saleValue;
                     svg.appendChild(yLabel);
                 }
-                
+
                 // 繪製 X 軸
                 const xAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 xAxis.setAttribute('class', 'axis-line');
@@ -421,7 +438,7 @@
                 xAxis.setAttribute('x2', padding.left + width);
                 xAxis.setAttribute('y2', padding.top + height);
                 svg.appendChild(xAxis);
-                
+
                 // 繪製 Y 軸
                 const yAxis = document.createElementNS('http://www.w3.org/2000/svg', 'line');
                 yAxis.setAttribute('class', 'axis-line');
@@ -430,7 +447,7 @@
                 yAxis.setAttribute('x2', padding.left);
                 yAxis.setAttribute('y2', padding.top + height);
                 svg.appendChild(yAxis);
-                
+
                 // X 軸標籤
                 years.forEach(year => {
                     const x = xScale(year);
@@ -442,7 +459,7 @@
                     label.textContent = year;
                     svg.appendChild(label);
                 });
-                
+
                 // 軸標題
                 const xAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 xAxisLabel.setAttribute('class', 'axis-label');
@@ -451,7 +468,7 @@
                 xAxisLabel.setAttribute('text-anchor', 'middle');
                 xAxisLabel.textContent = 'Year (年份)';
                 svg.appendChild(xAxisLabel);
-                
+
                 const yAxisLabel = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 yAxisLabel.setAttribute('class', 'axis-label');
                 yAxisLabel.setAttribute('x', -(padding.top + height / 2));
@@ -460,30 +477,30 @@
                 yAxisLabel.setAttribute('transform', `rotate(-90)`);
                 yAxisLabel.textContent = 'Box Office (億日圓)';
                 svg.appendChild(yAxisLabel);
-                
+
                 // 創建折線路徑
                 const pathData = moviesByYear.map((movie, index) => {
                     const x = xScale(movie.year);
                     const y = yScale(movie.boxOffice);
                     return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
                 }).join(' ');
-                
+
                 const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
                 path.setAttribute('class', 'line-path');
                 path.setAttribute('d', pathData);
                 svg.appendChild(path);
-                
+
                 // 繪製數據點
                 moviesByYear.forEach((movie, index) => {
                     const x = xScale(movie.year);
                     const y = yScale(movie.boxOffice);
-                    
+
                     const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                     circle.setAttribute('class', 'data-point');
                     circle.setAttribute('cx', x);
                     circle.setAttribute('cy', y);
                     circle.setAttribute('r', 6);
-                    
+
                     // 滑鼠事件
                     circle.addEventListener('mouseenter', (e) => {
                         tooltip.innerHTML = `
@@ -493,25 +510,25 @@
                         `;
                         tooltip.classList.add('show');
                     });
-                    
+
                     circle.addEventListener('mousemove', (e) => {
                         tooltip.style.left = (e.pageX - container.offsetLeft + 15) + 'px';
                         tooltip.style.top = (e.pageY - container.offsetTop - 15) + 'px';
                     });
-                    
+
                     circle.addEventListener('mouseleave', () => {
                         tooltip.classList.remove('show');
                     });
-                    
+
                     svg.appendChild(circle);
-                    
+
                     // 延遲顯示數據點
                     setTimeout(() => {
                         circle.classList.add('show');
                     }, 2000 + index * 100);
                 });
             }
-            
+
             // 使用 Intersection Observer 來觸發折線圖動畫
             const lineChartObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -523,14 +540,15 @@
                         lineChartObserver.unobserve(entry.target);
                     }
                 });
-            }, { threshold: 0.2 });
-            
+            }, { threshold: 0.1 });
+
             const chart02Element = document.getElementById('chart02');
             if (chart02Element) {
                 lineChartObserver.observe(chart02Element);
             }
         });
     </script>
-    
+
 </body>
+
 </html>

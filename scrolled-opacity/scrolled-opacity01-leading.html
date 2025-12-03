@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scrolled Opacity Demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: sans-serif;
+        }
+
+        .spacer {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+        }
+
+        #outer {
+            height: 300vh;
+            /* 3 screens worth of scrolling */
+            position: relative;
+        }
+
+        .sticky-top {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .opa {
+            opacity: 1;
+            position: absolute;
+            object-fit: cover;
+            height: 100vh;
+            width: 100vw;
+            left: 0;
+            top: 0;
+            transition: opacity 0.1s linear;
+            /* Smooth out opacity changes slightly */
+            will-change: opacity;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="spacer" style="background-color:dodgerblue">
+        Scroll Down
+    </div>
+
+    <div id="outer">
+        <div class="sticky-top">
+            <!-- Reverse order for z-index stacking context if we want to fade out the top one -->
+            <!-- Actually, the original logic was:
+                 pos 1 (z-index 3) -> fades out
+                 pos 2 (z-index 2) -> fades out
+                 pos 3 (z-index 1) -> stays? or fades out?
+                 
+                 Let's keep the z-index logic. Highest z-index is on top.
+            -->
+            <img class="opa" data-pos="1" style="z-index:3" src="https://p4css.github.io/webScroll/images/farm2013.jpg"
+                alt="Farm 2013">
+            <img class="opa" data-pos="2" style="z-index:2" src="https://p4css.github.io/webScroll/images/farm2015.jpg"
+                alt="Farm 2015">
+            <img class="opa" data-pos="3" style="z-index:1" src="https://p4css.github.io/webScroll/images/farm2020.jpg"
+                alt="Farm 2020">
+        </div>
+    </div>
+
+    <div class="spacer" style="background-color: gray">
+        End
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const outer = document.getElementById('outer');
+            const images = document.querySelectorAll('.opa');
+            const winH = window.innerHeight;
+
+            function handleScroll() {
+                const outerRect = outer.getBoundingClientRect();
+                const outerTop = outerRect.top; // Distance from top of viewport
+
+                // Calculate how far we've scrolled into the #outer section
+                // When outerTop is 0, we are at the start.
+                // When outerTop is -winH, we have scrolled 1 screen height into it.
+
+                // We want a value that starts at 0 when outerTop is 0, and increases as we scroll down.
+                const scrolledInto = -outerTop;
+
+                if (scrolledInto > -winH && scrolledInto < outerRect.height + winH) {
+                    images.forEach((img) => {
+                        const pos = parseFloat(img.dataset.pos);
+                        // Original logic: opacity = pos - (scrolled - outer_pos) / winh
+                        // (scrolled - outer_pos) is basically our 'scrolledInto' variable (but strictly positive in original logic)
+
+                        // Let's adapt the logic.
+                        // We want the first image (pos 1) to fade out as we scroll from 0 to 1vh (relative to outer).
+                        // Actually, the original logic was:
+                        // scrolled is document.scrollTop
+                        // outer_pos is offset().top (static position of outer)
+                        // diff = scrolled - outer_pos.
+                        // if diff is 0 (at top of outer), opacity = 1 - 0 = 1.
+                        // if diff is winH (scrolled 1 screen), opacity = 1 - 1 = 0.
+
+                        // For pos 2:
+                        // if diff is 0, opacity = 2 - 0 = 2 (clamped to 1).
+                        // if diff is winH, opacity = 2 - 1 = 1.
+                        // if diff is 2*winH, opacity = 2 - 2 = 0.
+
+                        const progress = scrolledInto / winH;
+                        const opacity = pos - progress;
+
+                        // Clamp opacity between 0 and 1
+                        img.style.opacity = Math.max(0, Math.min(1, opacity));
+                    });
+                }
+            }
+
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            // Initial call to set state
+            handleScroll();
+        });
+    </script>
+</body>
+
+</html>

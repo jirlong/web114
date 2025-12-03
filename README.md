@@ -44,8 +44,15 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 - [parallax-storytelling-horizontal-copilot.html](./parallax/parallax-storytelling-horizontal-copilot.html) - Horizontal storytelling parallax (Copilot refined version) (Added: 2025-11-12)
 - [mask-scroll-demo.html](./parallax/mask-scroll-demo.html) - Parallax mask effect with sticky scroll and mix-blend-mode (Added: 2025-11-24)
 
-### Data Visualization and Charts
-- [data01_hbar_copilot.html](./data-visualization/data01_hbar_copilot.html) - Data visualization with horizontal bar chart and line plot (Copilot refined version) (Added: 2025-11-18)
+### Charts and Data Visualization (chart/)
+- [chart01_hbar_copilot.html](./chart/chart01_hbar_copilot.html) - Horizontal bar chart (Miyazaki films)
+- [chart02.html](./chart/chart02.html) - Line plot chart (Miyazaki films)
+- [chart03.html](./chart/chart03.html) - Taiwan population horizontal bar chart (D3.js) (Added: 2025-12-03)
+
+### Scrolled Opacity & Image Effects (scrolled-opacity/)
+- [scrolled-opacity01-leading.html](./scrolled-opacity/scrolled-opacity01-leading.html) - Sticky image stacking with scroll-based opacity (Refactored: 2025-12-03)
+- [scrolled-opacity02-spotlight.html](./scrolled-opacity/scrolled-opacity02-spotlight.html) - Spotlight effect with map zooming and panning (Refactored: 2025-12-03)
+- [scrolled-img.html](./scrolled-opacity/scrolled-img.html) - Background image panning based on scroll position (Refactored: 2025-12-03)
 
 ### Interactive Maps
 - [map02_topojson_d3_copilot.html](./map02_topojson_d3_copilot.html) - Taiwan county map with D3.js and TopoJSON, scroll-triggered interactions (Added: 2025-11-18)
@@ -113,35 +120,42 @@ Update: created `video-scroll/video-triggered-wp2-text-over-video-title-page.htm
 
 ---
 
-### Data Visualization with Charts (Updated: 2025-11-18)
+### Data Visualization with Charts (Updated: 2025-12-03)
 
-#### data01_hbar_copilot.html
+#### chart01_hbar_copilot.html
 **Key Features:**
-- **Horizontal Bar Chart (#chart01)**: Top 10 Miyazaki films by box office revenue
-  - Animated bars with gradient colors (blue-green)
-  - Displays movie name, year, and revenue
-  - Sequential animation triggered by Intersection Observer
-  - Ranked display with position badges
-  
-- **Line Plot Chart (#chart02)**: Box office trends over time
-  - SVG-based line chart with animated drawing effect
-  - X-axis: Year (1986-2013)
-  - Y-axis: Box office sales (億日圓)
-  - Interactive data points with hover tooltips
-  - Grid lines and axis labels for clarity
+- **Horizontal Bar Chart**: Top 10 Miyazaki films by box office revenue.
+- **Animated Bars**: Gradient colors and sequential animation triggered by scroll.
+- **Ranked Display**: Clear ranking with badges.
 
-**Layout:**
-- Two-column sticky layout (200vh content sections)
-- Left column: Detailed text about Miyazaki films
-- Right column: Sticky charts that remain visible while scrolling
-- Bootstrap 5 grid with responsive design
+#### chart03.html
+**Key Features:**
+- **D3.js Integration**: Uses D3.js v7 for data binding and rendering.
+- **Dynamic SVG Generation**: Creates SVG elements based on population data.
+- **Scroll-Triggered Animation**: Bars grow and text positions adjust when entering the viewport.
+- **Responsive Design**: Adapts to container width.
 
-**Technologies:**
-- jQuery 3.7.1 for DOM manipulation
-- Intersection Observer API for scroll-triggered animations
-- SVG for scalable line chart graphics
-- CSS animations and transitions
-- Bootstrap 5 sticky positioning
+---
+
+### Scrolled Opacity & Image Effects (Added: 2025-12-03)
+
+#### scrolled-opacity01-leading.html
+**Key Features:**
+- **Sticky Stacking**: Images stack on top of each other using `position: sticky`.
+- **Scroll-Based Opacity**: Images fade out sequentially as the user scrolls, revealing the next image.
+- **Vanilla JS**: Lightweight implementation without jQuery.
+
+#### scrolled-opacity02-spotlight.html
+**Key Features:**
+- **Spotlight Effect**: A map image moves and zooms to focus on specific areas based on the active text section.
+- **Coordinate Mapping**: Uses `data-x`, `data-y`, and `data-scale` attributes to define viewports.
+- **Smooth Transitions**: CSS transitions ensure smooth movement between focal points.
+
+#### scrolled-img.html
+**Key Features:**
+- **Background Panning**: A large background image pans (translates) based on scroll position.
+- **Interpolation**: Calculates intermediate background positions between defined keyframes (sections).
+- **Visual Indicators**: Debug-like overlays show the current section boundaries.
 
 ---
 
